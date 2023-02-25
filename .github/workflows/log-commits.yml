@@ -8,6 +8,7 @@ jobs:
     env:
       COMMIT_LOG_API: ${{ secrets.COMMIT_LOG_API }}
       COMMITS: ${{ toJSON(github.event.commits) }}
+      REPOSITORY_URL: ${{ github.repositoryUrl }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -18,12 +19,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # for some reason gitcommitlogger's own dependencies still need to be manually installed
           pip install pytz
           pip install requests
           pip install gitcommitlogger
       - name: Logging
         run: |
-          # git log --stat -n $(echo $COMMITS | jq '. | length' ) # another way to try to get just the latest commits
+          echo $REPOSITORY_URL
+          # git show --shortstat --date=format-local:'%m/%d/%Y %H:%M:%S' # show latest commit log
+          git log --stat -n $(echo $COMMITS | jq '. | length' ) # another way to try to get just the latest commits
           echo $COMMITS > commits.json
-          gitcommitlogger -i commits.json -o commit_stats.csv -u $(echo $COMMIT_LOG_API) -v
+          cat commits.json # debugging
+          gitcommitlogger -r $(echo $REPOSITORY_URL) -i commits.json -o commit_stats.csv -u $(echo $COMMIT_LOG_API) -v
