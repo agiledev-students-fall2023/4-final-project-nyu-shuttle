@@ -18,6 +18,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          # for some reason gitcommitlogger's own dependencies still need to be manually installed
           pip install pytz
           pip install requests
           pip install gitcommitlogger
