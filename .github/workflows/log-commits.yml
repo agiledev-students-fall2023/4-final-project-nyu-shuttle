@@ -1,7 +1,7 @@
 name: log commits
 on:
   push:
-    branches: [main]
+    branches: [main, master]
 jobs:
   log:
     runs-on: ubuntu-latest
