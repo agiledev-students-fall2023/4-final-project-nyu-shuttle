@@ -30,8 +30,8 @@ The following requirements outline what must be, must not be, and may be done du
 
 ### May...
 
-- You may use front-end design frameworks, such as [Bootstrap for React](https://react-bootstrap.github.io/) or [Material UI](https://material-ui.com/).
-- You may use a 3rd-party module, such as [react-burger-menu](https://github.com/negomi/react-burger-menu) for a hamburger menu or other [primary navigation](https://knowledge.kitchen/mediawiki/Navigation_components#Global_Navigation).
+- You may use front-end design frameworks, such as [Tailwind](https://tailwindcss.com/), [Material UI](https://material-ui.com/), or [Bootstrap for React](https://react-bootstrap.github.io/).
+- You may use a 3rd-party module, such as [react-burger-menu](https://github.com/negomi/react-burger-menu) for a hamburger menu or other [primary navigation](https://knowledge.kitchen/content/courses/web-design/navigation/#global-navigation-aka-primary-navigation).
 
 ## Grading
 
