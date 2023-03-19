@@ -23,7 +23,7 @@ The following requirements outline what must be, must not be, and may be done du
 
 ### Must nots...
 
-- State managers, such as [Redux](https://react-redux.js.org/) or [Mobx](https://mobx.js.org/README.html#introduction) must not be used.
+- State managers, such as [Redux](https://react-redux.js.org/) or [Mobx](https://mobx.js.org/README.html#introduction) must not be used. However, you are welcome to use [React Context](https://react.dev/learn/passing-data-deeply-with-context) if you desire.
 - Account registration or log in functionality must not be included - that can be added later during back-end development. But do include the non-functional screens for these.
 - Any data that will be coming from a server or API must not be hard-coded within your front-end code... mock the API for now and fetch the data from the server within the front-end code.
 - Any user-generated images must not be hard-coded in the front-end code, but must be mocked with a random image service for now.
