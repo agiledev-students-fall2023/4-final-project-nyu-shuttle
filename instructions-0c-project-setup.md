@@ -27,6 +27,25 @@ Channel names must be short and consistent. For example, if a team is named `oct
 
 Communications within private channels or on communications systems where the stakeholders are not present are not visible to stakeholders and therefore will not be considered analyzing the engagement of any individual or of the team as a whole.
 
+## Synchronize git and GitHub account usernames
+
+In order to allow your managers to track your individual contribution to the project, it is imperative that you use the same username for both `git` on your local computer, where you will be making commits, and `GitHub`, where you will be doing pull requests.
+
+To set your `git` username locally:
+
+```bash
+git config --global user.name "Mona Lisa"
+```
+
+To ensure your `GitHub` username is used for all online activity, make sure to leave your account's `Name` field blank:
+![GitHub username settings](./github_username_settings.png)
+
+Once you've made a few contributions both locally and on GitHub, you can verify that the user names are the same in the `git` logs:
+
+```bash
+git log
+```
+
 ## Configure GitHub repository
 
 GitHub is each team's primary resource for version control, project
@@ -103,7 +122,7 @@ Once a particular sprint has begun, all issues representing tasks that have been
 
 ### GitHub task boards
 
-Each team must create a Task Board for each of the four Sprints following [these setup instructions](https://knowledge.kitchen/content/courses/agile-development-and-devops/scrum/github-task-boards/).
+Each team must create a Task Board for each of the four Sprints following [these setup instructions](https://knowledge.kitchen/content/courses/agile-development-and-devops/scrum/github-task-boards/) (these use the "Classic" type of Task Boards available on GitHub).
 
 View a [video overview of setting up a Task Board on GitHub](https://youtu.be/Qasz5fhxIqE).
 
