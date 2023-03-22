@@ -34,10 +34,10 @@ In order to allow your managers to track your individual contribution to the pro
 To set your `git` username locally:
 
 ```bash
-git config --global user.name "Mona Lisa"
+git config --global user.name "monalisa"
 ```
 
-To ensure your `GitHub` username is used for all online activity, make sure to leave your account's `Name` field blank:
+To ensure your `GitHub` username is used for all online activity, leave your account's `Name` field blank:
 ![GitHub username settings](./github_username_settings.png)
 
 Once you've made a few contributions both locally and on GitHub, you can verify that the user names are the same in the `git` logs:
@@ -45,6 +45,13 @@ Once you've made a few contributions both locally and on GitHub, you can verify 
 ```bash
 git log
 ```
+
+Here is the full recipe:
+
+1. **Look at your git logs**: run `git log`. Hit the space bar to scroll through the logs and hit `q` to quit when you're done. Check your username as it shows up in the logs... is it _always_ correct for every log entry and does it match what you see in your grading emails? If so, you're done. If not, continue...
+1. **Figure out your GitHub username**: go to your GitHub settings (https://github.com/settings/profile) and remove anything in the `Name` field, then save the changes. Note your username at the top-left of the page once you save - this is your GitHub username... you knew that.
+1. **Figure out your git username**: run `git config user.name` to see your git username on your local machine - this is your `git` username.
+1. **If your usernames don't match**, then run this: `git config --global user.name "monalisa"`, where `monalisa` is replaced with your GitHub username. Now your usernames match!
 
 ## Configure GitHub repository
 
