@@ -12,7 +12,7 @@ Each team must deploy their completed software applications to a [Digital Ocean 
 
 Include a note when submitting, if you have done any of the extra credit.
 
-- Extra credit is given to teams that have deployed to a Docker container, although a non-containerized deployment is fine.
+- Extra credit is given to teams that have deployed to a [Docker container](https://knowledge.kitchen/content/courses/software-engineering/slides/containers/#49), although a non-containerized deployment is fine.
 - Extra credit is given to teams that have a functioning [Continuous Integration](https://knowledge.kitchen/content/courses/software-engineering/slides/continuous-integration/#1) workflow, where an automation server, such as [GitHub Actions](https://github.com/features/actions), runs a build and test cycle every time a branch is pushed to GitHub or a new pull request is issued.
 - Extra credit is given to teams that have a [Continuous Deployment](https://knowledge.kitchen/content/courses/software-engineering/slides/deployment/#54) setup, although a manual deployment is fine.
 
