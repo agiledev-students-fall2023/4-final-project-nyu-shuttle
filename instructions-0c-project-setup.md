@@ -18,10 +18,10 @@ Discord is each team's primary communication tool. Each member's communications 
 
 Each team **must have at least one Discord channel** where the professor, and any course assistants, graders, and tutors are also invited to be members:
 
+Channel names must be short and consistent. For example, if a team is named `octopus`, their main channel should be called `team-octopus`
+
 - use this channel for general team communication
 - individual participation in this and other channels may be used towards each member's grade
-
-Channel names must be short and consistent. For example, if a team is named `octopus`, their main channel might be called `team-octopus`
 
 ### Private communications channels
 
@@ -31,7 +31,7 @@ Communications within private channels or on communications systems where the st
 
 In order to allow your managers to track your individual contribution to the project, it is imperative that you use the same username for both `git` on your local computer, where you will be making commits, and `GitHub`, where you will be doing pull requests.
 
-To set your `git` username locally:
+To set your `git` username locally... change `'monalisa'` in the example to your own username:
 
 ```bash
 git config --global user.name "monalisa"

@@ -13,7 +13,7 @@ View a [video overview of creating the Sprint Backlog in GitHub](https://youtu.b
 Each User Story added to the Sprint Backlog must...
 
 - include [Acceptance Criteria](https://knowledge.kitchen/content/courses/agile-development-and-devops/slides/scrum/#61) included in it [as a checklist](GitHub_for_team_collaboration#Creating_a_new_issue)
-- be assigned the `Sprint N` Milestone, where N is the number of the current sprint, in GitHub's Issue tracker
+- be assigned the `Sprint N` Milestone, where `N` is the number of the current sprint, in GitHub's Issue tracker
 - include an Estimation of Effort, which teams calculate following the Planning Poker effort estimation processes
 
 User Stories in the Sprint Backlog must also follow the basic requirements for User Stories
