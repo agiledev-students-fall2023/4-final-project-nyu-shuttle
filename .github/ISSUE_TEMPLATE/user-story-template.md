@@ -1,16 +1,17 @@
 ---
 name: User Story Template
 about: A template to use for User Stories
-title: ''
+title: ""
 labels: user story
-assignees: ''
-
+assignees: ""
 ---
 
-## Estimation of work
+## Estimation of effort (optional)
+
 - TBD
 
-## Acceptance criteria
+## Acceptance criteria (optional)
+
 - [ ] foo
 - [ ] bar
 - [ ] baz

@@ -18,14 +18,40 @@ Discord is each team's primary communication tool. Each member's communications 
 
 Each team **must have at least one Discord channel** where the professor, and any course assistants, graders, and tutors are also invited to be members:
 
+Channel names must be short and consistent. For example, if a team is named `octopus`, their main channel should be called `team-octopus`
+
 - use this channel for general team communication
 - individual participation in this and other channels may be used towards each member's grade
-
-Channel names must be short and consistent. For example, if a team is named `octopus`, their main channel might be called `team-octopus`
 
 ### Private communications channels
 
 Communications within private channels or on communications systems where the stakeholders are not present are not visible to stakeholders and therefore will not be considered analyzing the engagement of any individual or of the team as a whole.
+
+## Synchronize git and GitHub account usernames
+
+In order to allow your managers to track your individual contribution to the project, it is imperative that you use the same username for both `git` on your local computer, where you will be making commits, and `GitHub`, where you will be doing pull requests.
+
+To set your `git` username locally... change `'monalisa'` in the example to your own username:
+
+```bash
+git config --global user.name "monalisa"
+```
+
+To ensure your `GitHub` username is used for all online activity, leave your account's `Name` field blank:
+![GitHub username settings](./github_username_settings.png)
+
+Once you've made a few contributions both locally and on GitHub, you can verify that the user names are the same in the `git` logs:
+
+```bash
+git log
+```
+
+Here is the full recipe:
+
+1. **Look at your git logs**: run `git log`. Hit the space bar to scroll through the logs and hit `q` to quit when you're done. Check your username as it shows up in the logs... is it _always_ correct for every log entry and does it match what you see in your grading emails? If so, you're done. If not, continue...
+1. **Figure out your GitHub username**: go to your GitHub settings (https://github.com/settings/profile) and remove anything in the `Name` field, then save the changes. Note your username at the top-left of the page once you save - this is your GitHub username... you knew that.
+1. **Figure out your git username**: run `git config user.name` to see your git username on your local machine - this is your `git` username.
+1. **If your usernames don't match**, then run this: `git config --global user.name "monalisa"`, where `monalisa` is replaced with your GitHub username. Now your usernames match!
 
 ## Configure GitHub repository
 
@@ -43,7 +69,7 @@ GitHub repositories have been created for each team and are in the control of th
 
 Every project must have a [README.md](./README.md) that automatically renders on the project's main repository page with basic details of the project, including:
 
-- a description of project, including the [Product Vision Statement](https://knowledge.kitchen/Scrum_development_framework#Product_vision_statement)
+- a description of project, including the [Product Vision Statement](https://knowledge.kitchen/content/courses/agile-development-and-devops/scrum/product-vision-statement/)
 - the core team members, including links to their GitHub accounts and any other web presence they have
 - a short history of how the project came to be and information about how to contribute to the project (i.e. a link to the [CONTRIBUTING.md](./CONTRIBUTING.md) document)
 - instructions for building and testing the project (update with that information once the project reaches that stage)
@@ -103,7 +129,7 @@ Once a particular sprint has begun, all issues representing tasks that have been
 
 ### GitHub task boards
 
-Each team must create a Task Board for each of the four Sprints following [these setup instructions](https://knowledge.kitchen/GitHub_for_team_collaboration#Project_boards).
+Each team must create a Task Board for each of the four Sprints following [these setup instructions](https://knowledge.kitchen/content/courses/agile-development-and-devops/scrum/github-task-boards/) (these use the "Classic" type of Task Boards available on GitHub).
 
 View a [video overview of setting up a Task Board on GitHub](https://youtu.be/Qasz5fhxIqE).
 
@@ -113,10 +139,10 @@ Each team member must `clone` their team's GitHub repository onto their own loca
 
 ## Create the initial Product Backlog
 
-Each team must have an initial [Product Backlog](https://knowledge.kitchen/Scrum_development_framework#Product_Backlog) - a set of User Stories that together define the product requirements - based on their understanding of the project so far. This will evolve as teams work on the project, but try to think through and write User Stories for as many features as you can imagine wanting to include in the project.
+Each team must have an initial [Product Backlog](https://knowledge.kitchen/content/courses/agile-development-and-devops/slides/scrum/#46) - a set of User Stories that together define the product requirements - based on their understanding of the project so far. This will evolve as teams work on the project, but try to think through and write User Stories for as many features as you can imagine wanting to include in the project.
 
 Each item in the Product Backlog must be added as an Issue to GitHub's Issue tracker.
 
 View a [video overview of setting up a Product Backlog on GitHub](https://youtu.be/m8ZxTHSKSKE).
 
-Make sure you understand [how GitHub's Issue tracker works](https://knowledge.kitchen/GitHub_for_team_collaboration#Issues) and attach the `user-story` label to all Issues that represent User Stories.
+Make sure you understand [how GitHub's Issue tracker works](https://knowledge.kitchen/content/courses/agile-development-and-devops/scrum/github-issues/) and attach the `user-story` label to all Issues that represent User Stories.
