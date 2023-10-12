@@ -28,7 +28,7 @@ Instructions for building and testing the project will be provided in this secti
 
 ## Contact Us
 
-If you have any questions, feedback, or suggestions, please feel free to [open an issue](https://github.com/nyu-shuttle-app/issues) or reach out to any of the core team members mentioned above. We appreciate your support and look forward to improving the NYU shuttle experience together!
+If you have any questions, feedback, or suggestions, please feel free to [open an issue](https://github.com/agiledev-students-fall2023/4-final-project-nyu-shuttle/issues) or reach out to any of the core team members mentioned above. We appreciate your support and look forward to improving the NYU shuttle experience together!
 
 
 
