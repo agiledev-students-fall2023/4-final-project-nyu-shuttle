@@ -1,6 +1,4 @@
-# Project Repository
-# Project Title
-NYU Shuttle App
+# NYU Shuttle App
 
 ## Project Description
 
