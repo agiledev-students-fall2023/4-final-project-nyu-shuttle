@@ -8,9 +8,9 @@ The NYU Shuttle App is a mobile application designed to provide real-time inform
 Recognizing the limitations in NYU's existing shuttle app, primarily concerning its user interface, we want to create a better mobile-friendly application with shuttle information that is easy to access and understand. 
 
 ## Team Members
-- [r8btx] (https://www.github.com/r8btx) 
-- [Jaden Wang] (https://github.com/unfiltered-syrup)
-- [Ana Pacheco] (https://github.com/anaspacheco)
+- [r8btx](https://www.github.com/r8btx) 
+- [Jaden Wang](https://github.com/unfiltered-syrup)
+- [Ana Pacheco](https://github.com/anaspacheco)
 
 ## History and Contribution Guidelines
 
@@ -22,8 +22,9 @@ Instructions for building and testing the project will be provided in this secti
 
 ## Additional Resources
 
-- [Initial Prototype](UX-DESIGN.md) 
-- Current NYU Shuttle Website: https://nyu.passiogo.com/
+- [Initial Prototype](UX-DESIGN.md)
+- [NYU Transportations Routes and Schedules Page](https://www.nyu.edu/life/travel-and-transportation/university-transportation/routes-and-schedules.html)
+- [Current NYU Shuttle Website (PassioGo)](https://nyu.passiogo.com/)
 
 ## Contact Us
 
