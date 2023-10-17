@@ -1,0 +1,7 @@
+.navBar{
+    @apply absolute flex bottom-0 p-2 h-24 w-full bg-darkTone shadow-lg items-center justify-center;
+}
+
+.button{
+    @apply flex flex-col flex-1 h-14 mx-1 w-20 bg-lightMidTone rounded-xl shadow-lg items-center justify-center hover:bg-lightTone;
+}
