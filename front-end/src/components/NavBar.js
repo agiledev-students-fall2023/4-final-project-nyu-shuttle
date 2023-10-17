@@ -1,24 +1,28 @@
 import '../css/navBar.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMapLocationDot, faRoute, faCircleExclamation, faGears } from '@fortawesome/sharp-light-svg-icons'
+import mapIcon from '../images/map.svg'
+import alertIcon from '../images/alert.svg'
+import routeIcon from '../images/route.svg'
+import settingIcon from '../images/gears.svg'
 function NavBar() {
     return (
         <>
             <div className="navBar">
                 <div className="button">
-                <FontAwesomeIcon icon={faMapLocationDot} size="lg" className='mx-1'/>                    
+                <img src={mapIcon} width="25" height="25" alt="Map" />          
                     <p>Map</p>
                 </div>
                 <div className="button">
-                    <FontAwesomeIcon icon={faRoute} size="lg" className='mx-1'/>
+                <img src={routeIcon} width="25" height="25" alt="Map" />
+
                     <p>Routes</p>
                 </div>
                 <div className="button">
-                    <FontAwesomeIcon icon={faCircleExclamation} size="lg" className='flex mx-1'/>
+                <img src={alertIcon} width="25" height="25" alt="Map" />
                     <p className="flex">Alerts</p>
                 </div>
                 <div className="button">
-                    <FontAwesomeIcon icon={faGears} size="lg" className='mx-1'/>
+                <img src={settingIcon} width="25" height="25" alt="Map" />
+
                     <p>Settings</p>
                 </div>
             </div>
