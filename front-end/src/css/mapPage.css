@@ -7,5 +7,6 @@
 }
 
 .map-container{
-    @apply flex p-5 pb-28 h-screen w-full bg-lightMidTone rounded shadow-lg items-center justify-center;
+    @apply flex p-5 pb-28 h-screen w-full bg-lightTone rounded shadow-lg items-center justify-center;
 }
+
