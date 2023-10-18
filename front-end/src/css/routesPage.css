@@ -2,7 +2,7 @@
 
 /* Apply Tailwind CSS classes */
 .route-container {
-    @apply p-2 pl-8 pr-8 bg-gray-100 flex flex-col items-start; /* Added pl-8 for left padding */
+    @apply p-2 pl-8 pr-8 pt-4 bg-gray-100 flex flex-col items-start; /* Added pl-8 for left padding */
   }
   
   .location-input {
