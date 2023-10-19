@@ -3,6 +3,11 @@ module.exports = {
   content: ['./src/**/*.{html,js}'],
   theme: {
     extend: {
+      /*add more fonts here*/
+      fontFamily: { 
+        'mainUI': ['Merriweather', 'sans-serif'],
+      },
+
       /**change color scheme here */
       colors: {
         darkTone : '#57078C',
