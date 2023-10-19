@@ -1,6 +1,6 @@
 
 .route-container {
-    @apply p-2 pl-8 pr-8 pt-4  flex flex-col items-start; 
+    @apply p-2 pl-8 pr-8 pt-4 pb-5 h-screen bg-lightTone flex flex-col items-start; 
   }
   
   .location-input {

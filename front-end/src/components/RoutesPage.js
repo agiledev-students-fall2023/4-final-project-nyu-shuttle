@@ -6,12 +6,10 @@ function RoutesPage() {
   const [location2, setLocation2] = useState("");
 
   const handleLocation1Change = (event) => {
-    event.preventDefault();
     setLocation1(event.target.value);
   };
 
   const handleLocation2Change = (event) => {
-    event.preventDefault();
     setLocation2(event.target.value);
   };
 

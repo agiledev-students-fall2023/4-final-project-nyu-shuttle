@@ -1,8 +1,12 @@
+import "../css/basicUI.css";
+
 function AlertsPage() {
     return (
-        <div>
-            <h1>Alerts Page</h1>
-        </div>
+        <>
+            <div className="container">
+                <h1>Alerts Page</h1>
+            </div>
+        </>
     );
 }
 
