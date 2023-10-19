@@ -1,20 +1,16 @@
-/* routesPage.css */
 
-/* Apply Tailwind CSS classes */
 .route-container {
-    @apply p-2 pl-8 pr-8 pt-4 bg-gray-100 flex flex-col items-start; /* Added pl-8 for left padding */
+    @apply p-2 pl-8 pr-8 pt-4  flex flex-col items-start; 
   }
   
   .location-input {
-    @apply my-0.5 w-full; /* Decreased the margin-bottom to create less space */
+    @apply my-0.5 w-full; 
   }
   
-  /* Apply custom styling to labels */
   .location-input label {
     @apply block text-sm font-semibold text-gray-700 mb-1;
   }
   
-  /* Apply custom styling to inputs */
   .location-input input {
     @apply w-full px-3 py-2 border rounded-md text-gray-700 border-gray-300 focus:outline-none focus:ring focus:ring-indigo-200;
   }

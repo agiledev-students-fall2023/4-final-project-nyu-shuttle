@@ -1,22 +1,56 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import map from '../images/subpage_map.png'
+import mapImage from "../images/subpage_map.png";
+import "../css/routesSubpage.css";
 
 function RoutesSubpage() {
   const { location1, location2 } = useParams();
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate("/routes"); 
+    navigate("/routes");
   };
+
+  const startNavigation = () => {
+    // Implement your navigation functionality here
+    alert("Navigation started!");
+  };
+
+  const shuttle = "X";
+  const shuttleSchedule = "HH:MM";
+  const totalTime= "MM";
+  const timeToShuttle = "XX";
+  const timeToDestination2 = "YY";
 
   return (
     <div>
-      <button onClick={goBack}>Back</button>
-      <h1>Route</h1>
-      <img src={map} alt="My Image" />
-      <p>Location 1: {location1}</p>
-      <p>Location 2: {location2}</p>
+      <button className="back-button" onClick={goBack}>
+        Back
+      </button>
+
+      <h1>Routes</h1>
+
+      <div className="routes-container">
+        <img src={mapImage} alt="NYC MAP" />
+        <div className="route-info">
+        <div className= "route-text">
+        <p class = "text-lg">
+            <strong>{totalTime} min</strong>
+            </p>
+          <p class="text-sm">
+            Fastest route, Shuttle {shuttle} scheduled at <strong>{shuttleSchedule}</strong>
+          </p>
+          <p class = "text-sm">
+            Time from start to shuttle: <strong>{timeToShuttle} min</strong>
+          </p>
+          <p class = "text-sm">
+            Time walking to destination 2:{" "}
+            <strong>{timeToDestination2} min</strong>
+          </p>
+        </div>
+        <button className = "nav-button" onClick={startNavigation}>Start</button>
+        </div>
+      </div>
     </div>
   );
 }
