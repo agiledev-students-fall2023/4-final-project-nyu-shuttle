@@ -1,0 +1,23 @@
+.settings-container {
+  @apply bg-lightTone min-h-screen p-5 text-xl;
+}
+
+.settings-header {
+  @apply text-2xl mb-5;
+}
+
+.settings-item-wrapper {
+  @apply divide-y divide-darkTone;
+}
+
+.settings-item {
+  @apply py-4 mb-1 flex justify-between items-center;
+}
+
+.button-toggle {
+  @apply w-14 h-8 rounded-full p-1;
+}
+
+.button-toggle-part {
+  @apply bg-darkTone w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out;
+}
