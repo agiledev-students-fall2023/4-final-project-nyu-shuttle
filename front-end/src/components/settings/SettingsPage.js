@@ -21,7 +21,7 @@ const SettingsPage = () => {
           </button>
         </div>
 
-        <Link className="settings-item" to="settings/saved-routes">
+        <Link className="settings-item" to="saved-routes">
           Saved Routes
         </Link>
 
@@ -29,15 +29,15 @@ const SettingsPage = () => {
           Visit Data Source
         </a>
 
-        <Link className="settings-item" to="settings/terms">
+        <Link className="settings-item" to="privacypolicy">
           Privacy Policy
         </Link>
 
-        <Link className="settings-item" to="settings/feedback-support">
+        <Link className="settings-item" to="feedback-support">
           Feedback / Support
         </Link>
 
-        <Link className="settings-item" to="settings/view-schedule">
+        <Link className="settings-item" to="view-schedule">
           View Schedule In Spreadsheet
         </Link>
       </div>
