@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../../css/settingsPage.css';
 
-const SettingsPage = () => {
+const TimeSpreadsheetPage = () => {
   return (
     <div className="settings-container">
       <Link className="settings-item" to="/settings">
@@ -58,4 +58,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default TimeSpreadsheetPage;
