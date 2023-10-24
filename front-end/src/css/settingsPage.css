@@ -1,0 +1,53 @@
+.settings-container {
+  @apply bg-lightTone min-h-screen p-5 text-xl;
+}
+
+.settings-header {
+  @apply text-2xl font-semibold mb-5;
+}
+
+.settings-item-wrapper {
+  @apply divide-y divide-darkTone;
+}
+
+.settings-item {
+  @apply py-4 mb-1 flex justify-between items-center;
+}
+
+.button-toggle {
+  @apply w-14 h-8 rounded-full p-1;
+}
+
+.button-toggle-part {
+  @apply bg-darkTone w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out;
+}
+
+.privacypolicy-content {
+  @apply rounded-lg p-4 bg-lightMidTone max-w-md mx-auto mt-6;
+}
+
+.feedback-item {
+  @apply py-4 mb-1 flex flex-col md:flex-row justify-between items-start md:items-center;
+}
+
+.feedback-label {
+  @apply mb-2;
+}
+
+.feedback-dropdown,
+.feedback-textarea {
+  /* don't know how to make select width 100% while not making option overflow */
+  @apply bg-white border rounded p-2;
+}
+
+.feedback-dropdown > option {
+  @apply text-base;
+}
+
+.feedback-textarea {
+  @apply h-80 w-full;
+}
+
+.feedback-submit {
+  @apply bg-darkTone text-lightTone rounded px-6 py-3 mt-4 md:mt-0 md:ml-4 hover:bg-opacity-90 transition-all duration-300 ease-in-out;
+}
