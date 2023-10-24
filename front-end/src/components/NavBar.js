@@ -4,13 +4,13 @@ import { ReactComponent as AlertIcon } from '../images/alert.svg';
 import { ReactComponent as RouteIcon } from '../images/route.svg';
 import { ReactComponent as SettingIcon } from '../images/gears.svg';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function NavBar({ overlayOffset = "-36%" }) {
+function NavBar() {
     const [navBarState, setNavBarState] = useState('Map');
-
+    const navigate = useNavigate();
     const handleClick = (iconName) => {
         setNavBarState(iconName);
-
     }
 
     useEffect(() => {
@@ -22,22 +22,27 @@ function NavBar({ overlayOffset = "-36%" }) {
             document.getElementsByClassName('active')[0].classList.remove('active');
             cur.classList.remove('inactive');
             cur.classList.add('active');
-            switch(navBarState) {
+            switch(navBarState) { //change the functionalities of each button here
                 case 'Map':
-                    overlay.style.left = '-36%';
+                    overlay.style.left = '-36%'; //shifts the overlay
+                    navigate('/')
                     break;
                 case 'Routes':
                     overlay.style.left = '-12%';
+                    navigate('/routes')
                     break;
                 case 'Alerts':
                     overlay.style.left = '12%';
+                    navigate('/alerts')
                     break;
                 case 'Settings':
                     overlay.style.left = '36%';
+                    navigate('/settings')
                     break;
             }
         }
-        console.log(cur.classList)
+        console.log(cur.classList);
+        console.log(navBarState);
         
     }, [navBarState]);
 

@@ -1,14 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&display=swap');
+
+
 :root {
     --overlay-offset: -36%;
 }
 
 .navBar{
-    @apply absolute flex bottom-0 p-2 h-24 w-full bg-lightTone shadow-lg items-center justify-center;
+    @apply absolute flex font-mainUI bottom-0 p-2 h-24 w-full bg-lightTone shadow-lg items-center justify-center;
     overflow: hidden;
 }
 
 .active{
-    @apply flex flex-col flex-1 scale-105 z-10 h-14 mx-1 mt-2 w-20 text-sm items-center justify-center text-lightTone;
+    @apply flex flex-col flex-1 scale-105 z-10 h-14 mx-1 w-20 text-sm items-center justify-center text-lightTone;
 
 }
 
@@ -43,7 +46,7 @@ I don't know how to implement this using tailwind*/
     This function is then mapped from (-pi/2, 3pi/2) to (0%, 88%), where 88% is the max depth of the curve
     A helper function to generate these values can be found in file front-end/src/helperScripts/getClipPath.py
     */
-    -webkit-clip-path: polygon(20% 0%, 30.00% 0.00%, 32.67% 0.89%, 35.33% 6.24%, 38.00% 19.74%, 40.67% 39.06%, 43.33% 56.24%, 46.00% 65.47%, 48.67% 68.00%, 51.33% 68.00%, 54.00% 65.47%, 56.67% 56.24%, 59.33% 39.06%, 62.00% 19.74%, 64.67% 6.24%, 67.33% 0.89%, 70.00% 0.00%, 80% 0%);}
+    clip-path: polygon(20% 0%, 30.00% 0.00%, 32.67% 0.89%, 35.33% 6.24%, 38.00% 19.74%, 40.67% 39.06%, 43.33% 56.24%, 46.00% 65.47%, 48.67% 68.00%, 51.33% 68.00%, 54.00% 65.47%, 56.67% 56.24%, 59.33% 39.06%, 62.00% 19.74%, 64.67% 6.24%, 67.33% 0.89%, 70.00% 0.00%, 80% 0%);}
 
 .backdrop{
     position: absolute;

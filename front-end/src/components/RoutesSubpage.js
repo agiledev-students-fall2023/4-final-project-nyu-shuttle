@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import mapImage from "../images/subpage_map.png";
 import "../css/routesSubpage.css";
+import "../css/basicUI.css"
 
 function RoutesSubpage() {
   const { location1, location2 } = useParams();
@@ -23,7 +24,7 @@ function RoutesSubpage() {
   const timeToDestination2 = "YY";
 
   return (
-    <div>
+    <div className="container">
       <button className="back-button" onClick={goBack}>
         Back
       </button>
