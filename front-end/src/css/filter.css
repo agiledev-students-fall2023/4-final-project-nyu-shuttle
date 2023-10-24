@@ -1,29 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&display=swap');
 
 .filter-container {
-    @apply font-mainUI;
+    @apply relative h-full font-mainUI;
 }
 
 .filter{
-    @apply absolute flex overflow-auto opacity-75 m-2 mt-6 top-1 z-10 left-4 w-28 bg-lightTone rounded-2xl shadow-lg transition-all duration-300 ease-in-out;;
+    @apply absolute flex flex-col overflow-auto opacity-90 m-2 mt-6 top-1 z-10 left-4 w-28 bg-lightTone rounded-2xl shadow-lg transition-all duration-300 ease-in-out;;
 }
 
 .filter-container{
     @apply relative h-1/4
 }
 
-li{
-    @apply block w-full my-3 ml-4 text-sm text-black hover:bg-lightTone hover:text-gray-900;
+.list-item-wrapper{
+    @apply w-full py-2 pt-3 px-5 text-sm text-black hover:bg-lightMidTone;
 }
 
 ul{
-    @apply hidden
+    @apply flex flex-col h-screen;
 }
 
+
 .filter.open{
-    @apply h-full;
+    @apply h-96 w-28;
 }
 
 .filter.closed{
-    @apply h-11;
+    @apply h-12 w-28;
+}
+
+
+.route-color-bar{
+    @apply flex top-0 left-0 h-10 w-1/12;
 }
