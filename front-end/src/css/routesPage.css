@@ -14,11 +14,5 @@
   .location-input input {
     @apply w-full px-3 py-2 border rounded-md text-gray-700 border-gray-300 focus:outline-none focus:ring focus:ring-indigo-200;
   }
-
-  .start-button{
-    @apply bg-gray-300 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded content-center my-5;
-  }
   
-  .suggestions-list{
-    @apply z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700;
-  }
+  

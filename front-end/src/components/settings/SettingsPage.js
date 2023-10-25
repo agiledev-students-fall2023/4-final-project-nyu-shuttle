@@ -4,7 +4,8 @@ import '../../css/settingsPage.css';
 
 const SettingsPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-
+  const body = document.body;
+  
   const handleToggle = () => {
     setIsDarkMode(!isDarkMode);
     // Add app-wide theme toggle here?

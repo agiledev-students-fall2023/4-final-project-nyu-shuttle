@@ -17,7 +17,6 @@
 
 .inactive{
     @apply flex flex-col flex-1 z-10 h-14 mx-1 mt-4 w-20 items-center text-sm justify-center text-lightTone;
-
 }
 
 .active svg {
