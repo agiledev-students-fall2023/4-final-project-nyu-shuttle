@@ -1,0 +1,17 @@
+/* make it white and separtaed */
+.text-box{
+    @apply text-left
+}
+
+.dropdown{
+  @apply  relative;
+}
+
+
+.options-list{
+    @apply absolute left-0 right-0 top-0 z-10 mt-2 py-2 bg-white border border-gray-300 shadow-md max-h-36 overflow-y-auto;
+}
+
+.options-expanded{
+    @apply cursor-pointer py-1 px-2 hover:bg-gray-100
+}
