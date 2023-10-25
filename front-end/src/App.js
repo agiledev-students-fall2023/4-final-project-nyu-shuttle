@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // Import useState and useEffect
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MapPage from './components/MapPage';
 import './css/navBar.css';
 import NavBar from './components/NavBar';
@@ -11,16 +11,25 @@ import SavedRoutesPage from './components/settings/SavedRoutesPage';
 import TimeSpreadsheetPage from './components/settings/TimeSpreadsheetPage';
 import FeedbackSupportPage from './components/settings/FeedbackSupportPage';
 import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
-
+import LoadingScreen from './components/LoadingScreen';
 import './index.css';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true); 
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); 
+  }, []);
+
   return (
     <>
       <BrowserRouter>
-        <NavBar />
+        {!isLoading && <NavBar />}
         <Routes>
-          <Route path="/" element={<MapPage />} />
+          <Route path="/" element={<LoadingScreen />} />
+          <Route path="/map" element={<MapPage />} />
           <Route path="/routes" element={<RoutesPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
