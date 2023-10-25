@@ -1,0 +1,19 @@
+.alerts-container {
+  @apply bg-lightTone h-screen p-5 text-xl;
+}
+
+.alerts-header {
+  @apply text-2xl font-semibold mb-5;
+}
+
+.alerts-content {
+  @apply overflow-scroll h-3/4;
+}
+
+.alerts-item-wrapper {
+  @apply flex flex-col items-center justify-center space-y-4;
+}
+
+.alerts-item {
+  @apply bg-lightMidTone w-80 p-4 rounded-xl shadow-md space-y-2;
+}
