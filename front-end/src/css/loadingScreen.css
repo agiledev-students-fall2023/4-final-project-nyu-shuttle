@@ -1,0 +1,23 @@
+/* LoadingScreen.css */
+
+.App {
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: #e0cfde;
+  }
+
+  .app-name{
+    margin-top: 0px;
+    font-size: 30px;
+  }
+
+  .loading-gif{
+    margin-top: 10px;
+    width: 90px;
+    height: 90px;
+  }

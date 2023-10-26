@@ -25,7 +25,7 @@ function NavBar() {
             switch(navBarState) { //change the functionalities of each button here
                 case 'Map':
                     overlay.style.left = '-36%'; //shifts the overlay
-                    navigate('/')
+                    navigate('/map')
                     break;
                 case 'Routes':
                     overlay.style.left = '-12%';

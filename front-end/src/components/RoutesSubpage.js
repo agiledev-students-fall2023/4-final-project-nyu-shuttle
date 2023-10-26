@@ -4,16 +4,10 @@ import mapImage from "../images/subpage_map.png";
 import "../css/routesSubpage.css";
 import "../css/basicUI.css"
 
-function RoutesSubpage() {
-  const { location1, location2 } = useParams();
+function RoutesSubpage({ location1, location2 }) {
   const navigate = useNavigate();
 
-  const goBack = () => {
-    navigate("/routes");
-  };
-
   const startNavigation = () => {
-    // Implement your navigation functionality here
     alert("Navigation started!");
   };
 
@@ -25,27 +19,23 @@ function RoutesSubpage() {
 
   return (
     <div className="container">
-      <button className="back-button" onClick={goBack}>
-        Back
-      </button>
-
       <h1>Routes</h1>
 
       <div className="routes-container">
         <img src={mapImage} alt="NYC MAP" />
         <div className="route-info">
         <div className= "route-text">
-        <p class = "text-lg">
+        <p className = "text-lg">
             <strong>{totalTime} min</strong>
             </p>
-          <p class="text-sm">
-            Fastest route, Shuttle {shuttle} scheduled at <strong>{shuttleSchedule}</strong>
+          <p className="text-sm">
+            Shuttle {shuttle} scheduled at <strong>{shuttleSchedule}</strong>
           </p>
-          <p class = "text-sm">
-            Time from start to shuttle: <strong>{timeToShuttle} min</strong>
+          <p className = "text-sm">
+            Time from {location1} to shuttle: <strong>{timeToShuttle} min</strong>
           </p>
-          <p class = "text-sm">
-            Time walking to destination 2:{" "}
+          <p className = "text-sm">
+            Time from shuttle to {location2}:{" "}
             <strong>{timeToDestination2} min</strong>
           </p>
         </div>
