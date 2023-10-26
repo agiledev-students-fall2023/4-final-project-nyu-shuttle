@@ -33,7 +33,7 @@ const LocationDropdown = ({ onLocationChange }) => {
   };
 
   return (
-    <div class = "text-box">
+    <div className = "text-box">
       <input
         type="text"
         placeholder="Enter location"
