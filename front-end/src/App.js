@@ -26,9 +26,10 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        {!isLoading && <NavBar />}
+        {isLoading && <LoadingScreen />} {/* Putting the loading component here so that loading screen appears when refreshing as well */}
+        {!isLoading && <NavBar />}  {/* Hides navbar when loading */}
         <Routes>
-          <Route path="/" element={<LoadingScreen />} />
+          <Route path="/" element={<LoadingScreen />} /> {/*Goes to loading on app boot*/}
           <Route path="/map" element={<MapPage />} />
           <Route path="/routes" element={<RoutesPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
