@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , Fragment } from 'react';
 import '../css/filter.css'
 import { ReactComponent as FilterIcon } from '../images/filter.svg';
 import DropDownArrow from './DropDownArrow.js';
@@ -39,10 +39,12 @@ function Filter(){
                     <DropDownArrow status={isOpen} arrowColor={textColor} />
                     <ul id="dropdown"  style={{display: isOpen ? 'block' : 'none'}}> 
                         {routes.map((route, index) => (
-                            <div className="flex ">
-                                <div className='route-color-bar' style={{backgroundColor:routes_colors[index] }}></div>
-                                <div className="list-item-wrapper" onClick={() => selectRoute(route)}><li key={index}>{route}</li></div>
-                            </div>
+                            <Fragment key={index}>
+                                <div className="flex ">
+                                    <div className='route-color-bar' key={index + 'color'} style={{backgroundColor:routes_colors[index] }}></div>
+                                    <div className="list-item-wrapper" key={index + 'route'} onClick={() => selectRoute(route)}><li>{route}</li></div>
+                                </div>
+                            </Fragment>
                         ))}
                     </ul>
                     
