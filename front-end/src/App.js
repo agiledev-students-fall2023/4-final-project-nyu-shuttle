@@ -12,7 +12,9 @@ import TimeSpreadsheetPage from './components/settings/TimeSpreadsheetPage';
 import FeedbackSupportPage from './components/settings/FeedbackSupportPage';
 import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
 import LoadingScreen from './components/LoadingScreen';
+import TutorialComponent from './components/TutorialComponent';
 import './index.css';
+import './css/tutorialComponent.css'
 
 export const TutorialContext = createContext(); // create context for tutorial that is shared between all pages
 
@@ -20,7 +22,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true); 
   const [firstTime, setFirstTime] = useState(localStorage.getItem('isFirst')); // check if it is the first time the user is using the app
   const [tutorialIndex, setTutorialIndex] = useState(0); // keep track which pages has been clicked on the tutorial
-
+  const [tutorialOn, setTutorialOn] = useState(false); // if tutorial is on
   useEffect(() => {
     localStorage.getItem('isFirst') == 'false' ? setFirstTime('false') : setFirstTime('true'); 
     //get a list of all local storage items, for debugging purposes
@@ -51,6 +53,10 @@ function App() {
 
   }, []);
 
+    useEffect(() => {
+      firstTime == 'true' ? setTutorialOn(true) : setTutorialOn(false);
+  }, [firstTime]);
+
   const devTools = (e) => {
     switch (e.keyCode) {
       case 82: //press r to reset local storage
@@ -61,9 +67,10 @@ function App() {
   };
 
   return (
-    <TutorialContext.Provider value={{tutorialIndex, setTutorialIndex, firstTime, setFirstTime}}> {/* Share the context without passing the prop to each page */  }
+    <TutorialContext.Provider value={{tutorialIndex, setTutorialIndex, firstTime, setFirstTime, tutorialOn, setTutorialOn}}> {/* Share the context without passing the prop to each page */  }
       <div onKeyDown={devTools}>
         <BrowserRouter>
+        {!isLoading && tutorialOn && <TutorialComponent />}
           {isLoading && <LoadingScreen />} {/* Putting the loading component here so that loading screen appears when refreshing as well */}
           {!isLoading && <NavBar />}  {/* Hides navbar when loading */}
           <Routes>

@@ -6,17 +6,18 @@ import { ReactComponent as SettingIcon } from '../images/gears.svg';
 import { useState, useEffect , useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TutorialContext } from '../App';
+import '../css/tutorialComponent.css'
+import TutorialComponent from './TutorialComponent';
 
 function NavBar() {
     const [navBarState, setNavBarState] = useState('Map');
-    const {tutorialIndex, setTutorialIndex, firstTime, setFirstTime} = useContext(TutorialContext); // index of the tutorial page
+    const {tutorialIndex, setTutorialIndex, firstTime, setFirstTime, tutorialOn, setTutorialOn} = useContext(TutorialContext);
     const navigate = useNavigate();
     const handleClick = (iconName) => {
         setNavBarState(iconName);
     }
 
-    useEffect(() => {
-    }, []);
+
 
     useEffect(() => {
         let overlay = document.getElementsByClassName('overlay')[0];
@@ -48,7 +49,7 @@ function NavBar() {
     }, [navBarState]);
 
     return (
-        <>
+        <>  
             <div className="navBar">
                 <div className="backdrop"></div>
                 <div className="overlay"></div>
