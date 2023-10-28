@@ -3,18 +3,22 @@ import { ReactComponent as MapIcon } from '../images/map.svg';
 import { ReactComponent as AlertIcon } from '../images/alert.svg';
 import { ReactComponent as RouteIcon } from '../images/route.svg';
 import { ReactComponent as SettingIcon } from '../images/gears.svg';
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TutorialContext } from '../App';
 
 function NavBar() {
     const [navBarState, setNavBarState] = useState('Map');
+    const {tutorialIndex, setTutorialIndex, firstTime, setFirstTime} = useContext(TutorialContext); // index of the tutorial page
     const navigate = useNavigate();
     const handleClick = (iconName) => {
         setNavBarState(iconName);
     }
 
     useEffect(() => {
-        console.log(navBarState)
+    }, []);
+
+    useEffect(() => {
         let overlay = document.getElementsByClassName('overlay')[0];
         let cur = document.getElementById(navBarState);
         if (cur.classList.contains('inactive')) { // when a inactive icon is clicked
@@ -41,9 +45,6 @@ function NavBar() {
                     break;
             }
         }
-        console.log(cur.classList);
-        console.log(navBarState);
-        
     }, [navBarState]);
 
     return (

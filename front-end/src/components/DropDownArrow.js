@@ -4,7 +4,6 @@ import '../css/filter.css'
 import { useState, useEffect } from 'react';
 
 function DropDownArrow ({status , arrowColor}) {
-    console.log(status)
     const [isOpen, setIsOpen] = useState(status);
     useEffect(() => {
         setIsOpen(status);
