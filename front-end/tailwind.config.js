@@ -18,10 +18,10 @@ module.exports = {
 
         // Dark mode counterparts
         darkMode: {
-          darkTone: '#635985',
-          darkMidTone: '#443C68',
-          lightMidTone: '#393053',
-          lightTone: '#18122B',
+          darkTone: '#18122B',
+          darkMidTone: '#393053',
+          lightMidTone: '#443C68',
+          lightTone: '#635985',
         },
       },
     },

@@ -3,7 +3,7 @@
 }
 
 .dark .settings-container {
-  @apply bg-darkMode-lightTone text-white;
+  @apply bg-darkMode-darkTone text-white;
 }
 
 .settings-header {
@@ -15,7 +15,7 @@
 }
 
 .dark .settings-item-wrapper {
-  @apply divide-darkMode-darkTone text-white;
+  @apply divide-darkMode-lightTone text-white;
 }
 
 .settings-item {
@@ -31,7 +31,7 @@
 }
 
 .dark .button-toggle-part {
-  @apply bg-darkMode-darkTone;
+  @apply bg-darkMode-lightTone;
 }
 
 .privacypolicy-content {
@@ -39,7 +39,7 @@
 }
 
 .dark .privacypolicy-content {
-  @apply bg-darkMode-lightMidTone text-white;
+  @apply bg-darkMode-darkMidTone text-white;
 }
 
 .feedback-item {
@@ -58,7 +58,7 @@
 
 .dark .feedback-dropdown,
 .dark .feedback-textarea {
-  @apply bg-black;
+  @apply bg-darkMode-darkMidTone;
 }
 
 .feedback-dropdown > option {
@@ -74,7 +74,7 @@
 }
 
 .dark .feedback-submit {
-  @apply bg-darkMode-darkTone text-darkMode-lightTone;
+  @apply bg-darkMode-lightTone text-darkMode-darkTone;
 }
 
 .settings-container .routes {
