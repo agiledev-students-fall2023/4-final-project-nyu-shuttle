@@ -19,7 +19,7 @@ function RoutesSubpage({ location1, location2 }) {
 
   return (
     <div className="container">
-      <h1>Routes</h1>
+      <h1>Route</h1>
 
       <div className="routes-container">
         <img src={mapImage} alt="NYC MAP" />

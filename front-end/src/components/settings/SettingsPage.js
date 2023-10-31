@@ -4,7 +4,7 @@ import '../../css/settingsPage.css';
 
 const SettingsPage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const body = document.body;
+  //const body = document.body;
   
   const handleToggle = () => {
     setIsDarkMode(!isDarkMode);
@@ -21,10 +21,6 @@ const SettingsPage = () => {
             <div className={`button-toggle-part ${isDarkMode ? 'translate-x-6' : ''}`}></div>
           </button>
         </div>
-
-        <Link className="settings-item" to="saved-routes">
-          Saved Routes
-        </Link>
 
         <a href="#" className="settings-item">
           Visit Data Source

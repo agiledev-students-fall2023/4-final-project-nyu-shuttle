@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { localStorageSave, localStorageLoad } from '../../utils/localStorageSaveLoad';
+import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
 import SavedRoute from './SavedRoute';
-import '../../css/settingsPage.css';
+import '../css/settingsPage.css';
 
 const SavedRoutesPage = () => {
   const [routes, setRoutes] = useState([]);
@@ -30,8 +30,8 @@ const SavedRoutesPage = () => {
 
   return (
     <div className="settings-container">
-      <Link className="settings-item" to="/settings">
-        &lt; Settings
+      <Link className="settings-item" to="/routes">
+        &lt; Route
       </Link>
       <div>
         <h1 className="settings-header">Saved Routes</h1>
