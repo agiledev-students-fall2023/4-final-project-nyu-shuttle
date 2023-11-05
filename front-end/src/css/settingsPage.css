@@ -2,12 +2,20 @@
   @apply bg-lightTone h-screen p-5 text-xl;
 }
 
+.dark .settings-container {
+  @apply bg-darkMode-darkTone text-white;
+}
+
 .settings-header {
   @apply text-2xl font-semibold mb-5;
 }
 
 .settings-item-wrapper {
   @apply divide-y divide-darkTone overflow-scroll h-3/4;
+}
+
+.dark .settings-item-wrapper {
+  @apply divide-darkMode-lightTone text-white;
 }
 
 .settings-item {
@@ -22,8 +30,16 @@
   @apply bg-darkTone w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out;
 }
 
+.dark .button-toggle-part {
+  @apply bg-darkMode-lightTone;
+}
+
 .privacypolicy-content {
   @apply rounded-lg p-4 bg-lightMidTone max-w-md mx-auto mt-6;
+}
+
+.dark .privacypolicy-content {
+  @apply bg-darkMode-darkMidTone text-white;
 }
 
 .feedback-item {
@@ -40,6 +56,11 @@
   @apply bg-white border rounded p-2;
 }
 
+.dark .feedback-dropdown,
+.dark .feedback-textarea {
+  @apply bg-darkMode-darkMidTone;
+}
+
 .feedback-dropdown > option {
   @apply text-base;
 }
@@ -50,6 +71,10 @@
 
 .feedback-submit {
   @apply bg-darkTone text-lightTone rounded px-6 py-3 mt-4 md:mt-0 md:ml-4 hover:bg-opacity-90 transition-all duration-300 ease-in-out;
+}
+
+.dark .feedback-submit {
+  @apply bg-darkMode-lightTone text-darkMode-darkTone;
 }
 
 .settings-container .routes {

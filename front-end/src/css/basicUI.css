@@ -1,4 +1,8 @@
 /* Classes that are applied to multiple pages are stored here */
-.container{
-    @apply flex flex-col items-center h-screen bg-lightTone;
+.container {
+  @apply flex flex-col items-center h-screen bg-lightTone;
+}
+
+.dark .container {
+  @apply bg-darkMode-darkTone text-white;
 }
