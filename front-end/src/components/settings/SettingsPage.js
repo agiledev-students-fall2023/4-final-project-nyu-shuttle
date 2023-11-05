@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useDarkMode from '../../hooks/darkMode';
 import '../../css/settingsPage.css';
 
 const SettingsPage = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  //const body = document.body;
-  
-  const handleToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    // Add app-wide theme toggle here?
+  const [colorTheme, setTheme] = useDarkMode();
+  const [isDarkMode, setIsDarkMode] = useState(colorTheme === 'dark');
+
+  const toggleDarkTheme = () => {
+    const nextTheme = colorTheme === 'dark' ? 'light' : 'dark';
+    setIsDarkMode(nextTheme === 'dark');
+    setTheme(nextTheme);
   };
 
   return (
     <div className="settings-container">
       <h1 className="settings-header">Settings</h1>
       <div className="settings-item-wrapper">
-        <div onClick={handleToggle} className="settings-item">
+        <div onClick={toggleDarkTheme} className="settings-item">
           <span>Toggle Dark Mode</span>
           <button className={`button-toggle ${isDarkMode ? 'bg-black' : 'bg-gray-400'}`}>
             <div className={`button-toggle-part ${isDarkMode ? 'translate-x-6' : ''}`}></div>
