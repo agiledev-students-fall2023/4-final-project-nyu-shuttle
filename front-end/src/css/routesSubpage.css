@@ -16,7 +16,6 @@ img {
   @apply text-base my-1 ;
 }
 
-
 .route-info {
   display: flex;
   justify-content: space-between; 
