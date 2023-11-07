@@ -3,12 +3,12 @@ import '../css/filter.css'
 import { ReactComponent as FilterIcon } from '../images/filter.svg';
 import DropDownArrow from './DropDownArrow.js';
 
-function Filter(){
+function Filter({onFilterChange}){
     /*the routes are temperarily hard-coded */
     const routes = ['None', 'Route 1', 'Route 2', 'Route 3', 'Route 4', 'Route 5', 'Route 6', 'Route 7', 'Route 8', 'Route 9', 'Route 10'];
     const [isOpen, setIsOpen] = useState(false);
     //randomly route colors
-    const routes_colors = ['#F0E9FF', '#f5429b', '#e04502', '#a1f542', '#162fcc', '#16cc71', '#a142f5', '#cc1631', '#f54278', '#e6cc0e', '#f54278', '#60f542']
+    const routes_colors = ['#F0E9FF', '#f5429b', '#e04502', '#a1f542', '#162fcc', '#16cc71', '#a142f5', '#cc1631', '#A2FF46', '#e6cc0e', '#f54278', '#60f542']
     const [selectedRoutes, setSelectedRoutes] = useState('Filter');
     const [routeColor, setRouteColor] = useState('white');
     const [textColor, setTextColor] = useState('black');
@@ -25,6 +25,7 @@ function Filter(){
         setTextColor( (route!='Filter') ? 'white' : 'black' ); //change text color
         let routeIndex = routes.indexOf(route);
         setRouteColor(routes_colors[routeIndex]);
+        onFilterChange(routeIndex , routes_colors[routeIndex])
     }
 
     return(
