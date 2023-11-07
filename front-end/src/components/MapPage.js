@@ -1,13 +1,22 @@
 import '../css/mapPage.css'
 import mapImage from '../images/subpage_map.png'
 import Filter from './Filter';
+import Map from './Map';
+import { useEffect, useState, useRef } from 'react';
+
 function MapPage() {
+    const [lineSelected, setLineSelected] = useState(null);
+    const [lineColor, setLineColor] = useState(null);
+    const handleFilterChange = (newLineSelected, newLineColor) => {
+        setLineSelected(newLineSelected);
+        setLineColor(newLineColor);
+    }
     return (
         <>
             <div className="map-container">
-                <Filter />
+                <Filter onFilterChange={handleFilterChange}/>
                 <div className="map">
-                    <img src={mapImage} style={{ objectFit: 'cover', width: '100%', height: '100%' }} alt="NYC MAP" />
+                    <Map key={lineSelected} line={lineSelected} lineColor={lineColor} />
                 </div>
             </div>
         </>
