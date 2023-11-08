@@ -1,5 +1,4 @@
 import { React, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import mapImage from "../images/subpage_map.png";
 import "../css/routesSubpage.css";
 import "../css/basicUI.css";
@@ -14,7 +13,7 @@ function RoutesSubpage({ location1, location2 }) {
 
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
-    if (loadedRoutes && loadedRoutes.includes(location1) && loadedRoutes.includes(location2)) {
+    if (loadedRoutes && loadedRoutes.some((route) => route.from === location1 && route.to === location2)) {
       setIsRouteSaved(true);
     } else {
       setIsRouteSaved(false);
@@ -22,7 +21,14 @@ function RoutesSubpage({ location1, location2 }) {
   }, [location1, location2]);
 
   const openSaveDialog = () => {
-    setSaveDialogOpen(true);
+    if (!isRouteSaved) {
+      setSaveDialogOpen(true);
+    } else{
+      setIsRouteSaved(false);
+      const loadedRoutes = localStorageLoad('routes') || [];
+      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1 && route.to !== location2);
+      localStorageSave('routes', updatedRoutes);
+    }
   };
 
   const closeSaveDialog = () => {
@@ -30,32 +36,20 @@ function RoutesSubpage({ location1, location2 }) {
   };
 
   const toggleRouteSaved = (name) => {
-    if (isRouteSaved) {
-      setIsRouteSaved(false);
-      const loadedRoutes = localStorageLoad('routes') || [];
-      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1 && route.to !== location2);
-      localStorageSave('routes', updatedRoutes);
-    } else {
       const loadedRoutes = localStorageLoad('routes') || [];
       const maxId = loadedRoutes.reduce((max, route) => (route._id > max ? route._id : max), 0);
       const newId = maxId + 1;
-
       const newRoute = {
         _id: newId,
         name: name, 
         from: location1,
         to: location2,
       };
-
       loadedRoutes.push(newRoute);
-
       localStorageSave('routes', loadedRoutes);
-
       setIsRouteSaved(true);
-    }
   };
     
-
   const startNavigation = () => {
     alert("Navigation started!");
   };
