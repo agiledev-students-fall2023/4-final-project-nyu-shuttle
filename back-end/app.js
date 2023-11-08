@@ -2,5 +2,13 @@
 const express = require('express'); // CommonJS import style!
 const app = express(); // instantiate an Express object
 // we will put some server logic here later...
-// export the express app we created to make it available to other modules
+
+const url = 'https://nyu.passiogo.com/';
+
+const buses = require('./buses.js');
+
+app.get('/buses', async (req, res) => {
+    const busData = await buses.getBuses();
+});
+
 module.exports = app;

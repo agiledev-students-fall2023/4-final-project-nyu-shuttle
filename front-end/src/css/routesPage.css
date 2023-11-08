@@ -1,5 +1,5 @@
 .route-container {
-  @apply p-2 pl-8 pr-7 pt-4 pb-5 h-screen bg-lightTone flex flex-col;
+  @apply p-2 pl-4 pr-6 pt-4 pb-5 h-screen bg-lightTone flex flex-col;
 }
 
 .location-input {
@@ -15,5 +15,6 @@
 }
 
 .saved-item {
-  @apply  mr-0 mb-2 p-2 flex ml-44 text-lg;
+  @apply  mr-0 mb-1 p-1 flex ml-auto text-lg bg-darkMode-darkMidTone text-white;
 }
+

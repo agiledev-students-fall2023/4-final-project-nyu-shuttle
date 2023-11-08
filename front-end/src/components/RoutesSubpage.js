@@ -1,15 +1,34 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {React, useState} from "react";
+import { useParams, useNavigate} from "react-router-dom";
 import mapImage from "../images/subpage_map.png";
 import "../css/routesSubpage.css";
 import "../css/basicUI.css"
+import SavedIcon from "../images/saved-svg.svg";
+import SaveRouteDialog from "./SaveRouteDialog";
 
 function RoutesSubpage({ location1, location2 }) {
-  const navigate = useNavigate();
+  
+  const [isSaveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [savedRoutes, setSavedRoutes] = useState([]);
+
+  const openSaveDialog = () => {
+    setSaveDialogOpen(true);
+  };
+
+  const closeSaveDialog = () => {
+    setSaveDialogOpen(false);
+  };
+
+  const saveRoute = (route) => {
+    setSavedRoutes([...savedRoutes, route]);
+    closeSaveDialog();
+  }
+
 
   const startNavigation = () => {
     alert("Navigation started!");
   };
+
 
   const shuttle = "X";
   const shuttleSchedule = "HH:MM";
@@ -19,9 +38,12 @@ function RoutesSubpage({ location1, location2 }) {
 
   return (
     <div className="container">
+      <div className="title-container">
       <h1>Route</h1>
-
-      <div className="routes-container">
+      <img src={SavedIcon} alt="Saved Icon" className="saved-icon" 
+      onClick={openSaveDialog}
+      />
+      </div>
         <img src={mapImage} alt="NYC MAP" />
         <div className="route-info">
         <div className= "route-text">
@@ -41,7 +63,9 @@ function RoutesSubpage({ location1, location2 }) {
         </div>
         <button className = "nav-button" onClick={startNavigation}>Start</button>
         </div>
-      </div>
+        {isSaveDialogOpen && (
+        <SaveRouteDialog onClose={closeSaveDialog} onSave={saveRoute} />
+        )}
     </div>
   );
 }

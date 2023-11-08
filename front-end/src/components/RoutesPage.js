@@ -24,7 +24,7 @@ function RoutesPage() {
   return (
     <div className="route-container">
       <Link className="saved-item" to="/saved-routes">
-        &lt; Saved Routes
+        Saved Routes
       </Link>
       <div className="location-input">
         <label>From:</label>
