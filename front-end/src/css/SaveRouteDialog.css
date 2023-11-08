@@ -1,0 +1,50 @@
+.save-route-dialog{
+    @apply  fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50; 
+}
+
+.pop-up{
+    @apply absolute top-1/4 bg-white p-7 rounded-lg shadow-lg;
+}
+.route-name-input{
+    @apply w-full p-2 border border-gray-300 rounded
+}
+
+.pop-up h2{
+    @apply text-xl font-bold mb-4 text-center;
+}
+
+.save-route-dialog-buttons{
+    @apply mt-4 flex justify-between;
+}
+
+.close-button{
+    @apply  w-full px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-400;
+}
+
+.save-button{
+    @apply w-full ml-2 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-400;
+}
+
+
+
+
+
+
+
+
+
+/*
+<div className="save-route-dialog">
+<div className="pop-up">
+  <h2>Save Route</h2>
+  <input
+    type="text"
+    placeholder="Enter route name:"
+    value={routeName}
+    onChange={(e) => setRouteName(e.target.value)}
+  />
+  <button className= "save-button" onClick={handleSave}>Save</button>
+  <button className= "close-button" onClick={onClose}>Cancel</button>
+</div>
+</div>
+*/

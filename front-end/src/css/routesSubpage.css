@@ -17,7 +17,7 @@ img {
 }
 
 .saved-icon {
-  @apply w-20 h-20 mb-0;
+  @apply w-16 h-16 mb-0 grayscale-0;
 }
 
 .route-info {
