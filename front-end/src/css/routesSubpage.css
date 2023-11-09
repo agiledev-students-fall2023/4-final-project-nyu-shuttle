@@ -1,8 +1,7 @@
 /* routesSubpage.css */
 
 .routes-subpage-container{
-  @apply  h-screen bg-lightTone w-full overflow-y-auto;
-
+  @apply  h-screen bg-lightTone w-full overflow-y-auto flex flex-col items-center;
 }
 
 img {
@@ -24,7 +23,6 @@ img {
 .route-info {
   display: flex;
   flex-direction: row;
-  
   align-items: center;
   padding: 0.5rem;
   margin: 10px;

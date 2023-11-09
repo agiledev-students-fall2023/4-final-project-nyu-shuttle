@@ -1,6 +1,11 @@
-#route-map {
-    width: 80%;
+.route_map {
+    width: 85%;
+    height: 50%;
     border-radius: 20px;
     overflow: hidden;
     filter: grayscale(20%);
+  }
+
+  .route_map{
+    @apply bg-lightTone opacity-60 border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
   }

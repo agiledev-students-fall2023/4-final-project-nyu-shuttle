@@ -5,8 +5,8 @@ function RouteMap({ location1, location2 }) {
   const mapRef = useRef(null);
 
   const mapOptions = {
-    disableDefaultUI: true, // This disables the default UI including mapTypeControl
-    zoomControl: true, // Re-enables zoom control
+    disableDefaultUI: true, 
+    zoomControl: true, 
   };
 
   useEffect(() => {
@@ -15,13 +15,13 @@ function RouteMap({ location1, location2 }) {
     const map = new google.maps.Map(mapRef.current, {
         options: mapOptions,
         center: new window.google.maps.LatLng(37.7699298, -122.4469157),
-        zoom: 10,
+        zoom: 13,
     });
 
     const geocodeLocation = (locationName) => {
       geocoder.geocode({ address: locationName }, (results, status) => {
         if (status === google.maps.GeocoderStatus.OK && results[0]) {
-          const location = results[0].geometry.location;
+          const location = results[0].geometry.location
           new google.maps.Marker({
             position: location,
             map,
@@ -35,10 +35,10 @@ function RouteMap({ location1, location2 }) {
         }
       });
     };
-    geocodeLocation(location1);
-    geocodeLocation(location2);
+    geocodeLocation(location1)
+    geocodeLocation(location2)
   }, [location1, location2]);
-  return <div ref={mapRef} id="route-map" style={{ width: "100%", height: "300px" }}></div>;
+  return <div ref={mapRef} className="route_map"></div>;
 }
 
 export default RouteMap;

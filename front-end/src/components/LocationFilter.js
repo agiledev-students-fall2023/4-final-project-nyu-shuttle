@@ -11,14 +11,20 @@ const LocationDropdown = ({ onLocationChange }) => {
     const placesService = new google.maps.places.PlacesService(
       document.createElement("div")
     );
-  
+
     if (inputValue.trim() !== "" && inputValue !== selectedLocation) {
       const request = {
-        query: inputValue,
+        query: inputValue + " New York City",
       };
       placesService.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          const places = results.map((result) => result.name);
+          const nycPlaces = results.filter((result) =>
+            result.formatted_address.includes("New York, NY")
+          );
+          const places = nycPlaces.map((result) => ({
+            name: result.name,
+            address: result.formatted_address,
+          }));
           setOptions(places);
         } else {
           console.error("Places API request failed with status:", status);
@@ -26,16 +32,15 @@ const LocationDropdown = ({ onLocationChange }) => {
       });
     }
   }, [inputValue, selectedLocation]);
-  
 
   const handleInputChange = (input) => {
     setInputValue(input);
   };
 
   const handleLocationSelect = (location) => {
-    setSelectedLocation(location);
-    setInputValue(location);
-    onLocationChange(location);
+    setSelectedLocation(location.name);
+    setInputValue(location.name); 
+    onLocationChange(location.name); 
     setOptions([]);
   };
 
@@ -49,14 +54,14 @@ const LocationDropdown = ({ onLocationChange }) => {
       />
       <div className="dropdown">
         {options.length > 0 && (
-          <ul className="options-list" >
+          <ul className="options-list">
             {options.map((location, index) => (
               <li
                 className="options-expanded"
                 key={index}
                 onClick={() => handleLocationSelect(location)}
               >
-                {location}
+                {location.name} - {location.address}
               </li>
             ))}
           </ul>

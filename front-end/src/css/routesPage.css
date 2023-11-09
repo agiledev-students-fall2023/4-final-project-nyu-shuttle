@@ -1,5 +1,5 @@
 .route-container {
-  @apply p-2 pl-4 pr-6 pt-4 pb-5 h-screen bg-lightTone flex flex-col;
+  @apply p-2 pl-4 pr-6 pt-4 pb-5 h-screen bg-lightTone flex flex-col ;
 }
 
 .location-input {

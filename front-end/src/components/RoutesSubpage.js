@@ -1,5 +1,4 @@
 import { React, useState, useEffect } from "react";
-import mapImage from "../images/subpage_map.png";
 import "../css/routesSubpage.css";
 import "../css/basicUI.css";
 import HeartIcon from "../images/heart-svg.svg";
