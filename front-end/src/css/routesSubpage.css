@@ -1,28 +1,32 @@
 /* routesSubpage.css */
 
-.back-button {
-  @apply bg-gray-300 py-2 px-2 absolute top-2 left-2 rounded;
-}
-
-h1 {
-  @apply text-2xl mt-4 text-center pt-4;
+.routes-subpage-container{
+  @apply  h-screen bg-lightTone w-full overflow-y-auto flex flex-col items-center;
 }
 
 img {
-  @apply rounded-3xl p-4; 
+  @apply rounded-3xl p-4 m-0; 
 }
 
-.routes-container  {
-  @apply text-base my-1 ;
+.title-container {
+  @apply flex justify-between items-center w-full; 
 }
 
+.title-container h1 {
+  @apply text-2xl ml-36 font-bold;
+}
+
+.saved-icon {
+  @apply w-16 h-16 mb-0 grayscale-0;
+}
 
 .route-info {
   display: flex;
-  justify-content: space-between; 
+  flex-direction: row;
   align-items: center;
-  padding: 0.4rem;
-  margin: 15px;
+  padding: 0.5rem;
+  margin: 10px;
+  margin-top: 20px;
   background-color: #fff;
   border: 0.5px solid #4e4a4a;
   border-radius: 8px;

@@ -24,10 +24,6 @@ const SettingsPage = () => {
           </button>
         </div>
 
-        <Link className="settings-item" to="saved-routes">
-          Saved Routes
-        </Link>
-
         <a href="#" className="settings-item">
           Visit Data Source
         </a>

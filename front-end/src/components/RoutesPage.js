@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import LocationFilter from "./LocationFilter";
 import "../css/routesPage.css";
 import RoutesSubpage from "./RoutesSubpage";
@@ -9,20 +9,23 @@ function RoutesPage() {
   const [toLocation, setToLocation] = useState("");
   const [showSubpage, setShowSubpage] = useState(false);
 
-  const checkAndShowSubpage = () => {
+  const checkAndShowSubpage = useCallback(() => {
     if (fromLocation && toLocation) {
       setShowSubpage(true);
     } else {
       setShowSubpage(false);
     }
-  };
-
-  React.useEffect(() => {
-    checkAndShowSubpage();
   }, [fromLocation, toLocation]);
+
+  useEffect(() => {
+    checkAndShowSubpage();
+  }, [checkAndShowSubpage]);
 
   return (
     <div className="route-container">
+      <Link className="saved-item" to="/saved-routes">
+        Saved Routes
+      </Link>
       <div className="location-input">
         <label>From:</label>
         <LocationFilter
@@ -41,7 +44,9 @@ function RoutesPage() {
         />
       </div>
 
-      {showSubpage && <RoutesSubpage location1={fromLocation} location2={toLocation} />}
+      {showSubpage && (
+        <RoutesSubpage location1={fromLocation} location2={toLocation} />
+      )}
     </div>
   );
 }

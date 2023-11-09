@@ -7,7 +7,7 @@ import RoutesPage from './components/RoutesPage';
 import RoutesSubpage from './components/RoutesSubpage';
 import AlertsPage from './components/AlertsPage';
 import SettingsPage from './components/settings/SettingsPage';
-import SavedRoutesPage from './components/settings/SavedRoutesPage';
+import SavedRoutesPage from './components/SavedRoutesPage';
 import TimeSpreadsheetPage from './components/settings/TimeSpreadsheetPage';
 import FeedbackSupportPage from './components/settings/FeedbackSupportPage';
 import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
@@ -82,8 +82,8 @@ function App() {
             <Route path="/map" element={<MapPage />} />
             <Route path="/routes" element={<RoutesPage />} />
             <Route path="/alerts" element={<AlertsPage />} />
+            <Route path="/saved-routes" element={<SavedRoutesPage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/settings/saved-routes" element={<SavedRoutesPage />} />
             <Route path="/settings/view-schedule" element={<TimeSpreadsheetPage />} />
             <Route path="/settings/feedback-support" element={<FeedbackSupportPage />} />
             <Route path="/settings/privacypolicy" element={<PrivacyPolicyPage />} />
