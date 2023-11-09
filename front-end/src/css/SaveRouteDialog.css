@@ -3,7 +3,7 @@
 }
 
 .pop-up{
-    @apply absolute top-1/4 bg-white p-7 rounded-lg shadow-lg;
+    @apply absolute top-1/4 bg-white p-5 rounded-lg shadow-lg;
 }
 .route-name-input{
     @apply w-full p-2 border border-gray-300 rounded
@@ -24,6 +24,8 @@
 .save-button{
     @apply w-full ml-2 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-400;
 }
+
+
 
 
 

@@ -23,11 +23,11 @@ function RoutesSubpage({ location1, location2 }) {
   const openSaveDialog = () => {
     if (!isRouteSaved) {
       setSaveDialogOpen(true);
-    } else{
-      setIsRouteSaved(false);
+    } else {
       const loadedRoutes = localStorageLoad('routes') || [];
-      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1 && route.to !== location2);
+      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1 || route.to !== location2);
       localStorageSave('routes', updatedRoutes);
+      setIsRouteSaved(false);
     }
   };
 

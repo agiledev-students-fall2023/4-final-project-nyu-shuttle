@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import '../css/settingsPage.css';
+import '../css/savedRoutes.css';
 
 const SavedRoute = ({ savedRoute }) => {
   return (

@@ -15,6 +15,6 @@
 }
 
 .saved-item {
-  @apply  mr-0 mb-1 p-1 flex ml-auto text-lg bg-darkMode-darkMidTone text-white;
+  @apply  mr-0 mb-1 p-1 flex ml-auto text-lg bg-darkMode-darkMidTone text-white rounded-md;
 }
 

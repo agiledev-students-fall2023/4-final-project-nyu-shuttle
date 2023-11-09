@@ -5,8 +5,12 @@ function SaveRouteDialog({ onClose, onSave}) {
   const [routeName, setRouteName] = useState("");
 
   const handleSave = () => {
-    onSave(routeName);
-    onClose();
+     if (routeName.trim() !== "") {
+      onSave(routeName);
+      onClose();
+    } else {
+      alert("Route name cannot be empty");
+    }
   };
 
   return (
@@ -19,6 +23,7 @@ function SaveRouteDialog({ onClose, onSave}) {
         value={routeName}
         className= "route-name-input"
         onChange={(e) => setRouteName(e.target.value)}
+        required
       />
       <div className="save-route-dialog-buttons">
       <button className= "close-button" onClick={onClose}>Cancel</button>
