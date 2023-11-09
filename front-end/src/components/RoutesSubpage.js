@@ -5,6 +5,7 @@ import "../css/basicUI.css";
 import HeartIcon from "../images/heart-svg.svg";
 import HeartIconLoaded from "../images/heart-svg-loaded.svg";
 import SaveRouteDialog from "./SaveRouteDialog";
+import RouteMap from "./RouteMap";
 import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
 
 function RoutesSubpage({ location1, location2 }) {
@@ -61,7 +62,7 @@ function RoutesSubpage({ location1, location2 }) {
   const timeToDestination2 = "YY";
 
   return (
-    <div className="container">
+    <div className="routes-subpage-container">
       <div className="title-container">
         <h1>Route</h1>
         <img
@@ -71,7 +72,7 @@ function RoutesSubpage({ location1, location2 }) {
           onClick={openSaveDialog}
         />
       </div>
-      <img src={mapImage} alt="NYC MAP" />
+      <RouteMap location1={location1} location2={location2} />
       <div className="route-info">
         <div className="route-text">
           <p className="text-lg">
@@ -81,11 +82,11 @@ function RoutesSubpage({ location1, location2 }) {
             Shuttle {shuttle} scheduled at <strong>{shuttleSchedule}</strong>
           </p>
           <p className="text-sm">
-            Time from {location1} to shuttle:{" "}
+            {location1} to shuttle:{" "}
             <strong>{timeToShuttle} min</strong>
           </p>
           <p className="text-sm">
-            Time from shuttle to {location2}:{" "}
+            Shuttle to {location2}:{" "}
             <strong>{timeToDestination2} min</strong>
           </p>
         </div>

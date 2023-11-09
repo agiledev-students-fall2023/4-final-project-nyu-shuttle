@@ -1,0 +1,6 @@
+#route-map {
+    width: 80%;
+    border-radius: 20px;
+    overflow: hidden;
+    filter: grayscale(20%);
+  }
