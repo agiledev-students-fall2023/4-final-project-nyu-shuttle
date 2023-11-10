@@ -10,6 +10,10 @@
     overflow: hidden;
 }
 
+.dark .navBar{
+    @apply bg-darkMode-darkTone;
+}
+
 .active{
     @apply flex flex-col flex-1 scale-105 z-10 h-14 mx-1 w-20 text-sm items-center justify-center text-lightTone;
 
@@ -25,6 +29,10 @@
 
 .inactive svg {
     @apply fill-black
+}
+
+.dark .inactive svg{
+    @apply fill-darkMode-lightTone;
 }
 
 
@@ -47,6 +55,11 @@ I don't know how to implement this using tailwind*/
     */
     clip-path: polygon(20% 0%, 30.00% 0.00%, 32.67% 0.89%, 35.33% 6.24%, 38.00% 19.74%, 40.67% 39.06%, 43.33% 56.24%, 46.00% 65.47%, 48.67% 68.00%, 51.33% 68.00%, 54.00% 65.47%, 56.67% 56.24%, 59.33% 39.06%, 62.00% 19.74%, 64.67% 6.24%, 67.33% 0.89%, 70.00% 0.00%, 80% 0%);}
 
+
+.dark .overlay{
+    @apply bg-darkMode-lightTone;
+}
+
 .backdrop{
     position: absolute;
     top:10px;
@@ -54,3 +67,8 @@ I don't know how to implement this using tailwind*/
     background-color: #57078C;
     height: 11px;
 }
+
+.dark .backdrop{
+    @apply bg-darkMode-lightTone
+}
+

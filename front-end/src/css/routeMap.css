@@ -6,6 +6,10 @@
     filter: grayscale(20%);
   }
 
-  .route_map{
+.route_map{
     @apply bg-lightTone opacity-60 border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
-  }
+}
+
+.dark .rooute_map{
+    @apply bg-darkMode-darkTone;
+}
