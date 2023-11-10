@@ -21,11 +21,9 @@ function BusTrackerWebSocket() {
   };
 
   this.subscribeToBuses = () => {
-    console.log('subscribe ws...');
     this.unsubscribe();
     const userIds = this.wsUserIds;
     const busIds = this.collectBusIds(); // example: [5534, 5533, 4655, 4657, 4651, 4653, 4652, 3692, 3693, 10733, 10732, 5608, 9918]
-    console.log('bus', busIds, this.buses);
 
     if (busIds.length > 0) {
       const subscriptionMessage = this.createSubscriptionMessage(userIds, busIds);
@@ -111,6 +109,3 @@ function BusTrackerWebSocket() {
 }
 
 export default BusTrackerWebSocket;
-
-// const busTrackerWebSocket = new BusTrackerWebSocket(buses);
-// busTrackerWebSocket.start();

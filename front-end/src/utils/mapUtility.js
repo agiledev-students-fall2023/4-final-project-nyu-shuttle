@@ -27,3 +27,31 @@ export function generateTwoUniqueRandomInts(min, max) {
 
   return [firstInt, secondInt];
 }
+
+export function getSimplifiedStyle() {
+  return new window.google.maps.StyledMapType(
+    [
+      {
+        featureType: 'all',
+        stylers: [{ saturation: -50 }, { weight: 0.1 }],
+      },
+      {
+        elementType: 'labels',
+        stylers: [{ lightness: 25 }],
+      },
+      {
+        featureType: 'poi.business',
+        stylers: [{ visibility: 'off' }],
+      },
+      {
+        featureType: 'transit.station',
+        stylers: [
+          {
+            visibility: 'off',
+          },
+        ],
+      },
+    ],
+    { name: 'Simplified' }
+  );
+}

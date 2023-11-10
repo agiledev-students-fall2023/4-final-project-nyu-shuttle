@@ -1,9 +1,9 @@
 import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
 import BusTrackerWebSocket from '../utils/busTrackerWebSocket';
-import { getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
+import { getCoordinates, generateTwoUniqueRandomInts, getSimplifiedStyle } from '../utils/mapUtility';
 
-function Map({ line }) {
+function Map({ line, lineColor }) {
   const API_KEY = 'API_KEY';
   const googleMapRef = useRef(null);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
@@ -19,6 +19,7 @@ function Map({ line }) {
   const mapOptions = {
     disableDefaultUI: true, // This disables the default UI including mapTypeControl
     zoomControl: true, // Re-enables zoom control
+    streetViewControl: false,
   };
 
   // Load Google Maps API
@@ -40,10 +41,11 @@ function Map({ line }) {
   useEffect(() => {
     if (isApiLoaded) {
       const googleMap = new window.google.maps.Map(googleMapRef.current, {
-        center: new window.google.maps.LatLng(37.7699298, -122.4469157),
-        zoom: 8,
+        center: new window.google.maps.LatLng(40.716503, -73.976077),
+        zoom: 13,
         options: mapOptions,
       });
+      googleMap.mapTypes.set('simplified_map', getSimplifiedStyle());
       setMap(googleMap);
 
       window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
@@ -62,7 +64,7 @@ function Map({ line }) {
   //update map when line changes
   useEffect(() => {
     //wait for map to return
-    if (!startLoc || !endLoc || !map || !line || !line.lineColor) return;
+    if (!startLoc || !endLoc || !map || !line || !lineColor) return;
     console.log('----------------------------');
     console.log('line changed');
     console.log(line);
@@ -73,7 +75,7 @@ function Map({ line }) {
     let directionsService = new window.google.maps.DirectionsService();
     let directionsRenderer = new window.google.maps.DirectionsRenderer({
       polylineOptions: new window.google.maps.Polyline({
-        strokeColor: line.lineColor,
+        strokeColor: lineColor,
         strokeOpacity: 0.8,
         strokeWeight: 5,
       }),
@@ -105,14 +107,14 @@ function Map({ line }) {
 
   const fetchBusData = async () => {
     try {
-      console.log('fetching bus data');
+      // console.log('fetching bus data');
       const response = await fetch('/buses');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log('response ok');
+      // console.log('response ok');
       const data = await response.json();
-      console.log('bus data fetched');
+      console.log('Initial bus data fetched');
       setBusData(data);
     } catch (error) {
       console.log('error fetching bus data', error);
@@ -162,8 +164,6 @@ function Map({ line }) {
           markerRef.current[bus] = busMarker;
         }
       });
-    } else {
-      console.log('bus data or map not available');
     }
   };
 
