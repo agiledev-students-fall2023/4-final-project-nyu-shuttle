@@ -43,14 +43,6 @@ export function getSimplifiedStyle() {
         featureType: 'poi.business',
         stylers: [{ visibility: 'off' }],
       },
-      {
-        featureType: 'transit.station',
-        stylers: [
-          {
-            visibility: 'off',
-          },
-        ],
-      },
     ],
     { name: 'Simplified' }
   );
