@@ -24,7 +24,7 @@ function Map({ line, lineColor }) {
       window.initMap = initMap;
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap&libraries=geometry`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap&libraries=geometry,places`;
       script.async = true;
       document.head.appendChild(script);
     } else {
