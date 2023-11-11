@@ -12,6 +12,32 @@ const nycCoordinates = [
   // ... Add more as needed
 ];
 
+const MAP_OPTIONS = {
+  disableDefaultUI: true, // This disables the default UI including mapTypeControl
+  zoomControl: true, // Re-enables zoom control
+  streetViewControl: false,
+  clickableIcons: false,
+};
+
+const SIMPLE_MAP = [
+  {
+    featureType: 'all',
+    stylers: [{ saturation: -20 }],
+  },
+  {
+    elementType: 'labels',
+    stylers: [{ lightness: 25 }],
+  },
+  {
+    featureType: 'poi',
+    stylers: [{ visibility: 'off' }],
+  },
+];
+
+export function getMapOptions() {
+  return MAP_OPTIONS;
+}
+
 export function getCoordinates() {
   return nycCoordinates;
 }
@@ -28,22 +54,6 @@ export function generateTwoUniqueRandomInts(min, max) {
   return [firstInt, secondInt];
 }
 
-export function getSimplifiedStyle() {
-  return new window.google.maps.StyledMapType(
-    [
-      {
-        featureType: 'all',
-        stylers: [{ saturation: -50 }, { weight: 0.1 }],
-      },
-      {
-        elementType: 'labels',
-        stylers: [{ lightness: 25 }],
-      },
-      {
-        featureType: 'poi.business',
-        stylers: [{ visibility: 'off' }],
-      },
-    ],
-    { name: 'Simplified' }
-  );
+export function simpifyView(map) {
+  map.setOptions({ styles: SIMPLE_MAP });
 }

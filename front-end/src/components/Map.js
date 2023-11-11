@@ -1,7 +1,7 @@
 import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
 import RealTimeDataWebSocket from '../utils/websocket';
-import { getCoordinates, generateTwoUniqueRandomInts, getSimplifiedStyle } from '../utils/mapUtility';
+import { getCoordinates, generateTwoUniqueRandomInts, simpifyView, getMapOptions } from '../utils/mapUtility';
 import { updateTransportMarkers } from '../utils/transportMarker';
 
 function Map({ line, lineColor }) {
@@ -17,13 +17,6 @@ function Map({ line, lineColor }) {
   const [startLoc, setStartLoc] = useState(nycCoordinates[randomIntOne]);
   const [endLoc, setEndLoc] = useState(nycCoordinates[randomIntTwo]);
 
-  const mapOptions = {
-    disableDefaultUI: true, // This disables the default UI including mapTypeControl
-    zoomControl: true, // Re-enables zoom control
-    streetViewControl: false,
-    clickableIcons: false,
-  };
-
   // Load Google Maps API
   useEffect(() => {
     if (!window.google || !window.google.maps) {
@@ -31,7 +24,7 @@ function Map({ line, lineColor }) {
       window.initMap = initMap;
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap&libraries=geometry`;
       script.async = true;
       document.head.appendChild(script);
     } else {
@@ -45,9 +38,9 @@ function Map({ line, lineColor }) {
       const googleMap = new window.google.maps.Map(googleMapRef.current, {
         center: new window.google.maps.LatLng(40.716503, -73.976077),
         zoom: 13,
-        options: mapOptions,
+        options: getMapOptions(),
       });
-      googleMap.mapTypes.set('simplified_map', getSimplifiedStyle());
+      simpifyView(googleMap);
       setMap(googleMap);
 
       window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
