@@ -2,6 +2,7 @@ import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
 import RealTimeDataWebSocket from '../utils/websocket';
 import { getCoordinates, generateTwoUniqueRandomInts, getSimplifiedStyle } from '../utils/mapUtility';
+import { updateTransportMarkers } from '../utils/transportMarker';
 
 function Map({ line, lineColor }) {
   const API_KEY = 'API_KEY_HERE';
@@ -103,7 +104,7 @@ function Map({ line, lineColor }) {
       ws.setup(transportData, setTransportData);
       ws.start();
     }
-    processTransportData(transportData, map);
+    updateTransportMarkers(transportData, markerRef, map);
   }, [transportData, map]);
 
   const fetchTransportData = async () => {
@@ -120,51 +121,6 @@ function Map({ line, lineColor }) {
     } catch (error) {
       console.log('error fetching transport data', error);
       // Other error handling? message?
-    }
-  };
-
-  const processTransportData = (transportData, map) => {
-    if (transportData && map) {
-      // Remove old markers if they are no longer in the new data
-      for (const transportId in markerRef.current) {
-        if (!transportData.hasOwnProperty(transportId)) {
-          markerRef.current[transportId].setMap(null);
-          delete markerRef.current[transportId];
-        }
-      }
-
-      Object.keys(transportData).forEach((transport) => {
-        let lat = parseFloat(transportData[transport][0].latitude);
-        let lng = parseFloat(transportData[transport][0].longitude);
-        const position = new window.google.maps.LatLng(lat, lng);
-
-        if (markerRef.current[transport]) {
-          // Update the position of the existing marker
-          markerRef.current[transport].setPosition(position);
-        } else {
-          // Create a new marker
-          let transportMarker = new window.google.maps.Marker({
-            position,
-            map,
-            title: String(transportData[transport][0].busId),
-            icon: {
-              url: 'busIcon.png',
-              scaledSize: new window.google.maps.Size(30, 30),
-            },
-          });
-
-          let infowindow = new window.google.maps.InfoWindow({
-            content: `<div><strong>No.${transportData[transport][0].busId}</strong><br>Line: ${transportData[transport][0].bus}</div>`,
-          });
-
-          transportMarker.addListener('click', () => {
-            infowindow.open(map, transportMarker);
-          });
-
-          // Store the marker
-          markerRef.current[transport] = transportMarker;
-        }
-      });
     }
   };
 
