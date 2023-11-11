@@ -84,8 +84,7 @@ function RealTimeDataWebSocket() {
               ...transport,
               latitude: result.latitude,
               longitude: result.longitude,
-              calculatedCourse: 0,
-              course: result.course,
+              calculatedCourse: result.course,
               paxLoad: result.paxLoad,
             };
             break;
@@ -93,7 +92,6 @@ function RealTimeDataWebSocket() {
         }
       }
     }
-
     this.setTransports(updatedTransports);
   };
 
