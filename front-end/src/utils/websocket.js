@@ -84,7 +84,7 @@ function RealTimeDataWebSocket() {
               ...transport,
               latitude: result.latitude,
               longitude: result.longitude,
-              calculatedCourse: result.course,
+              calculatedCourse: result.course, // direction in degrees to indicate where the bus is headed?
               paxLoad: result.paxLoad,
             };
             break;
