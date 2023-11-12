@@ -1,16 +1,17 @@
 import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
 import RealTimeDataWebSocket from '../utils/websocket';
-import { getCoordinates, generateTwoUniqueRandomInts, simpifyView, getMapOptions } from '../utils/mapUtility';
+import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
 import { updateTransportMarkers } from '../utils/transportMarker';
 
 function Map({ line, lineColor }) {
-  const API_KEY = 'API_KEY_HERE';
+  // const API_KEY = 'AIzaSyCb2Q1MDa8EOFuO41mM24f75jReHBTdfIA';
   const googleMapRef = useRef(null);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [map, setMap] = useState(null);
   const [ws, setWebSocket] = useState(null);
   const [transportData, setTransportData] = useState(null);
-  const [map, setMap] = useState(null);
   const markerRef = useRef({});
   const [randomIntOne, randomIntTwo] = generateTwoUniqueRandomInts(0, 9);
   const nycCoordinates = getCoordinates();
@@ -19,33 +20,17 @@ function Map({ line, lineColor }) {
 
   // Load Google Maps API
   useEffect(() => {
-    if (!window.google || !window.google.maps) {
-      const initMap = () => setIsApiLoaded(true);
-      window.initMap = initMap;
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap&libraries=geometry,places`;
-      script.async = true;
-      document.head.appendChild(script);
-    } else {
-      setIsApiLoaded(true); // If Google Maps API is already present
-    }
+    loadGoogleMapsAPI(setIsApiLoaded);
   }, []);
 
   // Initialize map after Google Maps API has loaded
   useEffect(() => {
     if (isApiLoaded) {
-      const googleMap = new window.google.maps.Map(googleMapRef.current, {
-        center: new window.google.maps.LatLng(40.716503, -73.976077),
-        zoom: 13,
-        options: getMapOptions(),
-      });
-      simpifyView(googleMap);
-      setMap(googleMap);
+      if (window.gmapAPICallback) {
+        delete window.gmapAPICallback;
+      }
 
-      window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
-        fetchTransportData(googleMap);
-      });
+      initializeMap(googleMapRef, setIsMapLoaded, setMap);
 
       const ws = new RealTimeDataWebSocket();
       setWebSocket(ws);
@@ -55,6 +40,22 @@ function Map({ line, lineColor }) {
       };
     }
   }, [isApiLoaded]);
+
+  // Fetch transport data when the map is ready
+  useEffect(() => {
+    if (isMapLoaded) {
+      fetchTransportData(map);
+    }
+  }, [isMapLoaded]);
+
+  // Set up websocket after transportdata is fetched
+  useEffect(() => {
+    if (ws && transportData) {
+      ws.setup(transportData, setTransportData);
+      ws.start();
+    }
+    updateTransportMarkers(transportData, markerRef, map);
+  }, [transportData]);
 
   //update map when line changes
   useEffect(() => {
@@ -91,14 +92,6 @@ function Map({ line, lineColor }) {
       }
     });
   }, [map, line, startLoc, endLoc]);
-
-  useEffect(() => {
-    if (ws && transportData) {
-      ws.setup(transportData, setTransportData);
-      ws.start();
-    }
-    updateTransportMarkers(transportData, markerRef, map);
-  }, [transportData, map]);
 
   const fetchTransportData = async () => {
     try {

@@ -34,8 +34,37 @@ const SIMPLE_MAP = [
   },
 ];
 
-export function getMapOptions() {
-  return MAP_OPTIONS;
+const API_BASE = 'https://maps.googleapis.com/maps/api/js';
+const API_KEY = 'API_KEY_HERE';
+const API_LIBRARIES = ['geometry', 'places'];
+const CALLBACK_NAME = 'gmapAPICallback';
+const POS_DEFAULT = [40.716503, -73.976077];
+
+export function loadGoogleMapsAPI(callback) {
+  if (!window.google || !window.google.maps) {
+    window.gmapAPICallback = () => callback(true);
+
+    const script = document.createElement('script');
+    script.src = API_BASE + `?key=${API_KEY}&libraries=${API_LIBRARIES.join(',')}&callback=${CALLBACK_NAME}`;
+    script.async = true;
+    document.head.appendChild(script);
+  } else {
+    callback(true);
+  }
+}
+
+export function initializeMap(mapRef, setIsMapLoaded, setMap) {
+  const googleMap = new window.google.maps.Map(mapRef.current, {
+    center: new window.google.maps.LatLng(...POS_DEFAULT),
+    zoom: 13,
+    styles: SIMPLE_MAP,
+    options: MAP_OPTIONS,
+  });
+  setMap(googleMap);
+
+  window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
+    setIsMapLoaded(true);
+  });
 }
 
 export function getCoordinates() {
@@ -52,8 +81,4 @@ export function generateTwoUniqueRandomInts(min, max) {
   }
 
   return [firstInt, secondInt];
-}
-
-export function simpifyView(map) {
-  map.setOptions({ styles: SIMPLE_MAP });
 }
