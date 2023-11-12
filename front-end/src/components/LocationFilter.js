@@ -1,35 +1,40 @@
-import React, { useState, useEffect } from "react";
-import "../css/locationFilter.css";
+import React, { useState, useEffect } from 'react';
+import { loadGoogleMapsAPI } from '../utils/mapUtility';
+import '../css/locationFilter.css';
 
 const LocationDropdown = ({ onLocationChange }) => {
-  const [inputValue, setInputValue] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [isApiLoaded, setIsApiLoaded] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
   const [options, setOptions] = useState([]);
 
+  // Load Google Maps API
   useEffect(() => {
-    const google = window.google;
-    const placesService = new google.maps.places.PlacesService(
-      document.createElement("div")
-    );
+    loadGoogleMapsAPI(setIsApiLoaded);
+  }, []);
 
-    if (inputValue.trim() !== "" && inputValue !== selectedLocation) {
-      const request = {
-        query: inputValue + " New York City",
-      };
-      placesService.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          const nycPlaces = results.filter((result) =>
-            result.formatted_address.includes("New York, NY")
-          );
-          const places = nycPlaces.map((result) => ({
-            name: result.name,
-            address: result.formatted_address,
-          }));
-          setOptions(places);
-        } else {
-          console.error("Places API request failed with status:", status);
-        }
-      });
+  useEffect(() => {
+    if (isApiLoaded) {
+      const google = window.google;
+      const placesService = new google.maps.places.PlacesService(document.createElement('div'));
+
+      if (inputValue.trim() !== '' && inputValue !== selectedLocation) {
+        const request = {
+          query: inputValue + ' New York City',
+        };
+        placesService.textSearch(request, (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            const nycPlaces = results.filter((result) => result.formatted_address.includes('New York, NY'));
+            const places = nycPlaces.map((result) => ({
+              name: result.name,
+              address: result.formatted_address,
+            }));
+            setOptions(places);
+          } else {
+            console.error('Places API request failed with status:', status);
+          }
+        });
+      }
     }
   }, [inputValue, selectedLocation]);
 
@@ -39,8 +44,8 @@ const LocationDropdown = ({ onLocationChange }) => {
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location.name);
-    setInputValue(location.name); 
-    onLocationChange(location.name); 
+    setInputValue(location.name);
+    onLocationChange(location.name);
     setOptions([]);
   };
 
@@ -56,11 +61,7 @@ const LocationDropdown = ({ onLocationChange }) => {
         {options.length > 0 && (
           <ul className="options-list">
             {options.map((location, index) => (
-              <li
-                className="options-expanded"
-                key={index}
-                onClick={() => handleLocationSelect(location)}
-              >
+              <li className="options-expanded" key={index} onClick={() => handleLocationSelect(location)}>
                 {location.name} - {location.address}
               </li>
             ))}
