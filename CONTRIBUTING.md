@@ -6,7 +6,9 @@ Thank you for your interest in contributing to our project. We welcome your cont
 
 We follow a Git workflow to manage our codebase. The primary branches are:
 
-(Still Undecided)
+- `main`: The main development branch.
+- `feature/*`: Feature branches for developing new features.
+- `bugfix/*`: Bugfix branches for addressing issues.
 
 ## Rules of Contributing
 
@@ -19,8 +21,17 @@ When contributing, please adhere to the following rules:
 
 To contribute to our project, follow these steps:
 
-(Still Undecided)
+1. Fork the repository to your GitHub account.
+2. Clone the forked repository to your local machine.
+3. git checkout -b feature/your-feature-name
+4. git commit -m "Description of your changes"
+5. git push origin feature/your-feature-name
+6. Open a pull request for your changes
 
 ## Local Development Environment Setup
 
-(Still Undecided)
+1. Clone the repository to your local machine
+2. Install project dependencies
+3. Set up Google Maps API key
+4. Run the development server
+
