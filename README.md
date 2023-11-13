@@ -18,7 +18,19 @@ The NYU Shuttle App project originated from a group of NYU students who recogniz
 
 ## Building and Testing
 
-Instructions for building and testing the project will be provided in this section once the project reaches the appropriate stage of development. Please check back for updates.
+Fork the repo and clone it locally. Then:
+
+1. cd to front-end and back-end
+
+2. Install Dependencies:
+   ```bash
+   npm install
+
+3. Put Google Maps API key at utils/MapUtility.js (const API_KEY)
+
+4. Run frontend and backend 
+   ```bash 
+   npm start
 
 ## Additional Resources
 
