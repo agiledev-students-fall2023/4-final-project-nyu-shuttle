@@ -1,107 +1,120 @@
-import '../css/map.css'
+import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
+import RealTimeDataWebSocket from '../utils/websocket';
+import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
+import { updateTransportMarkers } from '../utils/transportMarker';
 
-function Map(line) {
+function Map({ line, lineColor }) {
+  // const API_KEY = 'AIzaSyCb2Q1MDa8EOFuO41mM24f75jReHBTdfIA';
+  const googleMapRef = useRef(null);
+  const [isApiLoaded, setIsApiLoaded] = useState(false);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [map, setMap] = useState(null);
+  const [ws, setWebSocket] = useState(null);
+  const [transportData, setTransportData] = useState(null);
+  const markerRef = useRef({});
+  const [randomIntOne, randomIntTwo] = generateTwoUniqueRandomInts(0, 9);
+  const nycCoordinates = getCoordinates();
+  const [startLoc, setStartLoc] = useState(nycCoordinates[randomIntOne]);
+  const [endLoc, setEndLoc] = useState(nycCoordinates[randomIntTwo]);
 
-    const googleMapRef = useRef(null);
-    console.log('Map component loaded');
+  // Load Google Maps API
+  useEffect(() => {
+    loadGoogleMapsAPI(setIsApiLoaded);
+  }, []);
 
-    function generateTwoUniqueRandomInts(min, max) {
-        const firstInt = Math.floor(Math.random() * (max - min + 1)) + min;
-        let secondInt = Math.floor(Math.random() * (max - min + 1)) + min;
-      
-        // Ensure secondInt is different from firstInt
-        while (secondInt === firstInt) {
-          secondInt = Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-      
-        return [firstInt, secondInt];
+  // Initialize map after Google Maps API has loaded
+  useEffect(() => {
+    if (isApiLoaded) {
+      if (window.gmapAPICallback) {
+        delete window.gmapAPICallback;
       }
-      
-    const [randomIntOne, randomIntTwo] = generateTwoUniqueRandomInts(0, 9);
 
-    const nycCoordinates = [
-        [-73.935242, 40.730610], // Manhattan
-        [-73.944158, 40.678178], // Brooklyn
-        [-73.794851, 40.728224], // Queens
-        [-73.977622, 40.789142], // Upper West Side, Manhattan
-        [-73.939202, 40.752998], // Astoria, Queens
-        [-73.990338, 40.735781], // Greenwich Village, Manhattan
-        [-74.005941, 40.712784], // Lower Manhattan
-        [-73.949997, 40.650002], // Crown Heights, Brooklyn
-        [-73.870229, 40.773750], // Flushing, Queens
-        [-73.963548, 40.779437], // Upper East Side, Manhattan
-        // ... Add more as needed
-      ];
-    
+      initializeMap(googleMapRef, setIsMapLoaded, setMap);
 
-    const [startLoc , setStartLoc] = useState(nycCoordinates[randomIntOne]);
-    const [endLoc, setEndLoc] = useState(nycCoordinates[randomIntTwo]);
-    
-    //get google from window object !!!important!!!
-    const google = window.google;
-    const [map, setMap] = useState(null);
+      const ws = new RealTimeDataWebSocket();
+      setWebSocket(ws);
 
-    const mapOptions = {
-        disableDefaultUI: true, // This disables the default UI including mapTypeControl
-        zoomControl: true, // Re-enables zoom control
+      return () => {
+        ws.unsubscribe();
       };
-    
-    //initialize map on component load
-    useEffect(() => {
-        const googleMap = initGoogleMap();
-        setMap(googleMap);
-      }, []);
+    }
+  }, [isApiLoaded]);
 
-    useEffect(() => {
-        //wait for map to return
-        if (!startLoc || !endLoc || !map) return;
-        console.log('----------------------------');
-        console.log('line changed');
-        console.log(line);
-        console.log('startLoc' + startLoc);
-        console.log('endLoc' + endLoc);
-        console.log('----------------------------');
-        
-        let directionsService = new google.maps.DirectionsService();
-        let directionsRenderer = new google.maps.DirectionsRenderer(
-            {
-                polylineOptions: new window.google.maps.Polyline({
-                    strokeColor: line['lineColor'],
-                    strokeOpacity: 0.8,
-                    strokeWeight: 5,
-            }
-        )});
-        //set start and end location
-        let start = new google.maps.LatLng(startLoc[1], startLoc[0]);
-        let end = new google.maps.LatLng(endLoc[1], endLoc[0]);
-        //request settings
-        let request = {
-          origin: start,
-          destination: end,
-          travelMode: 'WALKING',
-        };
-        directionsService.route(request, function (response, status) {
-          if (status === 'OK') {
-            directionsRenderer.setDirections(response);
-            directionsRenderer.setMap(map);
-          }
-        });
-      }, [map, line]);
+  // Fetch transport data when the map is ready
+  useEffect(() => {
+    if (isMapLoaded) {
+      fetchTransportData(map);
+    }
+  }, [isMapLoaded]);
 
-      const initGoogleMap = () => {
-        return new window.google.maps.Map(googleMapRef.current, {
-          center: new window.google.maps.LatLng(37.7699298, -122.4469157),
-          zoom: 8,
-          options: mapOptions,
-        });
-      };
+  // Set up websocket after transportdata is fetched
+  useEffect(() => {
+    if (ws && transportData) {
+      ws.setup(transportData, setTransportData);
+      ws.start();
+    }
+    updateTransportMarkers(transportData, markerRef, map);
+  }, [transportData]);
 
-    return (
-        <>
-            <div ref={googleMapRef} id='map'/>;
-        </>
-    )
+  //update map when line changes
+  useEffect(() => {
+    //wait for map to return
+    if (!startLoc || !endLoc || !map || !line || !lineColor) return;
+    console.log('----------------------------');
+    console.log('line changed');
+    console.log(line);
+    console.log('startLoc' + startLoc);
+    console.log('endLoc' + endLoc);
+    console.log('----------------------------');
+
+    let directionsService = new window.google.maps.DirectionsService();
+    let directionsRenderer = new window.google.maps.DirectionsRenderer({
+      polylineOptions: new window.google.maps.Polyline({
+        strokeColor: lineColor,
+        strokeOpacity: 0.8,
+        strokeWeight: 5,
+      }),
+    });
+    //set start and end location
+    let start = new window.google.maps.LatLng(startLoc[1], startLoc[0]);
+    let end = new window.google.maps.LatLng(endLoc[1], endLoc[0]);
+    //request settings
+    let request = {
+      origin: start,
+      destination: end,
+      travelMode: 'WALKING',
+    };
+    directionsService.route(request, function (response, status) {
+      if (status === 'OK') {
+        directionsRenderer.setDirections(response);
+        directionsRenderer.setMap(map);
+      }
+    });
+  }, [map, line, startLoc, endLoc]);
+
+  const fetchTransportData = async () => {
+    try {
+      // console.log('fetching transport data');
+      const response = await fetch('/buses');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // console.log('response ok');
+      const data = await response.json();
+      console.log('Initial transport data fetched');
+      setTransportData(data);
+    } catch (error) {
+      console.log('error fetching transport data', error);
+      // Other error handling? message?
+    }
+  };
+
+  return (
+    <>
+      <div ref={googleMapRef} id="map" />;
+    </>
+  );
 }
 
 export default Map;

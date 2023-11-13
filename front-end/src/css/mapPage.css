@@ -6,3 +6,6 @@
     @apply flex p-5 pb-28 h-screen w-full bg-lightTone rounded shadow-lg;
 }
 
+.dark .map-container{
+    @apply bg-darkMode-darkTone;
+}
