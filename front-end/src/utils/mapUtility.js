@@ -12,6 +12,61 @@ const nycCoordinates = [
   // ... Add more as needed
 ];
 
+const MAP_OPTIONS = {
+  disableDefaultUI: true, // This disables the default UI including mapTypeControl
+  zoomControl: true, // Re-enables zoom control
+  streetViewControl: false,
+  clickableIcons: false,
+};
+
+const SIMPLE_MAP = [
+  {
+    featureType: 'all',
+    stylers: [{ saturation: -20 }],
+  },
+  {
+    elementType: 'labels',
+    stylers: [{ lightness: 25 }],
+  },
+  {
+    featureType: 'poi',
+    stylers: [{ visibility: 'off' }],
+  },
+];
+
+const API_BASE = 'https://maps.googleapis.com/maps/api/js';
+const API_KEY = 'API_KEY_HERE';
+const API_LIBRARIES = ['geometry', 'places'];
+const CALLBACK_NAME = 'gmapAPICallback';
+const POS_DEFAULT = [40.716503, -73.976077];
+
+export function loadGoogleMapsAPI(callback) {
+  if (!window.google || !window.google.maps) {
+    window.gmapAPICallback = () => callback(true);
+
+    const script = document.createElement('script');
+    script.src = API_BASE + `?key=${API_KEY}&libraries=${API_LIBRARIES.join(',')}&callback=${CALLBACK_NAME}`;
+    script.async = true;
+    document.head.appendChild(script);
+  } else {
+    callback(true);
+  }
+}
+
+export function initializeMap(mapRef, setIsMapLoaded, setMap) {
+  const googleMap = new window.google.maps.Map(mapRef.current, {
+    center: new window.google.maps.LatLng(...POS_DEFAULT),
+    zoom: 13,
+    styles: SIMPLE_MAP,
+    options: MAP_OPTIONS,
+  });
+  setMap(googleMap);
+
+  window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
+    setIsMapLoaded(true);
+  });
+}
+
 export function getCoordinates() {
   return nycCoordinates;
 }
@@ -26,32 +81,4 @@ export function generateTwoUniqueRandomInts(min, max) {
   }
 
   return [firstInt, secondInt];
-}
-
-export function getSimplifiedStyle() {
-  return new window.google.maps.StyledMapType(
-    [
-      {
-        featureType: 'all',
-        stylers: [{ saturation: -50 }, { weight: 0.1 }],
-      },
-      {
-        elementType: 'labels',
-        stylers: [{ lightness: 25 }],
-      },
-      {
-        featureType: 'poi.business',
-        stylers: [{ visibility: 'off' }],
-      },
-      {
-        featureType: 'transit.station',
-        stylers: [
-          {
-            visibility: 'off',
-          },
-        ],
-      },
-    ],
-    { name: 'Simplified' }
-  );
 }

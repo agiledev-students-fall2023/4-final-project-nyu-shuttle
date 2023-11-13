@@ -1,58 +1,38 @@
 import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
-import BusTrackerWebSocket from '../utils/busTrackerWebSocket';
-import { getCoordinates, generateTwoUniqueRandomInts, getSimplifiedStyle } from '../utils/mapUtility';
+import RealTimeDataWebSocket from '../utils/websocket';
+import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
+import { updateTransportMarkers } from '../utils/transportMarker';
 
 function Map({ line, lineColor }) {
-  const API_KEY = 'API_KEY';
+  // const API_KEY = 'AIzaSyCb2Q1MDa8EOFuO41mM24f75jReHBTdfIA';
   const googleMapRef = useRef(null);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
-  const [ws, setWebSocket] = useState(null);
-  const [busData, setBusData] = useState(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [map, setMap] = useState(null);
+  const [ws, setWebSocket] = useState(null);
+  const [transportData, setTransportData] = useState(null);
   const markerRef = useRef({});
   const [randomIntOne, randomIntTwo] = generateTwoUniqueRandomInts(0, 9);
   const nycCoordinates = getCoordinates();
   const [startLoc, setStartLoc] = useState(nycCoordinates[randomIntOne]);
   const [endLoc, setEndLoc] = useState(nycCoordinates[randomIntTwo]);
 
-  const mapOptions = {
-    disableDefaultUI: true, // This disables the default UI including mapTypeControl
-    zoomControl: true, // Re-enables zoom control
-    streetViewControl: false,
-  };
-
   // Load Google Maps API
   useEffect(() => {
-    if (!window.google || !window.google.maps) {
-      const initMap = () => setIsApiLoaded(true);
-      window.initMap = initMap;
-
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=initMap`;
-      script.async = true;
-      document.head.appendChild(script);
-    } else {
-      setIsApiLoaded(true); // If Google Maps API is already present
-    }
+    loadGoogleMapsAPI(setIsApiLoaded);
   }, []);
 
   // Initialize map after Google Maps API has loaded
   useEffect(() => {
     if (isApiLoaded) {
-      const googleMap = new window.google.maps.Map(googleMapRef.current, {
-        center: new window.google.maps.LatLng(40.716503, -73.976077),
-        zoom: 13,
-        options: mapOptions,
-      });
-      googleMap.mapTypes.set('simplified_map', getSimplifiedStyle());
-      setMap(googleMap);
+      if (window.gmapAPICallback) {
+        delete window.gmapAPICallback;
+      }
 
-      window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
-        fetchBusData(googleMap);
-      });
+      initializeMap(googleMapRef, setIsMapLoaded, setMap);
 
-      const ws = new BusTrackerWebSocket();
+      const ws = new RealTimeDataWebSocket();
       setWebSocket(ws);
 
       return () => {
@@ -60,6 +40,22 @@ function Map({ line, lineColor }) {
       };
     }
   }, [isApiLoaded]);
+
+  // Fetch transport data when the map is ready
+  useEffect(() => {
+    if (isMapLoaded) {
+      fetchTransportData(map);
+    }
+  }, [isMapLoaded]);
+
+  // Set up websocket after transportdata is fetched
+  useEffect(() => {
+    if (ws && transportData) {
+      ws.setup(transportData, setTransportData);
+      ws.start();
+    }
+    updateTransportMarkers(transportData, markerRef, map);
+  }, [transportData]);
 
   //update map when line changes
   useEffect(() => {
@@ -97,73 +93,20 @@ function Map({ line, lineColor }) {
     });
   }, [map, line, startLoc, endLoc]);
 
-  useEffect(() => {
-    if (ws && busData) {
-      ws.setup(busData, setBusData);
-      ws.start();
-    }
-    processBusData(busData, map);
-  }, [busData, map]);
-
-  const fetchBusData = async () => {
+  const fetchTransportData = async () => {
     try {
-      // console.log('fetching bus data');
+      // console.log('fetching transport data');
       const response = await fetch('/buses');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       // console.log('response ok');
       const data = await response.json();
-      console.log('Initial bus data fetched');
-      setBusData(data);
+      console.log('Initial transport data fetched');
+      setTransportData(data);
     } catch (error) {
-      console.log('error fetching bus data', error);
+      console.log('error fetching transport data', error);
       // Other error handling? message?
-    }
-  };
-
-  const processBusData = (busData, map) => {
-    if (busData && map) {
-      // Remove old markers if they are no longer in the new data
-      for (const busId in markerRef.current) {
-        if (!busData.hasOwnProperty(busId)) {
-          markerRef.current[busId].setMap(null);
-          delete markerRef.current[busId];
-        }
-      }
-
-      Object.keys(busData).forEach((bus) => {
-        let lat = parseFloat(busData[bus][0].latitude);
-        let lng = parseFloat(busData[bus][0].longitude);
-        const position = new window.google.maps.LatLng(lat, lng);
-
-        if (markerRef.current[bus]) {
-          // Update the position of the existing marker
-          markerRef.current[bus].setPosition(position);
-        } else {
-          // Create a new marker
-          let busMarker = new window.google.maps.Marker({
-            position,
-            map,
-            title: String(busData[bus][0].busId),
-            icon: {
-              url: 'busIcon.png',
-              scaledSize: new window.google.maps.Size(30, 30),
-            },
-          });
-
-          let infowindow = new window.google.maps.InfoWindow({
-            content: `<div><strong>No.${busData[bus][0].busId}</strong><br>Line: ${busData[bus][0].bus}</div>`,
-          });
-
-          busMarker.addListener('click', () => {
-            infowindow.open(map, busMarker);
-          });
-
-          // Store the marker
-          markerRef.current[bus] = busMarker;
-        }
-      });
     }
   };
 
