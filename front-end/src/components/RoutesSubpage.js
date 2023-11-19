@@ -13,7 +13,7 @@ function RoutesSubpage({ location1, location2 }) {
 
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
-    if (loadedRoutes && loadedRoutes.some((route) => route.from === location1 && route.to === location2)) {
+    if (loadedRoutes && loadedRoutes.some((route) => route.from === location1.name && route.to === location2.name)) {
       setIsRouteSaved(true);
     } else {
       setIsRouteSaved(false);
@@ -25,7 +25,7 @@ function RoutesSubpage({ location1, location2 }) {
       setSaveDialogOpen(true);
     } else {
       const loadedRoutes = localStorageLoad('routes') || [];
-      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1 || route.to !== location2);
+      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1.name || route.to !== location2.name);
       localStorageSave('routes', updatedRoutes);
       setIsRouteSaved(false);
     }
@@ -42,8 +42,8 @@ function RoutesSubpage({ location1, location2 }) {
       const newRoute = {
         _id: newId,
         name: name, 
-        from: location1,
-        to: location2,
+        from: location1.name,
+        to: location2.name,
       };
       loadedRoutes.push(newRoute);
       localStorageSave('routes', loadedRoutes);
@@ -63,7 +63,6 @@ function RoutesSubpage({ location1, location2 }) {
   return (
     <div className="routes-subpage-container">
       <div className="title-container">
-        <h1>Route</h1>
         <img
           src={isRouteSaved ? HeartIconLoaded : HeartIcon}
           alt="Saved Icon"
@@ -81,11 +80,11 @@ function RoutesSubpage({ location1, location2 }) {
             Shuttle {shuttle} scheduled at <strong>{shuttleSchedule}</strong>
           </p>
           <p className="text-sm">
-            {location1} to shuttle:{" "}
+            {location1.name} to shuttle:{" "}
             <strong>{timeToShuttle} min</strong>
           </p>
           <p className="text-sm">
-            Shuttle to {location2}:{" "}
+            Shuttle to {location2.name}:{" "}
             <strong>{timeToDestination2} min</strong>
           </p>
         </div>

@@ -4,16 +4,16 @@
   @apply  h-screen bg-lightTone w-full overflow-y-auto flex flex-col items-center;
 }
 
+.dark .routes-subpage-container{
+  @apply bg-darkMode-darkTone;
+}
+
 img {
   @apply rounded-3xl p-4 m-0; 
 }
 
 .title-container {
-  @apply flex justify-between items-center w-full; 
-}
-
-.title-container h1 {
-  @apply text-2xl ml-36 font-bold;
+  @apply flex items-center ml-auto; 
 }
 
 .saved-icon {
@@ -24,8 +24,10 @@ img {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   padding: 0.5rem;
-  margin: 10px;
+  margin: 2%;
+  width: 80%;
   margin-top: 20px;
   background-color: #fff;
   border: 0.5px solid #4e4a4a;
@@ -50,6 +52,7 @@ img {
 
 .nav-button {
   background-color: #165516;
+
   padding: 1rem;
   border-radius: 12px;
   color: #fff;

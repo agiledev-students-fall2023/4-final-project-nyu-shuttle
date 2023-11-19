@@ -35,7 +35,7 @@ const SIMPLE_MAP = [
 ];
 
 const API_BASE = 'https://maps.googleapis.com/maps/api/js';
-const API_KEY = 'API_KEY_HERE';
+//const API_KEY = '';
 const API_LIBRARIES = ['geometry', 'places'];
 const CALLBACK_NAME = 'gmapAPICallback';
 const POS_DEFAULT = [40.716503, -73.976077];

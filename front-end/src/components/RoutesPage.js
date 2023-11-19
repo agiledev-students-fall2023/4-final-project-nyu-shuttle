@@ -5,12 +5,12 @@ import "../css/routesPage.css";
 import RoutesSubpage from "./RoutesSubpage";
 
 function RoutesPage() {
-  const [fromLocation, setFromLocation] = useState("");
-  const [toLocation, setToLocation] = useState("");
+  const [fromLocation, setFromLocation] = useState({name: "", address: ""});
+  const [toLocation, setToLocation] = useState({name: "", address: ""});
   const [showSubpage, setShowSubpage] = useState(false);
 
   const checkAndShowSubpage = useCallback(() => {
-    if (fromLocation && toLocation) {
+    if (fromLocation.name && toLocation.name) {
       setShowSubpage(true);
     } else {
       setShowSubpage(false);
@@ -30,7 +30,7 @@ function RoutesPage() {
         <label>From:</label>
         <LocationFilter
           onLocationChange={(location) => {
-            setFromLocation(location);
+            setFromLocation({ name: location.name, address: location.address });
           }}
         />
       </div>
@@ -39,7 +39,7 @@ function RoutesPage() {
         <label>To:</label>
         <LocationFilter
           onLocationChange={(location) => {
-            setToLocation(location);
+            setToLocation({ name: location.name, address: location.address });
           }}
         />
       </div>
