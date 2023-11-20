@@ -14,6 +14,7 @@ import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
 import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
 import useDarkMode from './hooks/darkMode';
+import { registerService } from './utils/serviceRegister';
 import './index.css';
 import './css/tutorialComponent.css';
 
@@ -50,6 +51,7 @@ function App() {
     window.addEventListener('keydown', devTools); // add button press even listeners for dev tools
 
     // if first time is null, set it to true
+    registerService();
   }, []);
 
   useEffect(() => {
