@@ -15,6 +15,7 @@ import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
 import useDarkMode from './hooks/darkMode';
 import { registerService } from './utils/serviceRegister';
+import { getUserPos } from './utils/mapUtility';
 import './index.css';
 import './css/tutorialComponent.css';
 
@@ -52,6 +53,7 @@ function App() {
 
     // if first time is null, set it to true
     registerService();
+    getUserPos();
   }, []);
 
   useEffect(() => {

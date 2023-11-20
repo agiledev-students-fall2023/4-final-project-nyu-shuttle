@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const nycCoordinates = [
   [-73.935242, 40.73061], // Manhattan
   [-73.944158, 40.678178], // Brooklyn
@@ -35,7 +37,7 @@ const SIMPLE_MAP = [
 ];
 
 const API_BASE = 'https://maps.googleapis.com/maps/api/js';
-//const API_KEY = '';
+const API_KEY = process.env.REACT_APP_MAP_API_KEY;
 const API_LIBRARIES = ['geometry', 'places'];
 const CALLBACK_NAME = 'gmapAPICallback';
 const POS_DEFAULT = [40.716503, -73.976077];
@@ -54,8 +56,9 @@ export function loadGoogleMapsAPI(callback) {
 }
 
 export function initializeMap(mapRef, setIsMapLoaded, setMap) {
+  const center = localStorage.center ? localStorage.center.split(',') : POS_DEFAULT;
   const googleMap = new window.google.maps.Map(mapRef.current, {
-    center: new window.google.maps.LatLng(...POS_DEFAULT),
+    center: new window.google.maps.LatLng(...center),
     zoom: 13,
     styles: SIMPLE_MAP,
     options: MAP_OPTIONS,
@@ -65,6 +68,26 @@ export function initializeMap(mapRef, setIsMapLoaded, setMap) {
   window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
     setIsMapLoaded(true);
   });
+}
+
+export async function getUserPos() {
+  const url = new URL('mapGetData.php', localStorage.serviceEndpointSub);
+  url.search = new URLSearchParams({
+    getSystems: '2',
+    sortMode: '1',
+    deviceId: '0',
+    credentials: '1',
+    acronymId: localStorage.acronymId,
+  }).toString();
+
+  try {
+    const response = await axios.get(url);
+    const data = response.data;
+    const pos = data && data.lat && data.lng ? `${data.lat},${data.lng}` : POS_DEFAULT.join(',');
+    localStorage.center = pos;
+  } catch (error) {
+    console.error('Error fetching systems:', error);
+  }
 }
 
 export function getCoordinates() {
