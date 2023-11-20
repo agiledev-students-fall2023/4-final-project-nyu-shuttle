@@ -77,7 +77,7 @@ export async function getUserPos() {
     sortMode: '1',
     deviceId: '0',
     credentials: '1',
-    acronymId: localStorage.acronymId,
+    acronymId: localStorage.agencyId,
   }).toString();
 
   try {
