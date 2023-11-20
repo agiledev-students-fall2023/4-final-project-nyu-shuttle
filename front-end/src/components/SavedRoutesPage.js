@@ -55,7 +55,7 @@ const SavedRoutesPage = () => {
         {routes.map((savedRoute) => (
           <div key={savedRoute._id} className="flex items-center justify-between bg-lightMidTone">
             <SavedRoute savedRoute={savedRoute} />
-            <div className="savedroutes-button">
+            <div className="savedroutes-buttons">
               <img
                 onClick={() => handleEditRoute(savedRoute._id)}
                 className="change-button"

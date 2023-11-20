@@ -5,7 +5,7 @@ import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRand
 import { updateTransportMarkers } from '../utils/transportMarker';
 
 function Map({ line, lineColor }) {
-  // const API_KEY = 'AIzaSyCb2Q1MDa8EOFuO41mM24f75jReHBTdfIA';
+  //const API_KEY = '';
   const googleMapRef = useRef(null);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);

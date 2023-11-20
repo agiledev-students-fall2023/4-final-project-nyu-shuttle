@@ -19,11 +19,11 @@
   }
   
   .dark .savedroutes-item-wrapper {
-    @apply divide-darkMode-lightTone text-white ;
+    @apply divide-darkMode-lightTone text-white;
   }
 
-  .savedroutes-button{
-    @apply flex justify-center p-7 ;
+  .savedroutes-buttons{
+    @apply flex  p-7;
   }
   
   .saved-button {
@@ -31,5 +31,5 @@
   }
 
   .delete-button{
-    @apply p-1 mt-2 h-10 ml-auto text-lg bg-darkMode-darkMidTone text-white rounded-md text-sm;
+    @apply p-1 mt-2 h-10 mr-0 text-lg bg-darkMode-darkMidTone text-white rounded-md text-sm;
   }

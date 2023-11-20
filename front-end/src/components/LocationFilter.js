@@ -17,35 +17,33 @@ const LocationDropdown = ({ onLocationChange }) => {
     if (isApiLoaded) {
       const google = window.google;
       const placesService = new google.maps.places.PlacesService(document.createElement('div'));
-
-      if (inputValue.trim() !== '' && inputValue !== selectedLocation) {
+      if (inputValue.trim() !== '' && inputValue !== selectedLocation.name) {
         const request = {
           query: inputValue + ' New York City',
         };
         placesService.textSearch(request, (results, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const nycPlaces = results.filter((result) => result.formatted_address.includes('New York, NY'));
-            const places = nycPlaces.map((result) => ({
+            const limitedPlaces = nycPlaces.slice(0, 5); 
+            const places = limitedPlaces.map((result) => ({
               name: result.name,
               address: result.formatted_address,
             }));
             setOptions(places);
-          } else {
-            console.error('Places API request failed with status:', status);
-          }
+          } 
         });
       }
     }
   }, [inputValue, selectedLocation]);
 
   const handleInputChange = (input) => {
-    setInputValue(input);
+    setInputValue(input); 
   };
 
   const handleLocationSelect = (location) => {
-    setSelectedLocation(location.name);
+    setSelectedLocation(location);
     setInputValue(location.name);
-    onLocationChange(location.name);
+    onLocationChange(location);
     setOptions([]);
   };
 

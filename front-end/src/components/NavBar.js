@@ -17,8 +17,6 @@ function NavBar() {
         setNavBarState(iconName);
     }
 
-
-
     useEffect(() => {
         let overlay = document.getElementsByClassName('overlay')[0];
         let cur = document.getElementById(navBarState);
