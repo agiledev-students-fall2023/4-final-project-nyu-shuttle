@@ -24,16 +24,16 @@ function AlertsPage() {
       <h1 className="alerts-header">Alerts</h1>
       <div className="alerts-content">
         <div className="alerts-item-wrapper">
-          {alerts ? (
+          {alerts && alerts.length ? (
             alerts.map((alert) => (
               <div key={alert.id} className="alerts-item">
-                <p>{alert.createdF}</p>
-                <h3 className="font-semibold text-xl">{alert.gtfsAlertHeaderText}</h3>
+                <span className="time">{alert.createdF}</span>
+                <div className="headertext">{alert.gtfsAlertHeaderText}</div>
                 <p>{alert.gtfsAlertDescriptionText}</p>
               </div>
             ))
           ) : (
-            <div></div>
+            <div>There is no alert</div>
           )}
         </div>
       </div>
