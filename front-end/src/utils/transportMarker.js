@@ -1,4 +1,5 @@
 const MAX_ANIMATION_DURATION = 7000;
+const busIcons = ['A', 'B', 'C', 'E', 'F', 'G', 'W'];
 
 export function updateTransportMarkers(transportData, markerRef, map) {
   if (!transportData) {
@@ -31,12 +32,13 @@ export function updateTransportMarkers(transportData, markerRef, map) {
 }
 
 function createTransportMarker(position, transportInfo, map) {
+  let icon = busIcons[Math.floor(Math.random() * busIcons.length)]
   let transportMarker = new window.google.maps.Marker({
     position,
     map,
     title: String(transportInfo.busId),
     icon: {
-      url: 'busIcon.png',
+      url: 'busIcons/busIcon_route'+busIcons[Math.floor(Math.random() * busIcons.length)]+'.png',
       scaledSize: new window.google.maps.Size(30, 30),
     },
   });
