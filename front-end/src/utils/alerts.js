@@ -4,9 +4,17 @@
 import axios from 'axios';
 
 // const QUERY_INTERVAL = 120000; // 2 mins
+const MIN_QUERY_DELAY = 60000; // 1 min
+let lastMessages = [];
+let lastQuery = 0;
 
 // Query alert. referch parameter determines "query all" or "query updates only"
 export async function queryAlert(refresh) {
+  // Prevent too frequent requests
+  if (performance.now() - lastQuery < MIN_QUERY_DELAY) {
+    return lastMessages;
+  }
+
   // JSON payload
   const json = {
     systemSelected0: localStorage.agencyId,
@@ -54,6 +62,9 @@ export async function queryAlert(refresh) {
       localStorage.alertCRC = data.alertCRC;
     }
     const messages = data.msgs && data.msgs.length ? data.msgs : [];
+
+    lastMessages = messages;
+    lastQuery = performance.now();
 
     return messages;
   } catch (error) {
