@@ -6,11 +6,11 @@ import axios from 'axios';
 // const QUERY_INTERVAL = 120000; // 2 mins
 const MIN_QUERY_DELAY = 60000; // 1 min
 let lastMessages = [];
-let lastQuery = 0;
+let lastQuery = -MIN_QUERY_DELAY;
 
 // Query alert. referch parameter determines "query all" or "query updates only"
 export async function queryAlert(refresh) {
-  // Prevent too frequent requests
+  // Prevent too frequent requests (rate limiting)
   if (performance.now() - lastQuery < MIN_QUERY_DELAY) {
     return lastMessages;
   }
