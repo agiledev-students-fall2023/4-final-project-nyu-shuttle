@@ -1,5 +1,5 @@
 const MAX_ANIMATION_DURATION = 7000;
-const busIcons = ['A', 'B', 'C', 'E', 'F', 'G', 'W'];
+const busIcons = ['A', 'B', 'C', 'E', 'F', 'G', 'W', 'Cobble Hill'];
 
 export function updateTransportMarkers(transportData, markerRef, map) {
   if (!transportData) {
@@ -25,20 +25,25 @@ export function updateTransportMarkers(transportData, markerRef, map) {
       animateMarker(markerRef.current[transport], currentPosition, newPosition, MAX_ANIMATION_DURATION);
     } else {
       // Create a new marker
-      let transportMarker = createTransportMarker(newPosition, transportData[transport][0], map);
+      let route = transportData[transport][0].route; // get last char of route
+      let routeChar = route.slice(-1); 
+      if (route === 'Ferry Route') { routeChar = 'Ferry_Route'; }
+      else if (route === 'Cobble Hill') { routeChar = 'Cobble_Hill'; }
+      let transportMarker = createTransportMarker(newPosition, transportData[transport][0], map, routeChar);
       markerRef.current[transport] = transportMarker;
     }
   });
 }
 
-function createTransportMarker(position, transportInfo, map) {
-  let icon = busIcons[Math.floor(Math.random() * busIcons.length)]
+function createTransportMarker(position, transportInfo, map, route) {
+  if(route === 'Ferry_Route'){ console.log('ferry'); }
+
   let transportMarker = new window.google.maps.Marker({
     position,
     map,
     title: String(transportInfo.busId),
     icon: {
-      url: 'busIcons/busIcon_route'+busIcons[Math.floor(Math.random() * busIcons.length)]+'.png',
+      url: 'busIcons/busIcon_route'+route+'.png',
       scaledSize: new window.google.maps.Size(30, 30),
     },
   });
