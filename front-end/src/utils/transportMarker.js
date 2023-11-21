@@ -49,7 +49,7 @@ function createTransportMarker(position, transportInfo, map, route) {
   });
 
   let infowindow = new window.google.maps.InfoWindow({
-    content: `<div><strong>No.${transportInfo.busId}</strong><br>Line: ${transportInfo.bus}</div>`,
+    content: `<div><strong>No.${transportInfo.busId}</strong><br>Line: ${transportInfo.route}<br>Passengers: ${transportInfo.paxLoad}</div>`,
   });
 
   transportMarker.addListener('click', () => {

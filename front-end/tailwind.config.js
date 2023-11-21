@@ -4,6 +4,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      transitionProperty: {
+        'width': 'width'
+      },
       /*add more fonts here*/
       fontFamily: {
         mainUI: ['Merriweather', 'sans-serif'],

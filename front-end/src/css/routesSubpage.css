@@ -13,11 +13,27 @@ img {
 }
 
 .title-container {
-  @apply flex items-center ml-auto; 
+  @apply flex justify-items-start w-80;
 }
 
 .saved-icon {
-  @apply w-16 h-16 mb-0 grayscale-0;
+  @apply w-16 h-16 mb-0 grayscale-0 ;
+}
+
+.save{
+  @apply transition-all duration-700 ease-out bg-lightMidTone text-darkTone text-sm px-5 my-3 pt-2 rounded-xl p-2 mx-0;
+}
+
+.halfw{
+  @apply w-72;
+}
+
+.fullw{
+  @apply w-full text-right;
+}
+
+.red{
+  filter: invert(72%) sepia(45%) saturate(5044%) hue-rotate(319deg) brightness(105%) contrast(82%);
 }
 
 .route-info {
@@ -26,9 +42,8 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem;
-  margin: 2%;
-  width: 80%;
-  margin-top: 20px;
+  width: 90%;
+  margin-top: 10px;
   background-color: #fff;
   border: 0.5px solid #4e4a4a;
   border-radius: 8px;

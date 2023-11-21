@@ -6,8 +6,12 @@
   @apply bg-darkMode-darkTone;
 }
 
+.input-wrapper{
+  @apply flex flex-col items-center;
+}
+
 .location-input {
-  @apply my-0.5 w-full;
+  @apply my-0.5 w-80;
 }
 
 .location-input label {
@@ -29,4 +33,5 @@
 .saved-item {
   @apply  mr-0 mb-1 p-1 flex ml-auto text-lg bg-darkMode-darkMidTone text-white rounded-md;
 }
+
 
