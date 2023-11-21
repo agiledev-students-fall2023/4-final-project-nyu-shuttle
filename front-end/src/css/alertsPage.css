@@ -22,6 +22,14 @@
   @apply bg-lightMidTone w-80 p-4 rounded-xl shadow-md space-y-2;
 }
 
+.alerts-item .time {
+  @apply text-sm;
+}
+
+.alerts-item .headertext {
+  @apply font-semibold text-xl;
+}
+
 .dark .alerts-item {
   @apply bg-darkMode-lightMidTone text-black;
 }
