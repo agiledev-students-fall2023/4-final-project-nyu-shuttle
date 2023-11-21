@@ -71,6 +71,8 @@ function saveTokenToServer(currentToken) {
 }
 
 export function registerService() {
-  localStorage.acronymId = acronymId;
+  localStorage.serviceEndpointHome = SERVICE_HOME_URL;
+  localStorage.serviceEndpointSub = SERVICE_SUB_URL;
+  localStorage.agencyId = acronymId;
   checkSoftwareVersion().then(savePseudoTokenToServer);
 }
