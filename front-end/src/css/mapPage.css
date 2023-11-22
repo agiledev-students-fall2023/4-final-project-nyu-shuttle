@@ -1,11 +1,11 @@
-.map{
-    @apply flex h-full w-full bg-lightTone opacity-60 border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
+.map {
+  @apply flex h-full w-full bg-lightTone border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
 }
 
-.map-container{
-    @apply flex p-5 pb-28 h-screen w-full bg-lightTone rounded shadow-lg;
+.map-container {
+  @apply flex p-5 pb-28 h-screen w-full bg-lightTone rounded shadow-lg;
 }
 
-.dark .map-container{
-    @apply bg-darkMode-darkTone;
+.dark .map-container {
+  @apply bg-darkMode-darkTone;
 }
