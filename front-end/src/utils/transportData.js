@@ -16,7 +16,7 @@ export async function queryTransportations(refresh) {
     return lastResults;
   }
 
-  // JSON payload
+  // JSON
   const json = {
     s0: localStorage.agencyId,
     sA: 1,
@@ -29,6 +29,8 @@ export async function queryTransportations(refresh) {
   subscribedRoutes.forEach((route, index) => {
     json['r' + index] = route;
   });
+  const formData = new URLSearchParams({});
+  formData.append('json', JSON.stringify(json));
 
   // Params for URL
   const params = {
@@ -46,10 +48,10 @@ export async function queryTransportations(refresh) {
   }
 
   const urlParams = new URLSearchParams(params);
-  const url = `${localStorage.serviceEndpointSub}/goServices.php?${urlParams.toString()}`;
+  const url = `${localStorage.serviceEndpointSub}/mapGetData.php?${urlParams.toString()}`;
 
   try {
-    const response = await axios.post(url, json);
+    const response = await axios.post(url, formData);
     const data = response.data;
     if (!data) {
       throw new Error('empty response');
@@ -66,6 +68,8 @@ export async function queryTransportations(refresh) {
 
     lastResults = transportations;
     lastQuery = performance.now();
+
+    console.log(transportations);
 
     return transportations;
   } catch (error) {
