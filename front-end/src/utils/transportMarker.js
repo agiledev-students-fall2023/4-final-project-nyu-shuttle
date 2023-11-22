@@ -1,4 +1,4 @@
-const MAX_ANIMATION_DURATION = 7000;
+const MAX_ANIMATION_DURATION = 9000;
 
 export function updateTransportMarkers(transportData, markerRef, map) {
   if (!transportData) {
@@ -56,18 +56,21 @@ function createTransportMarker(position, transportInfo, map) {
   return transportMarker;
 }
 
-function animateMarker(marker, startPosition, endPosition, minBusQueryInterval) {
+function animateMarker(marker, startPosition, endPosition, duration) {
   const distanceThreshold = { min: 10, max: 300 };
-  const dynamicDuration = minBusQueryInterval + 2000;
 
   const distance = window.google.maps.geometry.spherical.computeDistanceBetween(startPosition, endPosition);
+
+  if (window.cancelAnimationFrame) {
+    window.cancelAnimationFrame(marker.animationHandler);
+  } else {
+    clearTimeout(marker.animationHandler);
+  }
 
   if (distance < distanceThreshold.min || distance > distanceThreshold.max) {
     marker.setPosition(endPosition);
   } else {
-    let startTime = null;
-
-    const easeOutQuad = (t) => t * (2 - t);
+    let startTime;
 
     const animate = (currentTime) => {
       if (!startTime) {
@@ -75,13 +78,19 @@ function animateMarker(marker, startPosition, endPosition, minBusQueryInterval) 
       }
 
       const elapsedTime = currentTime - startTime;
-      let progress = elapsedTime / dynamicDuration;
-      progress = easeOutQuad(Math.min(1, progress));
+      let progress = Math.min(1, elapsedTime / duration);
 
       if (progress < 1) {
-        const nextPosition = window.google.maps.geometry.spherical.interpolate(startPosition, endPosition, progress);
-        marker.setPosition(nextPosition);
-        window.requestAnimationFrame(animate);
+        const newPosition_lat = startPosition.lat() + (endPosition.lat() - startPosition.lat()) * progress;
+        const newPosition_lng = startPosition.lng() + (endPosition.lng() - startPosition.lng()) * progress;
+        var deltaPosition = new window.google.maps.LatLng(newPosition_lat, newPosition_lng);
+        marker.setPosition(deltaPosition);
+
+        if (window.requestAnimationFrame) {
+          marker.animationHandler = window.requestAnimationFrame(animate);
+        } else {
+          marker.animationHandler = setTimeout(animate, 17);
+        }
       } else {
         marker.setPosition(endPosition);
       }
