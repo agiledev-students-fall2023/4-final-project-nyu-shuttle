@@ -16,20 +16,25 @@ export function updateTransportMarkers(transportData, markerRef, map) {
   // Process new and existing transport data
   Object.keys(transportData).forEach((transport) => {
     const transportInfo = transportData[transport][0];
+    const marker = markerRef.current[transport];
     const lat = parseFloat(transportInfo.latitude);
     const lng = parseFloat(transportInfo.longitude);
     const newPosition = new window.google.maps.LatLng(lat, lng);
-    const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
+    const iconUpdate = marker && marker.direction !== transportInfo.calculatedCourse;
 
-    if (markerRef.current[transport]) {
+    if (marker) {
       // Update the position of the existing marker
-      const currentPosition = markerRef.current[transport].getPosition();
-      animateMarker(markerRef.current[transport], currentPosition, newPosition, MAX_ANIMATION_DURATION);
+      const currentPosition = marker.getPosition();
+      animateMarker(marker, currentPosition, newPosition, MAX_ANIMATION_DURATION);
 
       // Update the icon of the existing marker
-      markerRef.current[transport].setIcon(newIcon);
+      if (iconUpdate) {
+        const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
+        marker.setIcon(newIcon);
+      }
     } else {
       // Create a new marker
+      const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
       let transportMarker = createTransportMarker(newPosition, transportInfo, map, newIcon);
       markerRef.current[transport] = transportMarker;
     }
@@ -48,6 +53,7 @@ function createTransportMarker(position, transportInfo, map) {
     content: `<div><strong>No.${transportInfo.busId}</strong><br>Line: ${transportInfo.route}</div>`,
   });
 
+  transportMarker.direction = transportInfo.calculatedCourse;
   transportMarker.addListener('click', () => {
     infowindow.open(map, transportMarker);
     console.log(transportInfo); // tansportation info
