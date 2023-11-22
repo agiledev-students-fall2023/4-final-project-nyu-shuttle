@@ -15,7 +15,7 @@ import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
 import useDarkMode from './hooks/darkMode';
 import { registerService } from './utils/serviceRegister';
-import { getUserPos } from './utils/mapUtility';
+import { getUserPos, loadGoogleMapsAPI } from './utils/mapUtility';
 import './index.css';
 import './css/tutorialComponent.css';
 
@@ -36,7 +36,8 @@ function App() {
       let value = localStorage.getItem(key);
       localStorageItems[key] = value;
     }
-    setTimeout(() => {
+
+    loadGoogleMapsAPI(() => {
       if (firstTime == 'true' || firstTime == null || firstTime == 'null') {
         console.log('<--------First time user detected-------->');
         console.log('Initializing local storage items...');
@@ -47,11 +48,10 @@ function App() {
         console.log(localStorageItems);
       }
       setIsLoading(false);
-    }, 3000);
+    });
 
     window.addEventListener('keydown', devTools); // add button press even listeners for dev tools
 
-    // if first time is null, set it to true
     registerService();
     getUserPos();
   }, []);
