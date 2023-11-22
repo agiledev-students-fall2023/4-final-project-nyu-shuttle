@@ -43,15 +43,17 @@ const CALLBACK_NAME = 'gmapAPICallback';
 const POS_DEFAULT = [40.716503, -73.976077];
 
 export function loadGoogleMapsAPI(callback) {
+  let c = typeof callback == 'function' ? callback : () => {};
+
   if (!window.google || !window.google.maps) {
-    window.gmapAPICallback = () => callback(true);
+    window.gmapAPICallback = () => c(true);
 
     const script = document.createElement('script');
     script.src = API_BASE + `?key=${API_KEY}&libraries=${API_LIBRARIES.join(',')}&callback=${CALLBACK_NAME}`;
     script.async = true;
     document.head.appendChild(script);
   } else {
-    callback(true);
+    c(true);
   }
 }
 
