@@ -2,10 +2,10 @@ import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
 import RealTimeDataWebSocket from '../utils/websocket';
 import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
+import { queryTransportations } from '../utils/transportData';
 import { updateTransportMarkers } from '../utils/transportMarker';
 
 function Map({ line, lineColor }) {
-  //const API_KEY = '';
   const googleMapRef = useRef(null);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -95,15 +95,8 @@ function Map({ line, lineColor }) {
 
   const fetchTransportData = async () => {
     try {
-      // console.log('fetching transport data');
-      const response = await fetch('/buses');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      // console.log('response ok');
-      const data = await response.json();
-      console.log('Initial transport data fetched');
-      setTransportData(data);
+      const transportations = await queryTransportations(true);
+      setTransportData(transportations);
     } catch (error) {
       console.log('error fetching transport data', error);
       // Other error handling? message?
