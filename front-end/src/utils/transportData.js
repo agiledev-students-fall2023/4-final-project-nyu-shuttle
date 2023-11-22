@@ -69,8 +69,6 @@ export async function queryTransportations(refresh) {
     lastResults = transportations;
     lastQuery = performance.now();
 
-    console.log(transportations);
-
     return transportations;
   } catch (error) {
     console.log('Transportations query error: ' + error.message);
