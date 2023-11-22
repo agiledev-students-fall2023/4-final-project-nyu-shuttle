@@ -54,6 +54,13 @@ function NavBar() {
     }
   }, [navigationState]);
 
+  useEffect(() => {
+    // Send first time users to the map page
+    if (localStorage.getItem('isFirst') !== 'true') {
+      setnavigationState('map');
+    }
+  }, []);
+
   return (
     <>
       <div className="navBar">
