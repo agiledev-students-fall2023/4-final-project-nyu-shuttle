@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, createContext } from 'react'; // Import useState and useEffect
+import React, { useState, useEffect, createContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Import components
 import MapPage from './components/MapPage';
-import './css/navBar.css';
 import NavBar from './components/NavBar';
 import RoutesPage from './components/RoutesPage';
 import RoutesSubpage from './components/RoutesSubpage';
@@ -13,86 +14,81 @@ import FeedbackSupportPage from './components/settings/FeedbackSupportPage';
 import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
 import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
+
+// Import hooks and utilities
 import useDarkMode from './hooks/darkMode';
 import { registerService } from './utils/serviceRegister';
-import { getUserPos } from './utils/mapUtility';
+import { getUserPos, loadGoogleMapsAPI } from './utils/mapUtility';
+
+// Import CSS
 import './index.css';
+import './css/navBar.css';
 import './css/tutorialComponent.css';
 
-export const TutorialContext = createContext(); // create context for tutorial that is shared between all pages
+export const TutorialContext = createContext();
 
 function App() {
   const [colorTheme, setTheme] = useDarkMode();
   const [isLoading, setIsLoading] = useState(true);
-  const [firstTime, setFirstTime] = useState(localStorage.getItem('isFirst')); // check if it is the first time the user is using the app
-  const [tutorialIndex, setTutorialIndex] = useState(0); // keep track which pages has been clicked on the tutorial
-  const [tutorialOn, setTutorialOn] = useState(false); // if tutorial is on
+  const isFirstTimeUser = localStorage.getItem('isFirst') !== 'false';
+  const [tutorialIndex, setTutorialIndex] = useState(0);
+  const [tutorialOn, setTutorialOn] = useState(isFirstTimeUser);
+  const localStorageItems = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    let key = localStorage.key(i);
+    let value = localStorage.getItem(key);
+    localStorageItems[key] = value;
+  }
+
   useEffect(() => {
-    localStorage.getItem('isFirst') == 'false' ? setFirstTime('false') : setFirstTime('true');
-    //get a list of all local storage items, for debugging purposes
-    const localStorageItems = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      let key = localStorage.key(i);
-      let value = localStorage.getItem(key);
-      localStorageItems[key] = value;
-    }
-    setTimeout(() => {
-      if (firstTime == 'true' || firstTime == null || firstTime == 'null') {
-        console.log('<--------First time user detected-------->');
-        console.log('Initializing local storage items...');
-        localStorage.setItem('isFirst', false); // set first time to false
-      } else {
-        console.log('<--------Returning user detected-------->');
-        console.log('Local storage items:');
-        console.log(localStorageItems);
-      }
-      setIsLoading(false);
-    }, 3000);
-
-    window.addEventListener('keydown', devTools); // add button press even listeners for dev tools
-
-    // if first time is null, set it to true
+    initializeLocalStorage(isFirstTimeUser);
+    loadGoogleMapsAPI(() => setIsLoading(false));
+    window.addEventListener('keydown', devTools);
     registerService();
     getUserPos();
+
+    return () => window.removeEventListener('keydown', devTools);
   }, []);
 
-  useEffect(() => {
-    firstTime == 'true' ? setTutorialOn(true) : setTutorialOn(false);
-  }, [firstTime]);
+  const initializeLocalStorage = (isFirstTime) => {
+    if (isFirstTime) {
+      console.log('<--------First time user detected-------->');
+      console.log('Initializing local storage items...');
+      localStorage.setItem('isFirst', false);
+    } else {
+      console.log('<--------Returning user detected-------->');
+      console.log('Local storage items:', localStorageItems);
+    }
+  };
 
   const devTools = (e) => {
-    switch (e.keyCode) {
-      case 82: //press r to reset local storage
-        console.log('Resetting local storage...');
-        localStorage.clear();
-        break;
+    if (e.keyCode === 82) {
+      // R key
+      console.log('Resetting local storage...');
+      localStorage.clear();
     }
   };
 
   return (
-    <TutorialContext.Provider
-      value={{ tutorialIndex, setTutorialIndex, firstTime, setFirstTime, tutorialOn, setTutorialOn }}
-    >
-      {' '}
-      {/* Share the context without passing the prop to each page */}
+    <TutorialContext.Provider value={{ tutorialIndex, setTutorialIndex, tutorialOn, setTutorialOn }}>
       <div onKeyDown={devTools}>
         <BrowserRouter>
           {!isLoading && tutorialOn && <TutorialComponent />}
-          {isLoading && <LoadingScreen />}{' '}
-          {/* Putting the loading component here so that loading screen appears when refreshing as well */}
-          {!isLoading && <NavBar />} {/* Hides navbar when loading */}
-          <Routes>
-            <Route path="/" element={<LoadingScreen />} /> {/*Goes to loading on app boot*/}
-            <Route path="/map" element={<MapPage />} />
-            <Route path="/routes" element={<RoutesPage />} />
-            <Route path="/alerts" element={<AlertsPage />} />
-            <Route path="/saved-routes" element={<SavedRoutesPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/settings/view-schedule" element={<TimeSpreadsheetPage />} />
-            <Route path="/settings/feedback-support" element={<FeedbackSupportPage />} />
-            <Route path="/settings/privacypolicy" element={<PrivacyPolicyPage />} />
-            <Route path="/routes/:location1/:location2" element={<RoutesSubpage />} />
-          </Routes>
+          {isLoading && <LoadingScreen />} {!isLoading && <NavBar />} {/* Hides navbar when loading */}
+          {!isLoading && (
+            <Routes>
+              <Route path="/" element={<MapPage />} />
+              <Route path="/map" element={<MapPage />} />
+              <Route path="/routes" element={<RoutesPage />} />
+              <Route path="/alerts" element={<AlertsPage />} />
+              <Route path="/saved-routes" element={<SavedRoutesPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/settings/view-schedule" element={<TimeSpreadsheetPage />} />
+              <Route path="/settings/feedback-support" element={<FeedbackSupportPage />} />
+              <Route path="/settings/privacypolicy" element={<PrivacyPolicyPage />} />
+              <Route path="/routes/:location1/:location2" element={<RoutesSubpage />} />
+            </Routes>
+          )}
         </BrowserRouter>
       </div>
     </TutorialContext.Provider>

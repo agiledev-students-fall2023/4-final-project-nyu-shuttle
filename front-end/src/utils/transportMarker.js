@@ -1,4 +1,4 @@
-const MAX_ANIMATION_DURATION = 7000;
+const MAX_ANIMATION_DURATION = 9000;
 
 export function updateTransportMarkers(transportData, markerRef, map) {
   if (!transportData) {
@@ -16,20 +16,25 @@ export function updateTransportMarkers(transportData, markerRef, map) {
   // Process new and existing transport data
   Object.keys(transportData).forEach((transport) => {
     const transportInfo = transportData[transport][0];
+    const marker = markerRef.current[transport];
     const lat = parseFloat(transportInfo.latitude);
     const lng = parseFloat(transportInfo.longitude);
     const newPosition = new window.google.maps.LatLng(lat, lng);
-    const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
+    const iconUpdate = marker && marker.direction !== transportInfo.calculatedCourse;
 
-    if (markerRef.current[transport]) {
+    if (marker) {
       // Update the position of the existing marker
-      const currentPosition = markerRef.current[transport].getPosition();
-      animateMarker(markerRef.current[transport], currentPosition, newPosition, MAX_ANIMATION_DURATION);
+      const currentPosition = marker.getPosition();
+      animateMarker(marker, currentPosition, newPosition, MAX_ANIMATION_DURATION);
 
       // Update the icon of the existing marker
-      markerRef.current[transport].setIcon(newIcon);
+      if (iconUpdate) {
+        const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
+        marker.setIcon(newIcon);
+      }
     } else {
       // Create a new marker
+      const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
       let transportMarker = createTransportMarker(newPosition, transportInfo, map, newIcon);
       markerRef.current[transport] = transportMarker;
     }
@@ -48,6 +53,7 @@ function createTransportMarker(position, transportInfo, map) {
     content: `<div><strong>No.${transportInfo.busId}</strong><br>Line: ${transportInfo.route}</div>`,
   });
 
+  transportMarker.direction = transportInfo.calculatedCourse;
   transportMarker.addListener('click', () => {
     infowindow.open(map, transportMarker);
     console.log(transportInfo); // tansportation info
@@ -56,18 +62,21 @@ function createTransportMarker(position, transportInfo, map) {
   return transportMarker;
 }
 
-function animateMarker(marker, startPosition, endPosition, minBusQueryInterval) {
+function animateMarker(marker, startPosition, endPosition, duration) {
   const distanceThreshold = { min: 10, max: 300 };
-  const dynamicDuration = minBusQueryInterval + 2000;
 
   const distance = window.google.maps.geometry.spherical.computeDistanceBetween(startPosition, endPosition);
+
+  if (window.cancelAnimationFrame) {
+    window.cancelAnimationFrame(marker.animationHandler);
+  } else {
+    clearTimeout(marker.animationHandler);
+  }
 
   if (distance < distanceThreshold.min || distance > distanceThreshold.max) {
     marker.setPosition(endPosition);
   } else {
-    let startTime = null;
-
-    const easeOutQuad = (t) => t * (2 - t);
+    let startTime;
 
     const animate = (currentTime) => {
       if (!startTime) {
@@ -75,13 +84,19 @@ function animateMarker(marker, startPosition, endPosition, minBusQueryInterval) 
       }
 
       const elapsedTime = currentTime - startTime;
-      let progress = elapsedTime / dynamicDuration;
-      progress = easeOutQuad(Math.min(1, progress));
+      let progress = Math.min(1, elapsedTime / duration);
 
       if (progress < 1) {
-        const nextPosition = window.google.maps.geometry.spherical.interpolate(startPosition, endPosition, progress);
-        marker.setPosition(nextPosition);
-        window.requestAnimationFrame(animate);
+        const newPosition_lat = startPosition.lat() + (endPosition.lat() - startPosition.lat()) * progress;
+        const newPosition_lng = startPosition.lng() + (endPosition.lng() - startPosition.lng()) * progress;
+        var deltaPosition = new window.google.maps.LatLng(newPosition_lat, newPosition_lng);
+        marker.setPosition(deltaPosition);
+
+        if (window.requestAnimationFrame) {
+          marker.animationHandler = window.requestAnimationFrame(animate);
+        } else {
+          marker.animationHandler = setTimeout(animate, 17);
+        }
       } else {
         marker.setPosition(endPosition);
       }
