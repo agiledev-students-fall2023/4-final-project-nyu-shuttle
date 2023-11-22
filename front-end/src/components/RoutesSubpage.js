@@ -10,6 +10,7 @@ import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoa
 function RoutesSubpage({ location1, location2 }) {
   const [isSaveDialogOpen, setSaveDialogOpen] = useState(false);
   const [isRouteSaved, setIsRouteSaved] = useState(false);
+  const storedTheme = localStorage.getItem('theme-color');
 
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
@@ -51,7 +52,8 @@ function RoutesSubpage({ location1, location2 }) {
   };
     
   const startNavigation = () => {
-    alert("Navigation started!");
+    alert("Navigation started!")
+    console.log(storedTheme)
   };
 
   const shuttle = "X";
@@ -65,6 +67,7 @@ function RoutesSubpage({ location1, location2 }) {
       <div className="title-container">
         <img
           src={isRouteSaved ? HeartIconLoaded : HeartIcon}
+          style={{ fill: storedTheme === 'dark' ? '#FFFFFF' : '#000000' }}
           alt="Saved Icon"
           className="saved-icon"
           onClick={openSaveDialog}
