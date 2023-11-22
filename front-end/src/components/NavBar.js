@@ -10,7 +10,8 @@ import '../css/tutorialComponent.css';
 import TutorialComponent from './TutorialComponent';
 
 function NavBar() {
-  const [navigationState, setnavigationState] = useState(window.location.pathname.split('/')[1]);
+  const getPath = () => window.location.pathname.split('/')[1] || 'map';
+  const [navigationState, setnavigationState] = useState(getPath());
   const { tutorialIndex, setTutorialIndex, firstTime, setFirstTime, tutorialOn, setTutorialOn } =
     useContext(TutorialContext);
   const navigate = useNavigate();
@@ -48,7 +49,9 @@ function NavBar() {
 
   useEffect(() => {
     updateNavBarDisplay(navigationState);
-    navigate('/' + navigationState);
+    if (navigationState !== getPath()) {
+      navigate('/' + navigationState);
+    }
   }, [navigationState]);
 
   return (
