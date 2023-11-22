@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../css/routesSubpage.css";
 import "../css/basicUI.css";
 import HeartIcon from "../images/heart-svg.svg";
@@ -10,11 +11,13 @@ import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoa
 function RoutesSubpage({ location1, location2 }) {
   const [isSaveDialogOpen, setSaveDialogOpen] = useState(false);
   const [isRouteSaved, setIsRouteSaved] = useState(false);
+  const [displayText, setDisplayText] = useState("Click to save route ->");
 
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
     if (loadedRoutes && loadedRoutes.some((route) => route.from === location1.name && route.to === location2.name)) {
       setIsRouteSaved(true);
+      setDisplayText("View saved routes here");
     } else {
       setIsRouteSaved(false);
     }
@@ -27,7 +30,6 @@ function RoutesSubpage({ location1, location2 }) {
       const loadedRoutes = localStorageLoad('routes') || [];
       const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1.name || route.to !== location2.name);
       localStorageSave('routes', updatedRoutes);
-      setIsRouteSaved(false);
     }
   };
 
@@ -47,7 +49,13 @@ function RoutesSubpage({ location1, location2 }) {
       };
       loadedRoutes.push(newRoute);
       localStorageSave('routes', loadedRoutes);
+
       setIsRouteSaved(true);
+
+      setDisplayText("Saved");
+      setTimeout (() => {
+        setDisplayText("View saved routes here");
+      }, 3000);
   };
     
   const startNavigation = () => {
@@ -63,12 +71,17 @@ function RoutesSubpage({ location1, location2 }) {
   return (
     <div className="routes-subpage-container">
       <div className="title-container">
-        <img
-          src={isRouteSaved ? HeartIconLoaded : HeartIcon}
-          alt="Saved Icon"
-          className="saved-icon"
-          onClick={openSaveDialog}
-        />
+          <Link className={'save '+(!isRouteSaved ? 'halfw' : 'fullw')} to="/saved-routes">
+            {displayText}
+          </Link>
+          {!isRouteSaved &&             
+            <img
+              src={isRouteSaved ? HeartIconLoaded : HeartIcon}
+              alt="Saved Icon"
+              className="saved-icon red"
+              onClick={openSaveDialog}
+            />
+          }
       </div>
       <RouteMap location1={location1} location2={location2} />
       <div className="route-info">

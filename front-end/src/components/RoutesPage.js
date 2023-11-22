@@ -23,9 +23,7 @@ function RoutesPage() {
 
   return (
     <div className="route-container">
-      <Link className="saved-item" to="/saved-routes">
-        Saved Routes
-      </Link>
+      <div className="input-wrapper">
       <div className="location-input">
         <label>From:</label>
         <LocationFilter
@@ -42,6 +40,7 @@ function RoutesPage() {
             setToLocation({ name: location.name, address: location.address });
           }}
         />
+      </div>
       </div>
 
       {showSubpage && (
