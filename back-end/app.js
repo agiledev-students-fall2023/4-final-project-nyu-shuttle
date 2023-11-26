@@ -53,15 +53,13 @@ function findAllReachableStops(graph, origin, threshold=0.013) {
     return reachableStops;
 
 }
-
+// return walking distance from point A to point B
 async function getWalkingDistance(origin, destination) {
     origin = origin.split(',').join('%2C');
     destination = destination.split(',').join('%2C');
     let res = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin}&destinations=${destination}&key=${process.env.EXPRESS_APP_MAP_API_KEY}`)
     let data = await res.json();
     res = data.rows[0].elements[0].duration.value;
-    let originName = data.origin_addresses[0];
-    let destinationName = data.destination_addresses[0];
     return res;
 }
 
