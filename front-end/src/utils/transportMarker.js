@@ -46,11 +46,11 @@ function createTransportMarker(position, transportInfo, map) {
     position,
     map,
     title: String(transportInfo.busId),
-    icon: generateTransportMarkerIcon(transportInfo.color || '#000', transportInfo.calculatedCourse || 0),
+    icon: generateTransportMarkerIcon(transportInfo.color || '#000', transportInfo.calculatedCourse || 0, transportInfo.route || 0),
   });
 
   let infowindow = new window.google.maps.InfoWindow({
-    content: `<div><strong>No.${transportInfo.busId}</strong><br>Line: ${transportInfo.route}</div>`,
+    content: `<div><strong>No.${transportInfo.busId}</strong><br>Line: ${transportInfo.route}</div>Passenger Count: ${transportInfo.paxLoad}</div>`,
   });
 
   transportMarker.direction = transportInfo.calculatedCourse;
@@ -108,7 +108,7 @@ function animateMarker(marker, startPosition, endPosition, duration) {
 
 // Generate custom transport marker icon (currently only support buses)
 // Original source of bus svg path: www.svgrepo.com
-function generateTransportMarkerIcon(color, direction) {
+function generateTransportMarkerIcon(color, direction, route) {
   const svg = `<?xml version="1.0" encoding="utf-8"?>
   <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
     <g class="layer" transform="rotate(${direction}, 12, 12)">
@@ -122,8 +122,11 @@ function generateTransportMarkerIcon(color, direction) {
       </g>
     </g>
   </svg>`;
+  let iconImg;
+  route !== 'Ferry Route' ? (iconImg = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svg)) : (iconImg = 'busIcons/busIcon_routeFerry_Route.png');
+
   const icon = {
-    url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svg),
+    url: iconImg,
     scaledSize: new window.google.maps.Size(40, 40),
   };
   return icon;
