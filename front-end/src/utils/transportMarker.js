@@ -20,7 +20,7 @@ export function updateTransportMarkers(transportData, markerRef, map) {
     const lat = parseFloat(transportInfo.latitude);
     const lng = parseFloat(transportInfo.longitude);
     const newPosition = new window.google.maps.LatLng(lat, lng);
-    const iconUpdate = marker && marker.direction !== transportInfo.calculatedCourse;
+    const iconUpdate = marker && (marker.direction !== transportInfo.calculatedCourse || transportInfo.route  === 'Ferry Route');
 
     if (marker) {
       // Update the position of the existing marker
@@ -29,12 +29,12 @@ export function updateTransportMarkers(transportData, markerRef, map) {
 
       // Update the icon of the existing marker
       if (iconUpdate) {
-        const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
+        const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse, transportInfo.route);
         marker.setIcon(newIcon);
       }
     } else {
       // Create a new marker
-      const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse);
+      const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse, transportInfo.route);
       let transportMarker = createTransportMarker(newPosition, transportInfo, map, newIcon);
       markerRef.current[transport] = transportMarker;
     }
@@ -122,12 +122,15 @@ function generateTransportMarkerIcon(color, direction, route) {
       </g>
     </g>
   </svg>`;
-  let iconImg;
-  route !== 'Ferry Route' ? (iconImg = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svg)) : (iconImg = 'busIcons/busIcon_routeFerry_Route.png');
-
+  let iconImg = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svg);
+  let scaledSize = new window.google.maps.Size(40, 40);
+  if (route === 'Ferry Route') {
+    iconImg = 'busIcons/busIcon_routeFerry_Route.png';
+    scaledSize= new window.google.maps.Size(30, 30);
+  }
   const icon = {
     url: iconImg,
-    scaledSize: new window.google.maps.Size(40, 40),
+    scaledSize: scaledSize,
   };
   return icon;
 }
