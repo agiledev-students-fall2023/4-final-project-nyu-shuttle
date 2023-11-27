@@ -60,7 +60,6 @@ function RoutesSubpage({ location1, location2 }) {
     
   const startNavigation = () => {
     alert("Navigation started!")
-    console.log(storedTheme)
   };
 
   const shuttle = "X";

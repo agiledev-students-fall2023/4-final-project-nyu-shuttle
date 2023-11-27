@@ -99,7 +99,7 @@ const authenticationRouter = () => {
     res.json({
       success: true,
       message:
-        "There is actually nothing to do on the server side... you simply need to delete your token from the browser's local storage!",
+        "You have successfully logged out!",
     });
     next();
   });

@@ -58,6 +58,6 @@ UserSchema.methods.toAuthJSON = function () {
   }
 }
 
-const User = mongoose.model("users", UserSchema)
+const User = mongoose.model("NYUShuttle.users", UserSchema)
 
 module.exports = User
