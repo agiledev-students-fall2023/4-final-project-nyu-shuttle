@@ -34,10 +34,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true })) 
 
 const authenticationRoutes = require("./routes/authentication-routes.js")
-const protectedContentRoutes = require("./routes/protected-content-routes.js")
 
 app.use("/auth", authenticationRoutes()) 
-app.use("/protected", protectedContentRoutes()) 
 
 
 app.get('/getRoute', (req, res) => {

@@ -25,4 +25,25 @@ describe("Login", () => {
         })
     })
   })
+
+    /**
+     * test the POST /login route
+     */
+    const validFormData = { username: "newuser", password: "newpassword" }
+    describe("POST /auth/login with correct username/password", () => {
+      it("it should return a 200 HTTP response code", done => {
+        chai
+          .request(server)
+          .post("/auth/login")
+          .type("form")
+          .send(validFormData)
+          .end((err, res) => {
+            res.should.have.status(200) 
+            done() 
+          })
+      })
+    })
+
+
+
 })
