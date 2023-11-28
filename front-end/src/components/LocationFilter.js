@@ -59,7 +59,8 @@ const LocationDropdown = ({ onLocationChange }) => {
         {options.length > 0 && (
           <ul className="options-list">
             {options.map((location, index) => (
-              <li className="options-expanded" key={index} onClick={() => handleLocationSelect(location)}>
+              <li className="options-expanded" 
+               key={index} onClick={() => handleLocationSelect(location)}>
                 {location.name} - {location.address}
               </li>
             ))}

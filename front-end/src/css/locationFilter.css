@@ -4,13 +4,17 @@
 }
 
 .dropdown{
-  @apply  relative;
-}
-
-.options-list{
-    @apply absolute left-0 right-0 top-0 z-10 mt-2 py-2 bg-white border border-gray-300 shadow-lg h-48 overflow-y-auto;
+  @apply relative;
 }
 
 .options-expanded{
-    @apply cursor-pointer py-1 px-2 hover:bg-gray-100
+    @apply py-1 px-4 cursor-pointer hover:bg-gray-100;
+}
+
+.options-list{
+    @apply absolute left-0 right-0 top-0 z-10 mt-2 py-2 rounded bg-white border border-gray-300 shadow-lg h-32 overflow-y-auto;
+}
+
+.dark .options-list {
+    @apply bg-darkMode-lightTone text-white; 
 }

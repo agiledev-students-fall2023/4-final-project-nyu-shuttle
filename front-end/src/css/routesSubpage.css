@@ -50,6 +50,10 @@ img {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.dark .route-info {
+  @apply bg-darkMode-lightTone text-white;
+}
+
 .route-info .route-text{
   display: flex;
   flex-direction: column;
