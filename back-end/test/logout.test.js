@@ -1,15 +1,14 @@
 process.env.NODE_ENV = "test"
 
-// include the testing dependencies
 const chai = require("chai")
 const chaiHttp = require("chai-http")
-chai.use(chaiHttp)
-const expect = chai.expect
+chai.use(chaiHttp) 
+const expect = chai.expect 
 const should = chai.should() 
 
-// import the server
 const server = require("../app")
 
+// a group of tests related to the /logout route
 describe("Logout", () => {
   /**
    * test the GET /logout route
@@ -32,7 +31,7 @@ describe("Logout", () => {
         .end((err, res) => {
           res.body.should.be.a("object") 
           res.body.should.have.property("success", true)
-          res.body.should.have.keys("success", "message") 
+          res.body.should.have.keys("success", "message")
           done() 
         })
     })

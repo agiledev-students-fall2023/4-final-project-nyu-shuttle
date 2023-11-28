@@ -39,10 +39,6 @@ const protectedContentRoutes = require("./routes/protected-content-routes.js")
 app.use("/auth", authenticationRoutes()) 
 app.use("/protected", protectedContentRoutes()) 
 
-module.exports = app 
-
-
-
 
 app.get('/getRoute', (req, res) => {
     const busStops = {
@@ -72,3 +68,5 @@ app.get('/getRoute', (req, res) => {
     console.log(optimalRoute);
     res.send('Hello World!'); 
 })
+
+module.exports = app 
