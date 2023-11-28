@@ -9,7 +9,7 @@ const server = require("../app");
 
 describe("Feedback Routes", () => {
     const formData = {
-      user: "blxyaaa",
+      user: 12345,
       timestamp: new Date(),
       category: "test_category",
       feedback: "Test feedback content",

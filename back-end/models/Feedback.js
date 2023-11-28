@@ -4,8 +4,8 @@ const Schema = mongoose.Schema
 
 const FeedbackSchema = new Schema({
   user: {
-    type: String,
-    unique: true,
+    type: Number,
+    unique: false,
     required: true,
   },
   timestamp: {
@@ -19,7 +19,9 @@ const FeedbackSchema = new Schema({
   feedback:{
     type: String,
     required: true,
-  },
+  }, 
+}, { 
+    unique: false, 
 })
 
 const Feedback = mongoose.model("Feedback", FeedbackSchema)

@@ -15,8 +15,8 @@ import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
 import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
 
+
 // Import hooks and utilities
-import useDarkMode from './hooks/darkMode';
 import { registerService } from './utils/serviceRegister';
 import { getUserPos, loadGoogleMapsAPI } from './utils/mapUtility';
 
@@ -28,7 +28,6 @@ import './css/tutorialComponent.css';
 export const TutorialContext = createContext();
 
 function App() {
-  const [colorTheme, setTheme] = useDarkMode();
   const [isLoading, setIsLoading] = useState(true);
   const isFirstTimeUser = localStorage.getItem('isFirst') !== 'false';
   const [tutorialIndex, setTutorialIndex] = useState(0);
@@ -38,6 +37,7 @@ function App() {
     let key = localStorage.key(i);
     let value = localStorage.getItem(key);
     localStorageItems[key] = value;
+   //console.log(key, value)
   }
 
   useEffect(() => {

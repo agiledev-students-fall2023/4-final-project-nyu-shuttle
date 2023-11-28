@@ -1,13 +1,45 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../../css/settingsPage.css';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  localStorageLoad,
+} from "../../utils/localStorageSaveLoad.js";
+import "../../css/settingsPage.css";
+import axios from "axios";
 
 const FeedbackSupportPage = () => {
-  const [category, setCategory] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [response, setResponse] = useState({});
+  const [category, setCategory] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = () => {
-    // later link with backend
+  const userId = localStorageLoad("deviceId");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (category === "" || feedback === "") {
+      setErrorMessage("Please fill out all fields");
+      return;
+    }
+    try {
+      const requestData = {
+        user: userId,
+        timestamp: Date.now(),
+        category: category,
+        feedback: feedback,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND}/feedback/newfeedback`,
+        requestData
+      );
+      console.log(`Server response: ${JSON.stringify(response.data, null, 0)}`);   
+      setResponse(response.data);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err.message);
+    } finally {
+      setCategory("");
+      setFeedback("");
+    }
   };
 
   return (
@@ -31,7 +63,9 @@ const FeedbackSupportPage = () => {
           >
             <option value="">--Select--</option>
             <option value="Bug Report">Bug Report</option>
-            <option value="User Experience Feedback">User Experience Feedback</option>
+            <option value="User Experience Feedback">
+              User Experience Feedback
+            </option>
             <option value="Bus Schedule Error">Bus Schedule Error</option>
           </select>
         </div>
