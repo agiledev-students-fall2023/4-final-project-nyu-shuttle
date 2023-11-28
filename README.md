@@ -35,8 +35,6 @@ Fork the repo and clone it locally. Then:
 5. In the back end folder, put the following keys in a .env file:
    - MONGODB_URI=  (please, reach out to us for the exact key)
    - FRONT_END_DOMAIN=http://localhost:3000
-   - JWT_EXP_DAYS=60
-   - JWT_SECRET= (will be used in deployment...)
    - EXPRESS_APP_MAP_API_KEY (please, reach out to us for the exact key)
   
 6. To run backend tests cd to the backend folder and run:
