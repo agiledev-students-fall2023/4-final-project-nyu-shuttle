@@ -19,11 +19,11 @@ const LocationDropdown = ({ onLocationChange }) => {
       const placesService = new google.maps.places.PlacesService(document.createElement('div'));
       if (inputValue.trim() !== '' && inputValue !== selectedLocation.name) {
         const request = {
-          query: inputValue + ' New York City',
+          query: inputValue,
         };
         placesService.textSearch(request, (results, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
-            const nycPlaces = results.filter((result) => result.formatted_address.includes('New York, NY'));
+            const nycPlaces = results.filter((result) => result.formatted_address);
             const limitedPlaces = nycPlaces.slice(0, 5); 
             const places = limitedPlaces.map((result) => ({
               name: result.name,
