@@ -7,7 +7,7 @@
 }
 
 .settings-header {
-  @apply text-2xl font-semibold mb-5;
+  @apply text-2xl font-semibold mb-4;
 }
 
 .settings-item-wrapper {
@@ -47,8 +47,26 @@
 }
 
 .feedback-label {
-  @apply mb-2;
+  @apply mt-2 mb-2;
 }
+
+.error-message {
+  @apply text-white text-center bg-darkMode-darkMidTone h-10 items-center p-1 mb-0 rounded-lg;
+}
+
+.dark .error-message {
+  @apply bg-lightMidTone;
+}
+
+.success-message {
+  @apply text-white text-center bg-darkMode-darkMidTone h-10 items-center p-1 mb-0 rounded-lg;
+}
+
+.dark .success-message {
+  @apply bg-lightMidTone;
+}
+
+
 
 .feedback-dropdown,
 .feedback-textarea {

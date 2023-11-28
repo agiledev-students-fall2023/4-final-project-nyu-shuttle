@@ -16,7 +16,8 @@ const FeedbackSupportPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (category === "" || feedback === "") {
+    if (userId == null || category === "" || feedback === "") {
+      setResponse({});
       setErrorMessage("Please fill out all fields");
       return;
     }
@@ -32,6 +33,7 @@ const FeedbackSupportPage = () => {
         requestData
       );
       console.log(`Server response: ${JSON.stringify(response.data, null, 0)}`);   
+      setErrorMessage("");
       setResponse(response.data);
     } catch (err) {
       console.log(err);
@@ -39,6 +41,7 @@ const FeedbackSupportPage = () => {
     } finally {
       setCategory("");
       setFeedback("");
+
     }
   };
 
@@ -50,6 +53,8 @@ const FeedbackSupportPage = () => {
       <div>
         <h1 className="settings-header">Feedback / Support</h1>
       </div>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {response.message && <div className="success-message"> Thank you for the feedback!</div>}
       <div>
         <div className="feedback-item">
           <label htmlFor="category" className="feedback-label">

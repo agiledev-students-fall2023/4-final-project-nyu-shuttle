@@ -4,16 +4,8 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 require("dotenv").config({ silent: true });
-const jwt = require("jsonwebtoken");
-const passport = require("passport");
-
-const jwtStrategy = require("./config/jwt-config.js");
-passport.use(jwtStrategy);
-
-app.use(passport.initialize());
 
 const mongoose = require("mongoose");
-const User = require("./models/User.js");
 const Feedback = require("./models/Feedback.js");
 
 // connect to the database
@@ -32,10 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
 
-const authenticationRoutes = require("./routes/authentication-routes.js");
 const feedbackRoutes = require("./routes/feedback-routes.js");
 
-app.use("/auth", authenticationRoutes());
 app.use("/feedback", feedbackRoutes());
 
 
