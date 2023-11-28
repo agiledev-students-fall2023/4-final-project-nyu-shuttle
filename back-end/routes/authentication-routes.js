@@ -1,8 +1,9 @@
-const express = require("express"); 
+const express = require("express");
 
 const mongoose = require("mongoose");
 const User = require("../models/User.js");
 
+// a method that constains code to handle authentication-specific routes
 const authenticationRouter = () => {
   const router = express.Router();
 
@@ -22,13 +23,13 @@ const authenticationRouter = () => {
     try {
       const user = await new User({ username, password }).save();
       console.error(`New user: ${user}`);
-      const token = user.generateJWT(); 
+      const token = user.generateJWT();
       res.json({
         success: true,
         message: "User saved successfully.",
         token: token,
         username: user.username,
-      }); 
+      });
       next();
     } catch (err) {
       console.error(`Failed to save user: ${err}`);
@@ -53,50 +54,48 @@ const authenticationRouter = () => {
       next();
     }
 
-  try {
-    const user = await User.findOne({ username: username }).exec();
-    if (!user) {
-      console.error(`User not found.`);
-      return res.status(401).json({
-        success: false,
-        message: "User not found in the database.",
+    try {
+      const user = await User.findOne({ username: username }).exec();
+      if (!user) {
+        console.error(`User not found.`);
+        return res.status(401).json({
+          success: false,
+          message: "User not found in the database.",
+        });
+        next();
+      } else if (!user.validPassword(password)) {
+        console.error(`Incorrect password.`);
+        return res.status(401).json({
+          success: false,
+          message: "Incorrect password.",
+        });
+        next();
+      }
+      console.log("User logged in successfully.");
+      const token = user.generateJWT();
+      return res.json({
+        success: true,
+        message: "User logged in successfully.",
+        token: token,
+        username: user.username,
       });
       next();
-    } else if (!user.validPassword(password)) {
-      console.error(`Incorrect password.`);
-      return res.status(401).json({
+    } catch (err) {
+      console.error(`Error looking up user: ${err}`);
+      return res.status(500).json({
         success: false,
-        message: "Incorrect password.",
+        message: "Error looking up user in the database.",
+        error: err,
       });
       next();
     }
-    console.log("User logged in successfully.");
-    const token = user.generateJWT(); 
-    return res.json({
-      success: true,
-      message: "User logged in successfully.",
-      token: token,
-      username: user.username,
-    }); 
-    next();
-  } catch (err) {
-    console.error(`Error looking up user: ${err}`);
-    return res.status(500).json({
-      success: false,
-      message: "Error looking up user in the database.",
-      error: err,
-    });
-    next();
-  }
-  }
-  );
+  });
 
   // a route to handle logging out requests to /auth/logout
   router.get("/logout", function (req, res, next) {
     res.json({
       success: true,
-      message:
-        "Successfully logged out",
+      message: "Successfully logged out",
     });
     next();
   });
