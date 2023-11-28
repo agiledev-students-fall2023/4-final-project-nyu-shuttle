@@ -28,7 +28,22 @@ Fork the repo and clone it locally. Then:
 
 3. Put Google Maps API key at utils/MapUtility.js (const API_KEY)
 
-4. Run frontend and backend 
+4. In the front end folder, put the following keys in a .env file:
+   - REACT_APP_MAP_API_KEY (please, reach out to us for the exact key)
+   - REACT_APP_BACKEND==http://localhost:4000
+  
+5. In the back end folder, put the following keys in a .env file:
+   - MONGODB_URI=  (please, reach out to us for the exact key)
+   - FRONT_END_DOMAIN=http://localhost:3000
+   - JWT_EXP_DAYS=60
+   - JWT_SECRET= (will be used in deployment...)
+   - EXPRESS_APP_MAP_API_KEY (please, reach out to us for the exact key)
+  
+6. To run backend tests cd to the backend folder and run:
+   ```bash 
+   npm test
+
+8. Run frontend and backend 
    ```bash 
    npm start
 
