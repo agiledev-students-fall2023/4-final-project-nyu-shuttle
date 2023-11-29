@@ -1,12 +1,17 @@
+import axios from 'axios';
+
 const MIN_QUERY_DELAY = 60000; // 1 min
 
 let lastQuery = -MIN_QUERY_DELAY;
+let subscribedRoutes = localStorage.subscribedRoutes;
 
 // Shared variable
 if (typeof window.nyushuttle == 'undefined') {
   window.nyushuttle = {};
 }
+window.nyushuttle.routesFull = [];
 window.nyushuttle.routes = [];
+window.nyushuttle.routesSelected = subscribedRoutes ? subscribedRoutes.split(',') : [];
 
 export async function queryRoutes(fresh) {
   // Prevent too frequent requests (rate limiting)
@@ -16,8 +21,8 @@ export async function queryRoutes(fresh) {
 
   // JSON
   const json = {
-    s0: localStorage.agencyId,
-    sA: 1,
+    systemSelected0: localStorage.agencyId,
+    amount: 1,
   };
 
   const formData = new URLSearchParams({});
@@ -30,7 +35,7 @@ export async function queryRoutes(fresh) {
   };
 
   // Optional parameters
-  if (fresh) {
+  if (!fresh) {
     params.sortMode = 1;
     params.credentials = 1;
 
@@ -49,6 +54,7 @@ export async function queryRoutes(fresh) {
       throw new Error('empty response');
     }
     if (fresh) {
+      window.nyushuttle.routesFull = data;
       window.nyushuttle.routes = data;
     } else {
       if (!data.all) {
