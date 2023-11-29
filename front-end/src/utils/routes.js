@@ -10,13 +10,13 @@ if (typeof window.nyushuttle == 'undefined') {
   window.nyushuttle = {};
 }
 window.nyushuttle.routesFull = [];
-window.nyushuttle.routes = [];
+window.nyushuttle.routesData = [];
 window.nyushuttle.routesSelected = subscribedRoutes ? subscribedRoutes.split(',') : [];
 
 export async function queryRoutes(fresh) {
   // Prevent too frequent requests (rate limiting)
   if (performance.now() - lastQuery < MIN_QUERY_DELAY) {
-    return window.nyushuttle.routes;
+    return true;
   }
 
   // JSON
@@ -55,16 +55,16 @@ export async function queryRoutes(fresh) {
     }
     if (fresh) {
       window.nyushuttle.routesFull = data;
-      window.nyushuttle.routes = data;
+      window.nyushuttle.routesData = data;
     } else {
       if (!data.all) {
         throw new Error('empty response');
       }
-      window.nyushuttle.routes = data.all;
+      window.nyushuttle.routesData = data.all;
     }
+    return true;
   } catch (error) {
     console.log('Transportations query error: ' + error.message);
-  } finally {
-    return window.nyushuttle.routes;
+    return false;
   }
 }
