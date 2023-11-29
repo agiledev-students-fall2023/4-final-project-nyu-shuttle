@@ -15,10 +15,10 @@ import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
 import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
 
-
 // Import hooks and utilities
 import { registerService } from './utils/serviceRegister';
 import { getUserPos, loadGoogleMapsAPI } from './utils/mapUtility';
+import { queryRoutes } from './utils/routes';
 
 // Import CSS
 import './index.css';
@@ -37,7 +37,7 @@ function App() {
     let key = localStorage.key(i);
     let value = localStorage.getItem(key);
     localStorageItems[key] = value;
-   //console.log(key, value)
+    //console.log(key, value)
   }
 
   useEffect(() => {
@@ -46,6 +46,7 @@ function App() {
     window.addEventListener('keydown', devTools);
     registerService();
     getUserPos();
+    queryRoutes(true);
 
     return () => window.removeEventListener('keydown', devTools);
   }, []);
