@@ -1,10 +1,15 @@
-import '../css/map.css';
-import { useEffect, useState, useRef } from 'react';
-import RealTimeDataWebSocket from '../utils/websocket';
-import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
-import { queryTransportations } from '../utils/transportData';
-import { updateTransportMarkers } from '../utils/transportMarker';
-import { queryStops, drawStopMarkers } from '../utils/stops';
+import "../css/map.css";
+import { useEffect, useState, useRef } from "react";
+import RealTimeDataWebSocket from "../utils/websocket";
+import {
+  loadGoogleMapsAPI,
+  initializeMap,
+  getCoordinates,
+  generateTwoUniqueRandomInts,
+} from "../utils/mapUtility";
+import { queryTransportations } from "../utils/transportData";
+import { updateTransportMarkers } from "../utils/transportMarker";
+import { queryStops, drawStopMarkers } from "../utils/stops";
 
 function Map({ line, lineColor }) {
   const googleMapRef = useRef(null);
@@ -19,6 +24,10 @@ function Map({ line, lineColor }) {
   const [startLoc, setStartLoc] = useState(nycCoordinates[randomIntOne]);
   const [endLoc, setEndLoc] = useState(nycCoordinates[randomIntTwo]);
 
+  // Shared variable
+  if (typeof window.nyushuttle == "undefined") {
+    window.nyushuttle = {};
+  }
   const busStops = {
     unionsquare: [40.7349, -73.9906],
     tompkins: [40.7251, -73.9812],
@@ -55,7 +64,13 @@ function Map({ line, lineColor }) {
       busStops.washingtonsquare,
     ],
     route2: [busStops.jayst, busStops.dumbo, busStops.ikea],
-    route3: [busStops.jayst, busStops.eastbroadway, busStops.washingtonsquare, busStops.chinatown, busStops.financial],
+    route3: [
+      busStops.jayst,
+      busStops.eastbroadway,
+      busStops.washingtonsquare,
+      busStops.chinatown,
+      busStops.financial,
+    ],
     route4: [
       busStops.eastbroadway,
       busStops.washingtonsquare,
@@ -115,16 +130,16 @@ function Map({ line, lineColor }) {
   useEffect(() => {
     //wait for map to return
     if (!startLoc || !endLoc || !map || !line || !lineColor) return;
-    console.log('----------------------------');
-    console.log('line changed');
+    console.log("----------------------------");
+    console.log("line changed");
     console.log(line);
-    console.log('startLoc' + startLoc);
-    console.log('endLoc' + endLoc);
-    console.log('----------------------------');
+    console.log("startLoc" + startLoc);
+    console.log("endLoc" + endLoc);
+    console.log("----------------------------");
 
     //set start and end location
-    let curline = routes['route' + String(line)];
-    console.log('selected route: ' + curline);
+    let curline = routes["route" + String(line)];
+    console.log("selected route: " + curline);
     plotRoute(curline, lineColor);
   }, [map, line, startLoc, endLoc]);
 
@@ -133,7 +148,7 @@ function Map({ line, lineColor }) {
       const transportations = await queryTransportations(true);
       setTransportData(transportations);
     } catch (error) {
-      console.log('error fetching transport data', error);
+      console.log("error fetching transport data", error);
       // Other error handling? message?
     }
   };
@@ -152,7 +167,7 @@ function Map({ line, lineColor }) {
       };
 
       directionsService.route(request, function (response, status) {
-        if (status === 'OK') {
+        if (status === "OK") {
           let directionsRenderer = new window.google.maps.DirectionsRenderer({
             polylineOptions: new window.google.maps.Polyline({
               strokeColor: lineColor,
@@ -171,7 +186,7 @@ function Map({ line, lineColor }) {
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 8,
-              fillColor: '#b3b3b3',
+              fillColor: "#b3b3b3",
               fillOpacity: 0.8,
               strokeWeight: 0,
             },
@@ -183,13 +198,15 @@ function Map({ line, lineColor }) {
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 8,
-              fillColor: '#b3b3b3',
+              fillColor: "#b3b3b3",
               fillOpacity: 0.8,
               strokeWeight: 0,
             },
           });
         } else {
-          console.log('Directions request for segment ' + i + ' failed due to ' + status);
+          console.log(
+            "Directions request for segment " + i + " failed due to " + status
+          );
         }
       });
     }
