@@ -63,7 +63,6 @@ function App() {
 
   const devTools = (e) => {
     if ((e.keyCode === 82 && e.metaKey) || (e.keyCode === 82 && e.ctrlKey)){
-      // R key
       console.log('Resetting local storage...');
       localStorage.clear();
     }

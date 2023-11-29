@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useDarkMode from '../../hooks/darkMode';
 import '../../css/settingsPage.css';
 
 const SettingsPage = () => {
   const [colorTheme, setTheme] = useDarkMode();
-  const [isDarkMode, setIsDarkMode] = useState(colorTheme === 'dark');
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    setIsDarkMode(colorTheme === 'dark');
+  }, [colorTheme]);
 
   const toggleDarkTheme = () => {
     const nextTheme = colorTheme === 'dark' ? 'light' : 'dark';
     setIsDarkMode(nextTheme === 'dark');
     setTheme(nextTheme);
   };
+
 
   return (
     <div className="settings-container">
@@ -24,7 +29,7 @@ const SettingsPage = () => {
           </button>
         </div>
 
-        <a href="#" className="settings-item">
+        <a href="https://nyu.passiogo.com/" className="settings-item">
           Visit Data Source
         </a>
 
