@@ -42,6 +42,11 @@ const API_LIBRARIES = ['geometry', 'places'];
 const CALLBACK_NAME = 'gmapAPICallback';
 const POS_DEFAULT = [40.716503, -73.976077];
 
+// Shared variable
+if (typeof window.nyushuttle == 'undefined') {
+  window.nyushuttle = {};
+}
+
 export function loadGoogleMapsAPI(callback) {
   let c = typeof callback == 'function' ? callback : () => {};
 
@@ -66,6 +71,7 @@ export function initializeMap(mapRef, setIsMapLoaded, setMap) {
     options: MAP_OPTIONS,
   });
   setMap(googleMap);
+  window.nyushuttle.currentMap = googleMap;
 
   window.google.maps.event.addListenerOnce(googleMap, 'tilesloaded', () => {
     setIsMapLoaded(true);

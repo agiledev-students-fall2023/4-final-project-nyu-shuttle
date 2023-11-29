@@ -48,7 +48,7 @@ export async function queryTransportations(refresh) {
   }
 
   const urlParams = new URLSearchParams(params);
-  const url = `${localStorage.serviceEndpointSub}/mapGetData.php?${urlParams.toString()}`;
+  const url = `${localStorage.serviceEndpointHome}/mapGetData.php?${urlParams.toString()}`;
 
   try {
     const response = await axios.post(url, formData);

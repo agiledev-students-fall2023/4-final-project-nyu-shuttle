@@ -4,6 +4,7 @@ import RealTimeDataWebSocket from '../utils/websocket';
 import { loadGoogleMapsAPI, initializeMap, getCoordinates, generateTwoUniqueRandomInts } from '../utils/mapUtility';
 import { queryTransportations } from '../utils/transportData';
 import { updateTransportMarkers } from '../utils/transportMarker';
+import { queryStops, drawStopMarkers } from '../utils/stops';
 
 function Map({ line, lineColor }) {
   const googleMapRef = useRef(null);
@@ -32,19 +33,39 @@ function Map({ line, lineColor }) {
     washingtonsquare: [40.7315, -73.9971],
     jayst: [40.6922, -73.9864],
     dumbo: [40.7037, -73.9886],
-    ikea: [40.6726, -74.0100],
+    ikea: [40.6726, -74.01],
     test1: [39.7392, -104.9903],
     test2: [39.7479, -104.9994],
     test3: [39.7398, -104.9892],
-    test4: [39.7394, -104.9849]
-  }
+    test4: [39.7394, -104.9849],
+  };
   const routes = {
-      route1: [busStops.washingtonsquare, busStops.unionsquare, busStops.tompkins, busStops.hamilton, busStops.eastbroadway, busStops.chinatown, busStops.financial, busStops.tribeca, busStops.canal, busStops.soho, busStops.greenwich, busStops.washingtonsquare],
-      route2: [busStops.jayst, busStops.dumbo, busStops.ikea],
-      route3: [busStops.jayst, busStops.eastbroadway, busStops.washingtonsquare, busStops.chinatown, busStops.financial],
-      route4: [busStops.eastbroadway, busStops.washingtonsquare, busStops.unionsquare, busStops.tompkins, busStops.hamilton, busStops.eastbroadway],
-      route5: [busStops.test1, busStops.test2, busStops.test3, busStops.test4]
-    }
+    route1: [
+      busStops.washingtonsquare,
+      busStops.unionsquare,
+      busStops.tompkins,
+      busStops.hamilton,
+      busStops.eastbroadway,
+      busStops.chinatown,
+      busStops.financial,
+      busStops.tribeca,
+      busStops.canal,
+      busStops.soho,
+      busStops.greenwich,
+      busStops.washingtonsquare,
+    ],
+    route2: [busStops.jayst, busStops.dumbo, busStops.ikea],
+    route3: [busStops.jayst, busStops.eastbroadway, busStops.washingtonsquare, busStops.chinatown, busStops.financial],
+    route4: [
+      busStops.eastbroadway,
+      busStops.washingtonsquare,
+      busStops.unionsquare,
+      busStops.tompkins,
+      busStops.hamilton,
+      busStops.eastbroadway,
+    ],
+    route5: [busStops.test1, busStops.test2, busStops.test3, busStops.test4],
+  };
 
   // Load Google Maps API
   useEffect(() => {
@@ -73,6 +94,11 @@ function Map({ line, lineColor }) {
   useEffect(() => {
     if (isMapLoaded) {
       fetchTransportData(map);
+      queryStops().then((r) => {
+        if (r) {
+          drawStopMarkers();
+        }
+      });
     }
   }, [isMapLoaded]);
 
@@ -96,12 +122,10 @@ function Map({ line, lineColor }) {
     console.log('endLoc' + endLoc);
     console.log('----------------------------');
 
-
     //set start and end location
-    let curline = routes['route'+String(line)];
-    console.log('selected route: '+curline);  
+    let curline = routes['route' + String(line)];
+    console.log('selected route: ' + curline);
     plotRoute(curline, lineColor);
-    
   }, [map, line, startLoc, endLoc]);
 
   const fetchTransportData = async () => {
@@ -116,30 +140,30 @@ function Map({ line, lineColor }) {
 
   const plotRoute = async (curline, lineColor) => {
     let directionsService = new window.google.maps.DirectionsService();
-  
+
     for (let i = 0; i < curline.length - 1; i++) {
       let start = curline[i];
       let end = curline[i + 1];
-  
+
       let request = {
         origin: new window.google.maps.LatLng(start[0], start[1]),
         destination: new window.google.maps.LatLng(end[0], end[1]),
-        travelMode: window.google.maps.TravelMode.DRIVING
+        travelMode: window.google.maps.TravelMode.DRIVING,
       };
-  
+
       directionsService.route(request, function (response, status) {
         if (status === 'OK') {
           let directionsRenderer = new window.google.maps.DirectionsRenderer({
             polylineOptions: new window.google.maps.Polyline({
               strokeColor: lineColor,
               strokeOpacity: 0.8,
-              strokeWeight: 5
+              strokeWeight: 5,
             }),
-            suppressMarkers: true 
+            suppressMarkers: true,
           });
           directionsRenderer.setDirections(response);
           directionsRenderer.setMap(map);
-  
+
           // Create markers at the start and end of each segment
           new window.google.maps.Marker({
             position: new window.google.maps.LatLng(start[0], start[1]),
@@ -147,32 +171,29 @@ function Map({ line, lineColor }) {
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 8,
-              fillColor: "#b3b3b3",
+              fillColor: '#b3b3b3',
               fillOpacity: 0.8,
-              strokeWeight: 0
-            }
+              strokeWeight: 0,
+            },
           });
-  
+
           new window.google.maps.Marker({
             position: new window.google.maps.LatLng(end[0], end[1]),
             map: map,
             icon: {
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 8,
-              fillColor: "#b3b3b3",
+              fillColor: '#b3b3b3',
               fillOpacity: 0.8,
-              strokeWeight: 0
-            }
+              strokeWeight: 0,
+            },
           });
-  
         } else {
           console.log('Directions request for segment ' + i + ' failed due to ' + status);
         }
       });
     }
-  }
-  
-
+  };
 
   return (
     <>
