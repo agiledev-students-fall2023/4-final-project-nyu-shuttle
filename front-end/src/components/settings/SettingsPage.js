@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import useDarkMode from '../../hooks/darkMode';
 import '../../css/settingsPage.css';
@@ -16,7 +16,6 @@ const SettingsPage = () => {
     setIsDarkMode(nextTheme === 'dark');
     setTheme(nextTheme);
   };
-
 
   return (
     <div className="settings-container">

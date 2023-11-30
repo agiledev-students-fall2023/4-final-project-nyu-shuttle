@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { loadGoogleMapsAPI } from '../utils/mapUtility';
 import '../css/locationFilter.css';
 
-const LocationDropdown = ({ onLocationChange }) => {
+const LocationDropdown = ({initialLocation, onLocationChange }) => {
   const [isApiLoaded, setIsApiLoaded] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [inputValue, setInputValue] = useState(initialLocation.name || ''); 
+  const [selectedLocation, setSelectedLocation] = useState(initialLocation || ''); 
   const [options, setOptions] = useState([]);
 
   // Load Google Maps API
@@ -46,6 +46,7 @@ const LocationDropdown = ({ onLocationChange }) => {
     onLocationChange(location);
     setOptions([]);
   };
+
 
   return (
     <div className="text-box">
