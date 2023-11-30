@@ -381,7 +381,3 @@ function updateMarkerVisibility(zoomLevel) {
     marker.setVisible(zoomLevel >= stopMarkerZoomVisibilityTreshold);
   });
 }
-
-window.debugTools = {};
-window.debugTools.queryStops = queryStops;
-window.debugTools.drawStopMarkers = drawStopMarkers;
