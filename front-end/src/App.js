@@ -17,7 +17,7 @@ import TutorialComponent from './components/TutorialComponent';
 
 // Import hooks and utilities
 import { registerService } from './utils/serviceRegister';
-import { getUserPos, loadGoogleMapsAPI } from './utils/mapUtility';
+import { getMapCenter, loadGoogleMapsAPI } from './utils/mapUtility';
 import { queryRoutes } from './utils/routes';
 
 // Import CSS
@@ -45,7 +45,7 @@ function App() {
     loadGoogleMapsAPI(() => setIsLoading(false));
     window.addEventListener('keydown', devTools);
     registerService();
-    getUserPos();
+    getMapCenter();
     queryRoutes(true);
 
     return () => window.removeEventListener('keydown', devTools);
@@ -63,7 +63,7 @@ function App() {
   };
 
   const devTools = (e) => {
-    if ((e.keyCode === 82 && e.metaKey) || (e.keyCode === 82 && e.ctrlKey)){
+    if ((e.keyCode === 82 && e.metaKey) || (e.keyCode === 82 && e.ctrlKey)) {
       console.log('Resetting local storage...');
       localStorage.clear();
     }
