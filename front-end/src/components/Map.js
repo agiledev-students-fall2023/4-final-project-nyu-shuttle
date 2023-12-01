@@ -12,6 +12,7 @@ function Map() {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [map, setMap] = useState(null);
   const [ws, setWebSocket] = useState(null);
+  const [wsOpen, setwsOpen] = useState(false);
   const [transportData, setTransportData] = useState(null);
   const markerRef = useRef({});
 
@@ -57,9 +58,10 @@ function Map() {
 
   // Set up websocket after transportdata is fetched
   useEffect(() => {
-    if (ws && transportData) {
+    if (ws && transportData && !wsOpen) {
       ws.setup(transportData, setTransportData);
       ws.start();
+      setwsOpen(true);
     }
     updateTransportMarkers(transportData, markerRef, map);
   }, [transportData]);
