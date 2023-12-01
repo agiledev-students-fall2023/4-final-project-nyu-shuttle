@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
+import { updateTransportMarkers } from '../utils/transportMarker';
+import { drawStopMarkers } from '../utils/stops';
 import '../css/filter.css';
 // import { ReactComponent as FilterIcon } from '../images/filter.svg';
 import DropDownArrow from './DropDownArrow.js';
 
-function Filter() {
+function Filter({ onFilterChange }) {
   const [routesData, setRoutesFilter] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState('Show All');
@@ -50,7 +52,12 @@ function Filter() {
       setSelectedRoute(routeName);
       setTextColor(routeName === 'Show All' || routeName === 'None' ? 'black' : 'white');
       setRouteColor(routeName === 'Show All' || routeName === 'None' ? 'white' : color);
-      nyushuttle.routesSelected = routeName === 'Show All' || routeName === 'None' ? [] : [id];
+      nyushuttle.routesSelected = routeName === 'Show All' || routeName === 'None' ? [] : [id]; // only allow one for now
+
+      // Apply filter to map items
+      drawStopMarkers();
+      updateTransportMarkers();
+      onFilterChange(id);
     },
     [nyushuttle.routesSelected]
   );
@@ -73,7 +80,7 @@ function Filter() {
           <DropDownArrow status={isOpen} arrowColor={textColor} />
           <ul id="dropdown" style={{ display: isOpen ? 'block' : 'none' }}>
             {routesData.map((route) => (
-              <div key={route.id} className="flex bg-white">
+              <div key={'r_' + route.id} className="flex bg-white">
                 <div className="route-color-bar" style={{ backgroundColor: route.color }}></div>
                 <div className="list-item-wrapper" onClick={() => selectRoute(route.id, route.name, route.color)}>
                   <li>{route.name}</li>

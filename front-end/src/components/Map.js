@@ -6,7 +6,7 @@ import { queryTransportations } from '../utils/transportData';
 import { updateTransportMarkers } from '../utils/transportMarker';
 import { queryStops, drawStopMarkers } from '../utils/stops';
 
-function Map() {
+function Map({ filter }) {
   const googleMapRef = useRef(null);
   const [isApiLoaded, setIsApiLoaded] = useState(false);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -65,6 +65,12 @@ function Map() {
     }
     updateTransportMarkers(transportData, markerRef, map);
   }, [transportData]);
+
+  // Reflect filter updates
+  useEffect(() => {
+    updateTransportMarkers(transportData, markerRef, map, true);
+    fetchTransportData(map);
+  }, [filter]);
 
   const fetchTransportData = async () => {
     try {

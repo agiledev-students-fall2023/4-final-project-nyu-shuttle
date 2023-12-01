@@ -1,54 +1,65 @@
 const MAX_ANIMATION_DURATION = 9000;
 const TRANSPORTATION_BASE_Z_INDEX = 100;
 
-export function updateTransportMarkers(transportData, markerRef, map) {
+export function updateTransportMarkers(transportData, markerRef, map, fresh = false) {
   if (!transportData) {
     return;
   }
 
-  // Remove old markers if they are no longer in the new data
-  for (const transportId in markerRef.current) {
-    if (!transportData.hasOwnProperty(transportId)) {
+  const removeMarker = (transportId) => {
+    if (markerRef.current[transportId]) {
       markerRef.current[transportId].setMap(null);
       delete markerRef.current[transportId];
+    }
+  };
+
+  // Remove old markers based on the condition
+  for (const transportId in markerRef.current) {
+    if (
+      (fresh && markerRef.current.hasOwnProperty(transportId)) ||
+      (!fresh && !transportData.hasOwnProperty(transportId))
+    ) {
+      removeMarker(transportId);
     }
   }
 
   // Process new and existing transport data
-  Object.keys(transportData).forEach((transport) => {
-    const transportInfo = transportData[transport][0];
-    const marker = markerRef.current[transport];
-    const lat = parseFloat(transportInfo.latitude);
-    const lng = parseFloat(transportInfo.longitude);
-    const newPosition = new window.google.maps.LatLng(lat, lng);
-    const iconUpdate =
-      marker && (marker.direction !== transportInfo.calculatedCourse || transportInfo.route === 'Ferry Route');
+  Object.keys(transportData)
+    .filter((transport) => isSelectedRoute(transportData[transport][0].routeId))
+    .forEach((transport) => {
+      const transportInfo = transportData[transport][0];
+      const marker = markerRef.current[transport];
+      const lat = parseFloat(transportInfo.latitude);
+      const lng = parseFloat(transportInfo.longitude);
+      const newPosition = new window.google.maps.LatLng(lat, lng);
+      const iconUpdate =
+        marker && (marker.direction !== transportInfo.calculatedCourse || transportInfo.route === 'Ferry Route');
 
-    if (marker) {
-      // Update the position of the existing marker
-      const currentPosition = marker.getPosition();
-      animateMarker(marker, currentPosition, newPosition, MAX_ANIMATION_DURATION);
+      if (marker) {
+        // Update the position of the existing marker
+        const currentPosition = marker.getPosition();
+        animateMarker(marker, currentPosition, newPosition, MAX_ANIMATION_DURATION);
 
-      // Update the icon of the existing marker
-      if (iconUpdate) {
+        // Update the icon of the existing marker
+        if (iconUpdate) {
+          const newIcon = generateTransportMarkerIcon(
+            transportInfo.color,
+            transportInfo.calculatedCourse,
+            transportInfo.route
+          );
+          marker.setIcon(newIcon);
+        }
+      } else {
+        // Create a new marker
         const newIcon = generateTransportMarkerIcon(
           transportInfo.color,
           transportInfo.calculatedCourse,
           transportInfo.route
         );
-        marker.setIcon(newIcon);
+        let transportMarker = createTransportMarker(newPosition, transportInfo, map, newIcon);
+        markerRef.current[transport] = transportMarker;
       }
-    } else {
-      // Create a new marker
-      const newIcon = generateTransportMarkerIcon(
-        transportInfo.color,
-        transportInfo.calculatedCourse,
-        transportInfo.route
-      );
-      let transportMarker = createTransportMarker(newPosition, transportInfo, map, newIcon);
-      markerRef.current[transport] = transportMarker;
-    }
-  });
+    });
 }
 
 function createTransportMarker(position, transportInfo, map) {
@@ -150,4 +161,7 @@ function generateTransportMarkerIcon(color, direction, route) {
   return icon;
 }
 
-export default updateTransportMarkers;
+function isSelectedRoute(id) {
+  const s = window.nyushuttle.routesSelected;
+  return !s || s.length === 0 || s.includes(id);
+}
