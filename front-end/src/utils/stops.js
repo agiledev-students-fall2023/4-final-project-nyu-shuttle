@@ -126,7 +126,7 @@ function clearMarkers(markers, isArray = false) {
   } else if (markers != null) {
     markers.clearMarkers();
   }
-  markers = [];
+  markers.length = 0;
 }
 
 function drawRoutes(showStopName) {
