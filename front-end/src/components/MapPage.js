@@ -1,24 +1,25 @@
+import React, { useState } from 'react'; // Import only what you use
 import '../css/mapPage.css';
 import Filter from './Filter';
 import Map from './Map';
-import { useEffect, useState, useRef } from 'react';
 
+// Functional component
 function MapPage() {
-  const [lineSelected, setLineSelected] = useState(null);
-  const [lineColor, setLineColor] = useState(null);
-  const handleFilterChange = (newLineSelected, newLineColor) => {
-    setLineSelected(newLineSelected);
-    setLineColor(newLineColor);
+  // State for the filter
+  const [filter, setFilter] = useState(null);
+
+  // Event handler for filter change
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
   };
+
   return (
-    <>
-      <div className="map-container">
-        <Filter onFilterChange={handleFilterChange} />
-        <div className="map">
-          <Map key={lineSelected} line={lineSelected} lineColor={lineColor} />
-        </div>
+    <div className="map-container">
+      <Filter onFilterChange={handleFilterChange} />
+      <div className="map">
+        <Map key={0} filter={filter} />
       </div>
-    </>
+    </div>
   );
 }
 
