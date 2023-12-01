@@ -1,58 +1,97 @@
-import { useState , Fragment } from 'react';
-import '../css/filter.css'
-import { ReactComponent as FilterIcon } from '../images/filter.svg';
+import { useState, useEffect, useCallback } from 'react';
+import { updateTransportMarkers } from '../utils/transportMarker';
+import { drawStopMarkers } from '../utils/stops';
+import '../css/filter.css';
+// import { ReactComponent as FilterIcon } from '../images/filter.svg';
 import DropDownArrow from './DropDownArrow.js';
 
-function Filter({onFilterChange}){
-    /*the routes are temperarily hard-coded */
-    const routes = ['None', 'Route 1', 'Route 2', 'Route 3', 'Route 4', 'Route 5', 'Route 6', 'Route 7', 'Route 8', 'Route 9', 'Route 10'];
-    const [isOpen, setIsOpen] = useState(false);
-    //randomly route colors
-    const routes_colors = ['#F0E9FF', '#f5429b', '#e04502', '#a1f542', '#162fcc', '#16cc71', '#a142f5', '#cc1631', '#A2FF46', '#e6cc0e', '#f54278', '#60f542']
-    const [selectedRoutes, setSelectedRoutes] = useState('Filter');
-    const [routeColor, setRouteColor] = useState('white');
-    const [textColor, setTextColor] = useState('black');
+function Filter({ onFilterChange }) {
+  const [routesData, setRoutesFilter] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState('Show All');
+  const [routeColor, setRouteColor] = useState('white');
+  const [textColor, setTextColor] = useState('black');
+  const nyushuttle = window.nyushuttle;
 
-    const toggleFilter = () => {
-        if (!isOpen) {
-            setRouteColor('#F0E9FF'); //reset color to default when filter is opened again
-        }
-        setIsOpen(!isOpen);
-    }
-    const selectRoute = (route) => {
-        route = route == 'None' ? 'Filter' : route; /*Set text to 'filter' if no route is selected*/
-        setSelectedRoutes(route);
-        setTextColor( (route!='Filter') ? 'white' : 'black' ); //change text color
-        let routeIndex = routes.indexOf(route);
-        setRouteColor(routes_colors[routeIndex]);
-        onFilterChange(routeIndex , routes_colors[routeIndex])
-    }
+  const initializeRoutes = useCallback(() => {
+    const routesArray = Object.keys(nyushuttle.routes).map((key) => {
+      const route = nyushuttle.routes[key];
+      return { id: key, name: route[0], color: route[1] };
+    });
+    setRoutesFilter([...[{ name: 'Show All', color: 'black' }], ...routesArray]);
+  }, [nyushuttle.routes]);
 
-    return(
-        <>
-            <div className="filter-container">
-                <div className={`filter ${isOpen ? 'open' : 'closed'}`} style={{backgroundColor : routeColor, color : textColor}} onClick={toggleFilter}>
-                    {isOpen ? <></> : 
-                        <span className="flex px-3 py-2 pt-3">
-                            <h2 id="filter-text" className='ml-2 text-sm'>{selectedRoutes}</h2>
-                        </span> 
-                    }
-                    <DropDownArrow status={isOpen} arrowColor={textColor} />
-                    <ul id="dropdown"  style={{display: isOpen ? 'block' : 'none'}}> 
-                        {routes.map((route, index) => (
-                            <Fragment key={index}>
-                                <div className="flex ">
-                                    <div className='route-color-bar' key={index + 'color'} style={{backgroundColor:routes_colors[index] }}></div>
-                                    <div className="list-item-wrapper" key={index + 'route'} onClick={() => selectRoute(route)}><li>{route}</li></div>
-                                </div>
-                            </Fragment>
-                        ))}
-                    </ul>
-                    
+  const loadPreviousFilter = useCallback(() => {
+    const routesSelected = nyushuttle.routesSelected;
+    if (routesSelected && routesSelected.length) {
+      const route = nyushuttle.routes[routesSelected[0]] || ['Show All', 'white'];
+      setSelectedRoute(route[0]);
+      setTextColor('white');
+      setRouteColor(route[1]);
+    }
+  }, [nyushuttle.routes, nyushuttle.routesSelected]);
+
+  useEffect(() => {
+    initializeRoutes();
+    loadPreviousFilter();
+  }, [initializeRoutes, loadPreviousFilter]);
+
+  const toggleFilter = useCallback(() => {
+    setIsOpen((prevIsOpen) => {
+      if (!prevIsOpen) {
+        setSelectedRoute('Show All');
+        setRouteColor('white');
+        setTextColor('black');
+      }
+      return !prevIsOpen;
+    });
+  }, []);
+
+  const selectRoute = useCallback(
+    (id, routeName, color) => {
+      setSelectedRoute(routeName);
+      setTextColor(routeName === 'Show All' || routeName === 'None' ? 'black' : 'white');
+      setRouteColor(routeName === 'Show All' || routeName === 'None' ? 'white' : color);
+      nyushuttle.routesSelected = routeName === 'Show All' || routeName === 'None' ? [] : [id]; // only allow one for now
+
+      // Apply filter to map items
+      drawStopMarkers();
+      updateTransportMarkers();
+      onFilterChange(id);
+    },
+    [nyushuttle.routesSelected]
+  );
+
+  return (
+    <>
+      <div className="filter-container">
+        <div
+          className={`filter ${isOpen ? 'open' : 'closed'}`}
+          style={{ backgroundColor: routeColor, color: textColor }}
+          onClick={toggleFilter}
+        >
+          {!isOpen && (
+            <span className="flex pl-3 py-2 pt-3 items-center">
+              <h2 id="filter-text" className="px-2 text-sm">
+                {selectedRoute}
+              </h2>
+            </span>
+          )}
+          <DropDownArrow status={isOpen} arrowColor={textColor} />
+          <ul id="dropdown" style={{ display: isOpen ? 'block' : 'none' }}>
+            {routesData.map((route) => (
+              <div key={'r_' + route.id} className="flex bg-white">
+                <div className="route-color-bar" style={{ backgroundColor: route.color }}></div>
+                <div className="list-item-wrapper" onClick={() => selectRoute(route.id, route.name, route.color)}>
+                  <li>{route.name}</li>
                 </div>
-            </div>
-        </>
-    )
+              </div>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Filter;

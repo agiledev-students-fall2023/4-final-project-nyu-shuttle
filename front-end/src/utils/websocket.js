@@ -1,9 +1,9 @@
 function RealTimeDataWebSocket() {
-  this.wsUrl = 'wss://passio3.com/';
+  this.wsUrl = localStorage.wsUrl || 'wss://passio3.com/';
   this.ws = null;
   this.transports = null;
   this.setTransports = null;
-  this.wsUserIds = [1007];
+  this.wsUserIds = [localStorage.agencyId] || [1007];
 
   this.setup = (transports, setTransports) => {
     this.transports = transports;

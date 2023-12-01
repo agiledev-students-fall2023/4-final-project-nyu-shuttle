@@ -14,10 +14,11 @@ window.nyushuttle.stops = {};
 window.nyushuttle.routes = [];
 let center = {};
 let stopMarkers = [];
+let routePathMarkers = [];
 let routePaths = [];
 let stopMarkerCluster = null;
 let groupRoutes = false;
-let stopMarkerZoomVisibilityTreshold = 14;
+let stopMarkerZoomVisibilityTreshold = 13;
 let bounds;
 let lastZoom = 99;
 
@@ -97,7 +98,7 @@ function clearAllMarkers() {
     stopMarkerCluster.clearMarkers();
   }
   clearMarkers(stopMarkers, true);
-  clearMarkers(routePaths, true);
+  clearMarkers(routePathMarkers, true);
 }
 
 function initializeBounds(center) {
@@ -125,7 +126,7 @@ function clearMarkers(markers, isArray = false) {
   } else if (markers != null) {
     markers.clearMarkers();
   }
-  markers = [];
+  markers.length = 0;
 }
 
 function drawRoutes(showStopName) {
@@ -133,9 +134,11 @@ function drawRoutes(showStopName) {
     return;
   }
   const routes = window.nyushuttle.routes;
-  Object.keys(routes).forEach((routeId) => {
-    drawRoute(routeId, routes[routeId], showStopName);
-  });
+  Object.keys(routes)
+    .filter((routeId) => isSelectedRoute(routeId))
+    .forEach((routeId) => {
+      drawRoute(routeId, routes[routeId], showStopName);
+    });
 }
 
 function drawRoute(routeId, route, showStopName) {
@@ -163,6 +166,7 @@ function drawRoutePath(path, routeColor, routeId, routeGroupId) {
   const opacity = getOpacity(selected);
   const polylineOptions = createPolylineOptions(path, routeColor, opacity, routeId, routeGroupId);
   const polyline = new window.google.maps.Polyline(polylineOptions);
+  routePathMarkers.push(polyline);
   polyline.setMap(window.nyushuttle.currentMap);
 }
 
@@ -219,12 +223,14 @@ function drawStops() {
   const routes = window.nyushuttle.routes;
   const map = window.nyushuttle.currentMap;
 
-  Object.keys(routes).forEach((routeId) => {
-    const routestops = routes[routeId];
-    const routeGroupId = routes[routeId][2];
+  Object.keys(routes)
+    .filter((routeId) => isSelectedRoute(routeId))
+    .forEach((routeId) => {
+      const routestops = routes[routeId];
+      const routeGroupId = routes[routeId][2];
 
-    addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName);
-  });
+      addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName);
+    });
 
   recreateStopMarkerCluster();
   if (stopMarkerCluster != null) {
@@ -382,6 +388,7 @@ function updateMarkerVisibility(zoomLevel) {
   });
 }
 
-window.debugTools = {};
-window.debugTools.queryStops = queryStops;
-window.debugTools.drawStopMarkers = drawStopMarkers;
+function isSelectedRoute(id) {
+  const s = window.nyushuttle.routesSelected;
+  return !s || s.length === 0 || s.includes(id);
+}
