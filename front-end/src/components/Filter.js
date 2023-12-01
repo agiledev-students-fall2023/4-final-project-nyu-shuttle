@@ -40,7 +40,6 @@ function Filter() {
         setSelectedRoute('Show All');
         setRouteColor('white');
         setTextColor('black');
-        console.log('black', textColor);
       }
       return !prevIsOpen;
     });
