@@ -40,6 +40,11 @@ function App() {
     //console.log(key, value)
   }
 
+  // Shared variable
+  if (typeof window.nyushuttle == 'undefined') {
+    window.nyushuttle = {};
+  }
+
   useEffect(() => {
     initializeLocalStorage(isFirstTimeUser);
     loadGoogleMapsAPI(() => setIsLoading(false));
