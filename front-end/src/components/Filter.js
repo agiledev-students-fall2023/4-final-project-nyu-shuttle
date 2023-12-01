@@ -4,6 +4,7 @@ import '../css/filter.css';
 import DropDownArrow from './DropDownArrow.js';
 
 function Filter() {
+  const rs = window.nyushuttle.routesSelected;
   const [routesData, setRoutesFilter] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState('Show All');
@@ -12,6 +13,11 @@ function Filter() {
 
   useEffect(() => {
     initializeFilter();
+    loadPrevFilter();
+  }, []);
+
+  const initializeFilter = () => {
+    setRoutesFilter([{ name: 'Show All', color: 'black' }]);
     const routesArray = Object.keys(window.nyushuttle.routes).map((key) => {
       const route = window.nyushuttle.routes[key];
       return {
@@ -21,10 +27,15 @@ function Filter() {
       };
     });
     setRoutesFilter((defaultArray) => [...defaultArray, ...routesArray]);
-  }, []);
+  };
 
-  const initializeFilter = () => {
-    setRoutesFilter([{ name: 'Show All', color: 'black' }]);
+  const loadPrevFilter = () => {
+    if (rs && rs.length) {
+      const route = window.nyushuttle.routes[rs[0]];
+      setSelectedRoute(route[0]);
+      setTextColor('white');
+      setRouteColor(route[1]);
+    }
   };
 
   const toggleFilter = () => {
