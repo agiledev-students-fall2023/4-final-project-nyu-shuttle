@@ -1,7 +1,6 @@
 import '../css/mapPage.css';
 import Filter from './Filter';
 import Map from './Map';
-// import { useEffect, useState, useRef } from 'react';
 
 function MapPage() {
   return (

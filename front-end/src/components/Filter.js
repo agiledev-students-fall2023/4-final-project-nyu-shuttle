@@ -1,66 +1,60 @@
-import { useState, Fragment, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import '../css/filter.css';
 // import { ReactComponent as FilterIcon } from '../images/filter.svg';
 import DropDownArrow from './DropDownArrow.js';
 
 function Filter() {
-  const rs = window.nyushuttle.routesSelected;
   const [routesData, setRoutesFilter] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState('Show All');
   const [routeColor, setRouteColor] = useState('white');
   const [textColor, setTextColor] = useState('black');
+  const nyushuttle = window.nyushuttle;
 
-  useEffect(() => {
-    initializeFilter();
-    loadPrevFilter();
-  }, []);
-
-  const initializeFilter = () => {
-    setRoutesFilter([{ name: 'Show All', color: 'black' }]);
-    const routesArray = Object.keys(window.nyushuttle.routes).map((key) => {
-      const route = window.nyushuttle.routes[key];
-      return {
-        id: key,
-        name: route[0],
-        color: route[1],
-      };
+  const initializeRoutes = useCallback(() => {
+    const routesArray = Object.keys(nyushuttle.routes).map((key) => {
+      const route = nyushuttle.routes[key];
+      return { id: key, name: route[0], color: route[1] };
     });
-    setRoutesFilter((defaultArray) => [...defaultArray, ...routesArray]);
-  };
+    setRoutesFilter([...[{ name: 'Show All', color: 'black' }], ...routesArray]);
+  }, [nyushuttle.routes]);
 
-  const loadPrevFilter = () => {
-    if (rs && rs.length) {
-      const route = window.nyushuttle.routes[rs[0]];
+  const loadPreviousFilter = useCallback(() => {
+    const routesSelected = nyushuttle.routesSelected;
+    if (routesSelected && routesSelected.length) {
+      const route = nyushuttle.routes[routesSelected[0]] || ['Show All', 'white'];
       setSelectedRoute(route[0]);
       setTextColor('white');
       setRouteColor(route[1]);
     }
-  };
+  }, [nyushuttle.routes, nyushuttle.routesSelected]);
 
-  const toggleFilter = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) {
-      // When opening the dropdown
-      setSelectedRoute('Show All');
-      setRouteColor('white');
-      setTextColor('black');
-    }
-  };
+  useEffect(() => {
+    initializeRoutes();
+    loadPreviousFilter();
+  }, [initializeRoutes, loadPreviousFilter]);
 
-  const selectRoute = (id, routeName, color) => {
-    if (routeName === 'Show All' || routeName === 'None') {
-      setSelectedRoute('Show All');
-      setTextColor('black');
-      setRouteColor('white');
-      window.nyushuttle.routesSelected = [];
-    } else {
+  const toggleFilter = useCallback(() => {
+    setIsOpen((prevIsOpen) => {
+      if (!prevIsOpen) {
+        setSelectedRoute('Show All');
+        setRouteColor('white');
+        setTextColor('black');
+        console.log('black', textColor);
+      }
+      return !prevIsOpen;
+    });
+  }, []);
+
+  const selectRoute = useCallback(
+    (id, routeName, color) => {
       setSelectedRoute(routeName);
-      setTextColor('white');
-      setRouteColor(color);
-      window.nyushuttle.routesSelected = [id];
-    }
-  };
+      setTextColor(routeName === 'Show All' || routeName === 'None' ? 'black' : 'white');
+      setRouteColor(routeName === 'Show All' || routeName === 'None' ? 'white' : color);
+      nyushuttle.routesSelected = routeName === 'Show All' || routeName === 'None' ? [] : [id];
+    },
+    [nyushuttle.routesSelected]
+  );
 
   return (
     <>
@@ -78,17 +72,14 @@ function Filter() {
             </span>
           )}
           <DropDownArrow status={isOpen} arrowColor={textColor} />
-
           <ul id="dropdown" style={{ display: isOpen ? 'block' : 'none' }}>
-            {routesData.map((route, index) => (
-              <Fragment key={index}>
-                <div className="flex bg-white">
-                  <div className="route-color-bar" style={{ backgroundColor: route.color }}></div>
-                  <div className="list-item-wrapper" onClick={() => selectRoute(route.id, route.name, route.color)}>
-                    <li>{route.name}</li>
-                  </div>
+            {routesData.map((route) => (
+              <div key={route.id} className="flex bg-white">
+                <div className="route-color-bar" style={{ backgroundColor: route.color }}></div>
+                <div className="list-item-wrapper" onClick={() => selectRoute(route.id, route.name, route.color)}>
+                  <li>{route.name}</li>
                 </div>
-              </Fragment>
+              </div>
             ))}
           </ul>
         </div>
