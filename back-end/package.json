@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "axios": "^1.6.0",
     "bcryptjs": "^2.4.3",
     "chai": "^4.3.10",
@@ -18,8 +19,10 @@
     "cheerio": "^1.0.0-rc.12",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "csvtojson": "^2.0.10",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "googleapis": "^105.0.0",
     "jsonwebtoken": "^9.0.2",
     "mocha": "^10.2.0",
     "mongoose": "^8.0.1",
@@ -28,7 +31,8 @@
     "newyork": "^1.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "public-google-sheets-parser": "^1.3.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

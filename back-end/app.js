@@ -1,8 +1,11 @@
 // import and instantiate express
 const express = require("express");
 const app = express();
+const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
+const fs = require("fs").promises;
+const process = require("process");
 require("dotenv").config({ silent: true });
 
 const mongoose = require("mongoose");
@@ -25,9 +28,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
 
 const feedbackRoutes = require("./routes/feedback-routes.js");
+const timetableRoutes = require("./routes/timetable-routes.js");
 
 app.use("/feedback", feedbackRoutes());
-
+app.use("/timetable", timetableRoutes());
 
 app.get("/getRoute", (req, res) => {
   const busStops = {

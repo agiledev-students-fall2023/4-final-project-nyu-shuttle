@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MapPage from './components/MapPage';
 import NavBar from './components/NavBar';
 import RoutesPage from './components/RoutesPage';
-import RoutesSubpage from './components/RoutesSubpage';
 import AlertsPage from './components/AlertsPage';
 import SettingsPage from './components/settings/SettingsPage';
 import SavedRoutesPage from './components/SavedRoutesPage';
