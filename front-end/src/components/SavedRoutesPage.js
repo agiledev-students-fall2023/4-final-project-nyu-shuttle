@@ -43,6 +43,7 @@ const SavedRoutesPage = () => {
     setEditingRouteId(null);
   }
 
+
   return (
     <div className="savedroutes-container">
       <Link className="saved-button" to="/routes">
@@ -51,7 +52,7 @@ const SavedRoutesPage = () => {
       <div>
         <h1 className="savedroutes-header">Saved Routes</h1>
       </div>
-      <div className="savedroutes-item-wrapper">
+      <div className="savedroutes-item-wrapper" >
         {routes.map((savedRoute) => (
           <div key={savedRoute._id} className="flex items-center justify-between bg-lightMidTone">
             <SavedRoute savedRoute={savedRoute} />

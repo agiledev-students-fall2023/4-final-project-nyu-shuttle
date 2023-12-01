@@ -4,7 +4,7 @@ import '../../css/settingsPage.css';
 
 const PrivacyPolicyPage = () => {
   return (
-    <div className="">
+    <div className="box">
     <div className="settings-container">
       <Link className="settings-item" to="/settings">
         &lt; Settings

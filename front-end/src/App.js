@@ -52,7 +52,6 @@ function App() {
     registerService();
     getMapCenter();
     queryRoutes(true);
-
     return () => window.removeEventListener('keydown', devTools);
   }, []);
 
@@ -91,7 +90,7 @@ function App() {
               <Route path="/settings/view-schedule" element={<TimeSpreadsheetPage />} />
               <Route path="/settings/feedback-support" element={<FeedbackSupportPage />} />
               <Route path="/settings/privacypolicy" element={<PrivacyPolicyPage />} />
-              <Route path="/routes/:location1/:location2" element={<RoutesSubpage />} />
+              <Route path="/routes/:location1/:address1/:location2/:address2" element={<RoutesPage />} />
             </Routes>
           )}
         </BrowserRouter>

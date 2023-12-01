@@ -15,7 +15,7 @@ function RoutesSubpage({ location1, location2 }) {
 
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
-    if (loadedRoutes && loadedRoutes.some((route) => route.from === location1.name && route.to === location2.name)) {
+    if (loadedRoutes && loadedRoutes.some((route) => route.from.name === location1.name && route.to === location2.name)) {
       setIsRouteSaved(true);
       setDisplayText("View saved routes here");
     } else {
@@ -28,7 +28,7 @@ function RoutesSubpage({ location1, location2 }) {
       setSaveDialogOpen(true);
     } else {
       const loadedRoutes = localStorageLoad('routes') || [];
-      const updatedRoutes = loadedRoutes.filter((route) => route.from !== location1.name || route.to !== location2.name);
+      const updatedRoutes = loadedRoutes.filter((route) => route.from.name !== location1.name || route.to.name !== location2.name);
       localStorageSave('routes', updatedRoutes);
     }
   };
@@ -43,15 +43,20 @@ function RoutesSubpage({ location1, location2 }) {
       const newId = maxId + 1;
       const newRoute = {
         _id: newId,
-        name: name, 
-        from: location1.name,
-        to: location2.name,
-      };
+        name: name,
+        timestamp: Date.now(),
+        from: {
+          name: location1.name,
+          address: location1.address,
+        },
+        to: {
+          name: location2.name,
+          address: location2.address,
+        },
+      }; 
       loadedRoutes.push(newRoute);
       localStorageSave('routes', loadedRoutes);
-
       setIsRouteSaved(true);
-
       setDisplayText("Saved");
       setTimeout (() => {
         setDisplayText("View saved routes here");
