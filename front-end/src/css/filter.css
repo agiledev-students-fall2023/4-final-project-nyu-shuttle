@@ -4,8 +4,6 @@
   @apply flex top-0 left-0 h-10 w-3;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&display=swap');
-
 .filter-container {
   @apply relative font-mainUI;
 }
@@ -31,7 +29,7 @@
 }
 
 .list-item-wrapper {
-  @apply py-2 pt-3 pl-2 pr-5 text-sm text-black hover:bg-lightMidTone;
+  @apply w-full py-2 pt-3 pl-2 pr-5 text-sm text-black hover:bg-lightMidTone;
 }
 
 .list-item-wrapper > li {
@@ -48,6 +46,7 @@
 
 .filterIcon.open {
   @apply rotate-180 top-3 right-3 absolute;
+  fill: black;
 }
 
 .filterIcon.closed {
