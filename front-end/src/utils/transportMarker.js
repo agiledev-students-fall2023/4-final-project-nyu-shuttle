@@ -1,4 +1,5 @@
 const MAX_ANIMATION_DURATION = 9000;
+const TRANSPORTATION_BASE_Z_INDEX = 100;
 
 export function updateTransportMarkers(transportData, markerRef, map) {
   if (!transportData) {
@@ -20,7 +21,8 @@ export function updateTransportMarkers(transportData, markerRef, map) {
     const lat = parseFloat(transportInfo.latitude);
     const lng = parseFloat(transportInfo.longitude);
     const newPosition = new window.google.maps.LatLng(lat, lng);
-    const iconUpdate = marker && (marker.direction !== transportInfo.calculatedCourse || transportInfo.route  === 'Ferry Route');
+    const iconUpdate =
+      marker && (marker.direction !== transportInfo.calculatedCourse || transportInfo.route === 'Ferry Route');
 
     if (marker) {
       // Update the position of the existing marker
@@ -29,12 +31,20 @@ export function updateTransportMarkers(transportData, markerRef, map) {
 
       // Update the icon of the existing marker
       if (iconUpdate) {
-        const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse, transportInfo.route);
+        const newIcon = generateTransportMarkerIcon(
+          transportInfo.color,
+          transportInfo.calculatedCourse,
+          transportInfo.route
+        );
         marker.setIcon(newIcon);
       }
     } else {
       // Create a new marker
-      const newIcon = generateTransportMarkerIcon(transportInfo.color, transportInfo.calculatedCourse, transportInfo.route);
+      const newIcon = generateTransportMarkerIcon(
+        transportInfo.color,
+        transportInfo.calculatedCourse,
+        transportInfo.route
+      );
       let transportMarker = createTransportMarker(newPosition, transportInfo, map, newIcon);
       markerRef.current[transport] = transportMarker;
     }
@@ -46,7 +56,12 @@ function createTransportMarker(position, transportInfo, map) {
     position,
     map,
     title: String(transportInfo.busId),
-    icon: generateTransportMarkerIcon(transportInfo.color || '#000', transportInfo.calculatedCourse || 0, transportInfo.route || 0),
+    icon: generateTransportMarkerIcon(
+      transportInfo.color || '#000',
+      transportInfo.calculatedCourse || 0,
+      transportInfo.route || 0
+    ),
+    zIndex: TRANSPORTATION_BASE_Z_INDEX,
   });
 
   let infowindow = new window.google.maps.InfoWindow({
@@ -126,7 +141,7 @@ function generateTransportMarkerIcon(color, direction, route) {
   let scaledSize = new window.google.maps.Size(40, 40);
   if (route === 'Ferry Route') {
     iconImg = 'busIcons/busIcon_routeFerry_Route.png';
-    scaledSize= new window.google.maps.Size(30, 30);
+    scaledSize = new window.google.maps.Size(30, 30);
   }
   const icon = {
     url: iconImg,
