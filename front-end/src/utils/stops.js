@@ -18,7 +18,7 @@ let routePathMarkers = [];
 let routePaths = [];
 let stopMarkerCluster = null;
 let groupRoutes = false;
-let stopMarkerZoomVisibilityTreshold = 14;
+let stopMarkerZoomVisibilityTreshold = 13;
 let bounds;
 let lastZoom = 99;
 
