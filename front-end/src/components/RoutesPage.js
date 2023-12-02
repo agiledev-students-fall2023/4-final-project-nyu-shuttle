@@ -76,6 +76,9 @@ function RoutesPage() {
               setFromLocation({
                 name: location.name,
                 address: location.address,
+                place_id: location.place_id,
+                lat: location.lat,
+                lng: location.lng,
               });
             }}
           />
@@ -86,7 +89,7 @@ function RoutesPage() {
           <LocationFilter
             initialLocation={toLocation}
             onLocationChange={(location) => {
-              setToLocation({ name: location.name, address: location.address });
+              setToLocation({ name: location.name, address: location.address, place_id: location.place_id, lat: location.lat, lng: location.lng });
             }}
           />
         </div>

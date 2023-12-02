@@ -64,7 +64,21 @@ function RoutesSubpage({ location1, location2 }) {
   };
     
   const startNavigation = () => {
-    alert("Navigation started!")
+    console.log(encodeURIComponent(location1.lat))
+    fetch(`http://localhost:4000/getRoute?origin_lat=${location1.lat}&origin_lng=${location1.lng} &destination_lat=${location2.lat}&destination_lng=${location2.lng}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json"},
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        console.error('Fetch error:', error);
+      });
   };
 
   const shuttle = "X";
