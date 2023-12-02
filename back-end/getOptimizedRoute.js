@@ -59,17 +59,14 @@ async function findAllReachableStops(graph, origin, threshold=0.01) {
 async function getWalkingDistance(origin, destination) {
     try{
         origin = origin.join('%2C');
+        destination = destination.split(',').join('%2C');
+        
     }
     catch(err){
         origin = origin.split(',').join('%2C');
-    }
-    
-    try{
-        destination = destination.split(',').join('%2C');
-    }
-    catch(err){
         destination = destination.join('%2C');
     }
+
     let res = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin}&destinations=${destination}&key=${process.env.EXPRESS_APP_MAP_API_KEY}`)
     let data = await res.json();
     res = data.rows[0].elements[0].duration.value;

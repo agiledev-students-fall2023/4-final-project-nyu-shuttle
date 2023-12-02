@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import LocationFilter from "./LocationFilter";
 import "../css/routesPage.css";
@@ -6,7 +6,12 @@ import RoutesSubpage from "./RoutesSubpage";
 
 function RoutesPage() {
   const { location1, address1, location2, address2 } = useParams();
+  const lastLocation1 = useRef();
+  const lastLocation2 = useRef();
+  const awaitingData = useRef(false); //set loading state
+  const [ routes, setRoutes ] = useState([]); //set routes state
   
+
   if (typeof window.nyushuttle == "undefined") {
     window.nyushuttle = {};
   }
@@ -52,10 +57,59 @@ function RoutesPage() {
 
   const [showRecent, setRecent] = useState("");
   const [showSubpage, setShowSubpage] = useState(false);
-
+ 
   const checkAndShowSubpage = useCallback(() => {
+    try{
+      if (awaitingData.current === true) {
+        setShowSubpage(false);
+        console.log('awaiting data'); 
+        return }
+      if (fromLocation.name === lastLocation1.current.name && toLocation.name === lastLocation2.current.name) {
+        return;
+      }
+    }
+    catch(typeError){
+      console.log('same input, no need to fetch new route');
+    }
     if (fromLocation.name && toLocation.name) {
-      setShowSubpage(true);
+      awaitingData.current = true;
+      let reachableRoutes = fetch(`http://localhost:4000/getRoute`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+          body: JSON.stringify({
+              origin_lat: fromLocation.lat,
+              origin_lng: fromLocation.lng,
+              destination_lat: toLocation.lat,
+              destination_lng: toLocation.lng,
+              routes: window.nyushuttle.routes,
+              stops: window.nyushuttle.stops
+          })
+      })
+      .then((response) => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          awaitingData.current = false;
+          return response.json(); 
+      })
+      .then((data) => {
+        lastLocation1.current = fromLocation;
+        lastLocation2.current = toLocation;
+        if (Object.keys(data).length === 0){
+            alert('No route found');
+            return;
+        }
+        setRoutes(data);
+        setShowSubpage(true);
+        alert('Starting' + JSON.stringify(data[0]));
+        return data;
+      })
+      .catch((error) => {
+          console.error('Fetch error:', error);
+      });
+      console.log(reachableRoutes);
     } else {
       setShowSubpage(false);
     }
@@ -64,6 +118,8 @@ function RoutesPage() {
   useEffect(() => {
     checkAndShowSubpage();
   }, [checkAndShowSubpage]);
+
+
 
   return (
     <div className="route-container">
@@ -96,7 +152,7 @@ function RoutesPage() {
       </div>
 
       {showSubpage && (
-        <RoutesSubpage location1={fromLocation} location2={toLocation} />
+        <RoutesSubpage location1={fromLocation} location2={toLocation} routes={routes} />
       )}
     </div>
   );
