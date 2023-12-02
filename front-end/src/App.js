@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+const cron = require('node-cron');
 
 // Import components
 import MapPage from './components/MapPage';
@@ -18,6 +19,7 @@ import TutorialComponent from './components/TutorialComponent';
 import { registerService } from './utils/serviceRegister';
 import { getMapCenter, loadGoogleMapsAPI } from './utils/mapUtility';
 import { queryRoutes } from './utils/routes';
+import {fetchDataForRoutes} from './utils/updateTimetable'
 
 // Import CSS
 import './index.css';
@@ -32,6 +34,7 @@ function App() {
   const [tutorialIndex, setTutorialIndex] = useState(0);
   const [tutorialOn, setTutorialOn] = useState(isFirstTimeUser);
   const localStorageItems = {};
+
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     let value = localStorage.getItem(key);

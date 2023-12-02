@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const Route_A_Week = new Schema({
+const Route_A_Friday = new Schema({
   stop_name: {
     type: String,
     unique: false,
@@ -19,6 +19,6 @@ const Route_A_Week = new Schema({
     unique: false, 
 })
 
-const RouteAWeek = mongoose.model("RouteAWeek", Route_A_Week)
+const RouteAFriday = mongoose.model("RouteAFriday", Route_A_Friday)
 
-module.exports = RouteAWeek
+module.exports = RouteAFriday

@@ -1,12 +1,12 @@
 // import and instantiate express
 const express = require("express");
 const app = express();
-const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
-const fs = require("fs").promises;
 const process = require("process");
 require("dotenv").config({ silent: true });
+const cron = require("node-cron");
+const { fetchDataForRoutes } = require("./updateTimetable");
 
 const mongoose = require("mongoose");
 const Feedback = require("./models/Feedback.js");
@@ -21,6 +21,7 @@ try {
   );
 }
 
+
 app.use(morgan("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,6 +33,12 @@ const timetableRoutes = require("./routes/timetable-routes.js");
 
 app.use("/feedback", feedbackRoutes());
 app.use("/timetable", timetableRoutes());
+
+cron.schedule('0 0 * * *', () => {
+  fetchDataForRoutes(['routesA_W', 'routesA_F', 'routesA_Wknd', 'routesB_W', 
+  'routesB_F', 'routesC_W', 'routesE_W', 'routesE_F', 'routesF_W', 
+  'routesG_W', 'routesG_F', 'routesG_Wknd', 'routesW_Wknd']); 
+});
 
 app.get("/getRoute", (req, res) => {
   const busStops = {
