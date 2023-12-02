@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import "../css/routesSubpage.css";
 import "../css/basicUI.css";
 import HeartIcon from "../images/heart-svg.svg";
@@ -12,7 +12,7 @@ function RoutesSubpage({ location1, location2 }) {
   const [isSaveDialogOpen, setSaveDialogOpen] = useState(false);
   const [isRouteSaved, setIsRouteSaved] = useState(false);
   const [displayText, setDisplayText] = useState("Click to save route ->");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
     if (loadedRoutes && loadedRoutes.some((route) => route.from.name === location1.name && route.to === location2.name)) {
@@ -64,23 +64,26 @@ function RoutesSubpage({ location1, location2 }) {
   };
     
   const startNavigation = () => {
-    fetch(`http://localhost:4000/getRoute?origin_lat=${location1.lat}&origin_lng=${location1.lng} &destination_lat=${location2.lat}&destination_lng=${location2.lng}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json"},
+    fetch(`http://localhost:4000/getRoute?origin_lat=${location1.lat}&origin_lng=${location1.lng}&destination_lat=${location2.lat}&destination_lng=${location2.lng}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json"},
     })
-      .then((response) => response.json())
-      .then((response) => {
+    .then((response) => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+            throw new Error('Network response was not ok');
         }
+        return response.json(); 
+    })
+    .then((data) => {
         console.log('Response from server:');
-        console.log(response);
-        return response.json();
-      })
-      .catch((error) => {
+        console.log(data);
+        alert('Starting' + JSON.stringify(data[0]));
+
+    })
+    .catch((error) => {
         console.error('Fetch error:', error);
-      });
-  };
+    });
+};
 
   const shuttle = "X";
   const shuttleSchedule = "HH:MM";

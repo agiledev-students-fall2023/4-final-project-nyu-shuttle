@@ -34,7 +34,7 @@ app.get("/test", (req, res) => {
 });
 
 
-app.get("/getRoute", (req, res) => {
+app.get("/getRoute", async (req, res) => {
   const routeFinding = require("./getOptimizedRoute.js");  
   const busStops = {
       unionsquare: [40.73498551788369, -73.990696048825],
@@ -86,7 +86,7 @@ app.get("/getRoute", (req, res) => {
     };
     const graph = routeFinding.createGraph(routes, busStops);
     console.log('graph created')
-    let optimalRoute = routeFinding.findOptimalRoute(
+    let optimalRoute = await routeFinding.findOptimalRoute(
       graph, routes, busStops,
       req.query.origin_lat,
       req.query.origin_lng,
@@ -94,8 +94,8 @@ app.get("/getRoute", (req, res) => {
       req.query.destination_lng,
     );
     
-    console.log(optimalRoute);
-    res.send(optimalRoute);
+    console.log(optimalRoute.onSameRoute);
+    res.send(optimalRoute.onSameRoute);
   }
 );
 
