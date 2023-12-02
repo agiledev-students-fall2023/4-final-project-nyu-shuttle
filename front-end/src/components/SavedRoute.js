@@ -6,7 +6,6 @@ import '../css/savedRoutes.css';
 const SavedRoute = ({ savedRoute }) => {
   return (
     <>
-      {/* Link should be targeting the actual routes page, etc. Currently just # */}
       <Link className="settings-item routes" to={`/routes/${savedRoute.from.name}
       /${savedRoute.from.address}/${savedRoute.to.name}/${savedRoute.to.address}`}>
         <h2 className="font-semibold">{savedRoute.name}</h2>

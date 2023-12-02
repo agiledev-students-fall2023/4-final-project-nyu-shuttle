@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MapPage from './components/MapPage';
 import NavBar from './components/NavBar';
 import RoutesPage from './components/RoutesPage';
-import RoutesSubpage from './components/RoutesSubpage';
 import AlertsPage from './components/AlertsPage';
 import SettingsPage from './components/settings/SettingsPage';
 import SavedRoutesPage from './components/SavedRoutesPage';
@@ -33,6 +32,7 @@ function App() {
   const [tutorialIndex, setTutorialIndex] = useState(0);
   const [tutorialOn, setTutorialOn] = useState(isFirstTimeUser);
   const localStorageItems = {};
+
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     let value = localStorage.getItem(key);

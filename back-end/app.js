@@ -3,7 +3,10 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
+const process = require("process");
 require("dotenv").config({ silent: true });
+const cron = require("node-cron");
+const { fetchDataForRoutes } = require("./updateTimetable");
 
 const mongoose = require("mongoose");
 const Feedback = require("./models/Feedback.js");
@@ -26,13 +29,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
 
 const feedbackRoutes = require("./routes/feedback-routes.js");
+const timetableRoutes = require("./routes/timetable-routes.js");
 
 app.use("/feedback", feedbackRoutes());
 
 app.get("/test", (req, res) => {
   console.log(window.nyushuttle)
 });
+app.use("/timetable", timetableRoutes());
 
+cron.schedule('0 0 * * *', () => {
+  fetchDataForRoutes(['routesA_W', 'routesA_F', 'routesA_Wknd', 'routesB_W', 
+  'routesB_F', 'routesC_W', 'routesE_W', 'routesE_F', 'routesF_W', 
+  'routesG_W', 'routesG_F', 'routesG_Wknd', 'routesW_Wknd']); 
+});
 
 app.get("/getRoute", async (req, res) => {
   const routeFinding = require("./getOptimizedRoute.js");  
