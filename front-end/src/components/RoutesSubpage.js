@@ -64,9 +64,19 @@ function RoutesSubpage({ location1, location2 }) {
   };
     
   const startNavigation = () => {
-    fetch(`http://localhost:4000/getRoute?origin_lat=${location1.lat}&origin_lng=${location1.lng}&destination_lat=${location2.lat}&destination_lng=${location2.lng}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json"},
+    fetch(`http://localhost:4000/getRoute`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+      },
+        body: JSON.stringify({
+            origin_lat: location1.lat,
+            origin_lng: location1.lng,
+            destination_lat: location2.lat,
+            destination_lng: location2.lng,
+            routes: window.nyushuttle.routes,
+            stops: window.nyushuttle.stops
+        })
     })
     .then((response) => {
         if (!response.ok) {
@@ -76,7 +86,11 @@ function RoutesSubpage({ location1, location2 }) {
     })
     .then((data) => {
         console.log('Response from server:');
-        console.log(data);
+        console.log();
+        if (Object.keys(data).length === 0){
+            alert('No route found');
+            return;
+        }
         alert('Starting' + JSON.stringify(data[0]));
 
     })
@@ -90,6 +104,7 @@ function RoutesSubpage({ location1, location2 }) {
   const totalTime = "MM";
   const timeToShuttle = "XX";
   const timeToDestination2 = "YY";
+
 
   return (
     <div className="routes-subpage-container">

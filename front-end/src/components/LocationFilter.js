@@ -22,7 +22,6 @@ const LocationDropdown = ({initialLocation, onLocationChange }) => {
           query: inputValue,
         };
         placesService.textSearch(request, (results, status) => {
-          console.log(results[0])
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const nycPlaces = results.filter((result) => result.formatted_address);
             const limitedPlaces = nycPlaces.slice(0, 5); 
@@ -35,7 +34,6 @@ const LocationDropdown = ({initialLocation, onLocationChange }) => {
             }
             
             ));
-            console.log(results[0].geometry.location.lat, results[0].geometry.location.lng);
             setOptions(places);
           } 
         });
