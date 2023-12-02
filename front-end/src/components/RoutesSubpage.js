@@ -64,7 +64,6 @@ function RoutesSubpage({ location1, location2 }) {
   };
     
   const startNavigation = () => {
-    console.log(encodeURIComponent(location1.lat))
     fetch(`http://localhost:4000/getRoute?origin_lat=${location1.lat}&origin_lng=${location1.lng} &destination_lat=${location2.lat}&destination_lng=${location2.lng}`, {
       method: "GET",
       headers: { "Content-Type": "application/json"},
@@ -74,6 +73,8 @@ function RoutesSubpage({ location1, location2 }) {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
+        console.log('Response from server:');
+        console.log(response);
         return response.json();
       })
       .catch((error) => {

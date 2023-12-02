@@ -29,6 +29,10 @@ const feedbackRoutes = require("./routes/feedback-routes.js");
 
 app.use("/feedback", feedbackRoutes());
 
+app.get("/test", (req, res) => {
+  console.log(window.nyushuttle)
+});
+
 
 app.get("/getRoute", (req, res) => {
   const routeFinding = require("./getOptimizedRoute.js");  
@@ -89,6 +93,7 @@ app.get("/getRoute", (req, res) => {
       req.query.destination_lat,
       req.query.destination_lng,
     );
+    
     console.log(optimalRoute);
     res.send(optimalRoute);
   }

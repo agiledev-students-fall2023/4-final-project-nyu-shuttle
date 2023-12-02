@@ -79,12 +79,9 @@ async function getWalkingDistance(origin, destination) {
 async function isOnSameRoute(graph, stop1, stop2, routes, busstops) {
     let resolvedGraph = await graph;
     let sharedRoutes = await resolvedGraph[stop1.coordinates].routes.filter(element => resolvedGraph[stop2.coordinates].routes.includes(element));
-    console.log('shared routes: '+sharedRoutes)
     if(sharedRoutes.length == 0){
         return false;
     }
-    console.log('returned true')
-    console.log('shared routes length: '+sharedRoutes.length)
     return sharedRoutes;
 }
 
@@ -95,27 +92,18 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
     let optimalRoute = null;
     // Find all reachable stops from origin and destination
     let reachableFromOrigin = await findAllReachableStops(graph, origin);
-    console.log('reachable from origin: '+reachableFromOrigin, reachableFromOrigin);
 
     let reachableFromDestination = await findAllReachableStops(graph, destination);
-    console.log('reachable from desination: '+reachableFromDestination[0].coordinates, reachableFromDestination[0].coordinates);
-    for (let stop of reachableFromOrigin) {
-        console.log(stop.coordinates)
-    }
     // Calculate route distances
     for (let originStop of reachableFromOrigin) {
         for (let destinationStop of reachableFromDestination) {
             let onSameRoute = await isOnSameRoute(graph, originStop, destinationStop, routes, busstops);
             console.log('on same route result: '+onSameRoute)
             if (onSameRoute.length > 0) {
-                console.log('----------------------------------')
                 let distanceToOriginStop = await getWalkingDistance(origin, originStop.coordinates);
                 let distanceFromDestinationStop = await getWalkingDistance(destinationStop.coordinates, destination);
-
                 let totalDistance = distanceToOriginStop + distanceFromDestinationStop;
-                console.log('total', totalDistance)
                 console.log('fetched from Google Maps API, total distance: '+totalDistance);
-                console.log('----------------------------------')
                 // Check if this route is better than the current best
                 if (totalDistance < minTotalDistance) {
                     console.log('new optimal route found')
@@ -125,10 +113,16 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
             }
         }
     }
+   
+    if (optimalRoute === null) {
+        console.log('no optimal route found')
+        return null;
+    }
+    console.log('-------------------------------------')
     console.log('optimal route: '+optimalRoute.onSameRoute);
-    console.log('origin stop: '+optimalRoute.originStop.coordinates);
-    console.log('destination stop: '+optimalRoute.destinationStop.coordinates);
-
+    console.log('origin stop location: '+optimalRoute.originStop.coordinates);
+    console.log('destination stop location: '+optimalRoute.destinationStop.coordinates);
+    
     return optimalRoute;
 }
 
