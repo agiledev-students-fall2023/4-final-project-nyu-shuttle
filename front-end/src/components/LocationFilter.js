@@ -22,13 +22,20 @@ const LocationDropdown = ({initialLocation, onLocationChange }) => {
           query: inputValue,
         };
         placesService.textSearch(request, (results, status) => {
+          console.log(results[0])
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const nycPlaces = results.filter((result) => result.formatted_address);
             const limitedPlaces = nycPlaces.slice(0, 5); 
             const places = limitedPlaces.map((result) => ({
               name: result.name,
               address: result.formatted_address,
-            }));
+              place_id: result.place_id,
+              lat: result.geometry.location.lat(),
+              lng: result.geometry.location.lng(),
+            }
+            
+            ));
+            console.log(results[0].geometry.location.lat, results[0].geometry.location.lng);
             setOptions(places);
           } 
         });
