@@ -22,7 +22,6 @@ try {
   );
 }
 
-
 app.use(morgan("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,20 +32,17 @@ const feedbackRoutes = require("./routes/feedback-routes.js");
 const timetableRoutes = require("./routes/timetable-routes.js");
 
 app.use("/feedback", feedbackRoutes());
+
+app.get("/test", (req, res) => {
+  console.log(window.nyushuttle)
+});
 app.use("/timetable", timetableRoutes());
 
-<<<<<<< HEAD
 cron.schedule('0 0 * * *', () => {
   fetchDataForRoutes(['routesA_W', 'routesA_F', 'routesA_Wknd', 'routesB_W', 
   'routesB_F', 'routesC_W', 'routesE_W', 'routesE_F', 'routesF_W', 
   'routesG_W', 'routesG_F', 'routesG_Wknd', 'routesW_Wknd']); 
 });
-=======
-app.get("/test", (req, res) => {
-  console.log(window.nyushuttle)
-});
-
->>>>>>> 7277d7459bb6a308b5b218eabcf14e7b80df50ee
 
 app.get("/getRoute", async (req, res) => {
   const routeFinding = require("./getOptimizedRoute.js");  
