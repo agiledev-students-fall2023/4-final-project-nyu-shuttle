@@ -8,7 +8,7 @@ import SaveRouteDialog from "./SaveRouteDialog";
 import RouteMap from "./RouteMap";
 import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
 
-function RoutesSubpage({ location1, location2 }) {
+function RoutesSubpage({ location1, location2, routes }) {
   const [isSaveDialogOpen, setSaveDialogOpen] = useState(false);
   const [isRouteSaved, setIsRouteSaved] = useState(false);
   const [displayText, setDisplayText] = useState("Click to save route ->");
@@ -64,39 +64,7 @@ function RoutesSubpage({ location1, location2 }) {
   };
     
   const startNavigation = () => {
-    fetch(`http://localhost:4000/getRoute`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-      },
-        body: JSON.stringify({
-            origin_lat: location1.lat,
-            origin_lng: location1.lng,
-            destination_lat: location2.lat,
-            destination_lng: location2.lng,
-            routes: window.nyushuttle.routes,
-            stops: window.nyushuttle.stops
-        })
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json(); 
-    })
-    .then((data) => {
-        console.log('Response from server:');
-        console.log();
-        if (Object.keys(data).length === 0){
-            alert('No route found');
-            return;
-        }
-        alert('Starting' + JSON.stringify(data[0]));
 
-    })
-    .catch((error) => {
-        console.error('Fetch error:', error);
-    });
 };
 
   const shuttle = "X";
@@ -122,13 +90,14 @@ function RoutesSubpage({ location1, location2 }) {
           }
       </div>
       <RouteMap location1={location1} location2={location2} />
-      <div className="route-info">
+      {routes.map((route, index) => (
+        <div className="route-info">
         <div className="route-text">
           <p className="text-lg">
-            <strong>{totalTime} min</strong>
+            <strong>{route}</strong>
           </p>
           <p className="text-sm">
-            Shuttle {shuttle} scheduled at <strong>{shuttleSchedule}</strong>
+            Shuttle {route} scheduled at <strong>{shuttleSchedule}</strong>
           </p>
           <p className="text-sm">
             {location1.name} to shuttle:{" "}
@@ -143,6 +112,8 @@ function RoutesSubpage({ location1, location2 }) {
           Start
         </button>
       </div>
+      ))}
+
       {isSaveDialogOpen && (
         <SaveRouteDialog onClose={closeSaveDialog} onSave={toggleRouteSaved}/>
       )}
