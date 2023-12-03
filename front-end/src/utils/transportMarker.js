@@ -135,6 +135,7 @@ function animateMarker(marker, startPosition, endPosition, duration) {
 // Generate custom transport marker icon (currently only support buses)
 // Original source of bus svg path: www.svgrepo.com
 function generateTransportMarkerIcon(color, direction, route) {
+  const maps = window.google.maps;
   const svg = `<?xml version="1.0" encoding="utf-8"?>
   <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
     <g class="layer" transform="rotate(${direction}, 12, 12)">
@@ -149,14 +150,15 @@ function generateTransportMarkerIcon(color, direction, route) {
     </g>
   </svg>`;
   let iconImg = 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(svg);
-  let scaledSize = new window.google.maps.Size(40, 40);
+  let scaledSize = new maps.Size(40, 40);
   if (route === 'Ferry Route') {
     iconImg = 'busIcons/busIcon_routeFerry_Route.png';
-    scaledSize = new window.google.maps.Size(30, 30);
+    scaledSize = new maps.Size(30, 30);
   }
   const icon = {
     url: iconImg,
     scaledSize: scaledSize,
+    anchor: new maps.Point(scaledSize.width / 2, scaledSize.height / 2),
   };
   return icon;
 }
