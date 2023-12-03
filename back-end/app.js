@@ -92,7 +92,7 @@ app.post("/getRoute", async (req, res) => {
         req.body.destination_lng,
       );
       console.log(optimalRoute.onSameRoute);
-      res.send(optimalRoute.onSameRoute);
+      res.send(optimalRoute);
     }
     catch(err){
       console.log(err);

@@ -70,7 +70,6 @@ export async function queryStops() {
     window.nyushuttle.stops = data.stops;
     groupRoutes = data.groupRoutes;
     center = data.center;
-    console.log(window.nyushuttle.stops)
     return true;
 
   } catch (error) {

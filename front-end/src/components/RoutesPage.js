@@ -97,11 +97,20 @@ function RoutesPage() {
       .then((data) => {
         lastLocation1.current = fromLocation;
         lastLocation2.current = toLocation;
-        if (Object.keys(data).length === 0){
+        if (Object.keys(data.onSameRoute).length === 0){
             alert('No route found');
             return;
         }
-        setRoutes(data);
+
+      console.log(Object.keys(data.onSameRoute).length)
+      if (Object.keys(data.onSameRoute).length === 7){
+        setRoutes(['You should walk instead!']);
+      }
+      else{
+        setRoutes(data.onSameRoute);
+        window.nyushuttle.startStopLocation = data.originStop.coordinates;
+        window.nyushuttle.endStopLocation = data.destinationStop.coordinates;
+      }
         setShowSubpage(true);
         return data;
       })

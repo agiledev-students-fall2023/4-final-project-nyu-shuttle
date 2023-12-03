@@ -46,7 +46,7 @@ function getEuclideanDistance (a, b) {
 }
 
 //find bus stops that are relatively close in term of walking distance
-async function findAllReachableStops(graph, origin, threshold=0.01) {
+async function findAllReachableStops(graph, origin, threshold=0.009, maxThreshold=0.1) {
 
     let resolvedGraph = await graph; // Waits for the graph Promise to resolve
 
@@ -55,9 +55,14 @@ async function findAllReachableStops(graph, origin, threshold=0.01) {
         busstop = busstop.toString();
         let distance = getEuclideanDistance(origin, busstop);
         if (distance < threshold) {
-            console.log('reachable stop found: ' + resolvedGraph[busstop].routes);
+            console.log('reachable stop found for: '+ origin + ', ' + resolvedGraph[busstop].routes);
             reachableStops.push({ coordinates: busstop, route: resolvedGraph[busstop].route });
         }
+    }
+    //when no stops are found, keep calling itself with larger and larger threshold
+    if (reachableStops.length == 0 && threshold < maxThreshold) {
+        console.log('no reachable stop found, increasing threshold');
+        reachableStops = findAllReachableStops(graph, origin, threshold + 0.002)
     }
 
     return reachableStops;   
@@ -132,7 +137,7 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
                 if (totalDistance < minTotalDistance) {
                     console.log('new optimal route found')
                     minTotalDistance = totalDistance;
-                    optimalRoute = { originStop, destinationStop, onSameRoute };
+                    optimalRoute = { origin, originStop, destination, destinationStop, onSameRoute };
                 }
             }
 

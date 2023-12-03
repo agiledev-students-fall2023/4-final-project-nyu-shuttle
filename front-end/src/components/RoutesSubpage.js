@@ -63,9 +63,15 @@ function RoutesSubpage({ location1, location2, routes }) {
       }, 3000);
   };
     
-  const startNavigation = () => {
-
-};
+  const startNavigation = value => () => {
+    for (let [key, name] of Object.entries(window.nyushuttle.routes)) {
+      if (name[0] === value) {
+        window.nyushuttle.routesSelected = key;
+        break;
+      }
+    }
+    navigate('/map');
+  };
 
   const shuttle = "X";
   const shuttleSchedule = "HH:MM";
@@ -108,7 +114,11 @@ function RoutesSubpage({ location1, location2, routes }) {
             <strong>{timeToDestination2} min</strong>
           </p>
         </div>
-        <button className="nav-button" onClick={startNavigation}>
+        <button
+          key={index} 
+          className="nav-button" 
+          onClick={startNavigation(routes[index])}
+        >
           Start
         </button>
       </div>
