@@ -137,7 +137,7 @@ function onLocationButtonClick() {
 
     const onSuccess = (pos) => {
       onLocationGet(pos, animationInterval);
-      console.log('Position:', pos);
+      // console.log('Position:', pos);
     };
 
     const onError = (err) => {
