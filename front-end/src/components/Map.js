@@ -1,7 +1,7 @@
 import '../css/map.css';
 import { useEffect, useState, useRef } from 'react';
 import RealTimeDataWebSocket from '../utils/websocket';
-import { loadGoogleMapsAPI, initializeMap } from '../utils/mapUtility';
+import { loadGoogleMapsAPI, initializeMap, addLocationButton } from '../utils/mapUtility';
 import { queryTransportations } from '../utils/transportData';
 import { updateTransportMarkers } from '../utils/transportMarker';
 import { queryStops, drawStopMarkers } from '../utils/stops';
@@ -44,9 +44,11 @@ function Map({ filter }) {
     }
   }, [isApiLoaded]);
 
+  // Attach location button
   // Fetch transport data when the map is ready
   useEffect(() => {
     if (isMapLoaded) {
+      addLocationButton(map);
       fetchTransportData(map);
       queryStops().then((r) => {
         if (r) {
