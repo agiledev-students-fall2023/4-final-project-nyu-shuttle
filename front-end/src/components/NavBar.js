@@ -21,7 +21,7 @@ function NavBar() {
 
   const updateNavBarDisplay = (to) => {
     const overlay = document.getElementsByClassName('overlay')[0];
-    const cur = document.getElementById(to);
+    const cur = document.getElementById('nav_' + to);
     if (cur.classList.contains('inactive')) {
       // when a inactive icon is clicked
       document.getElementsByClassName('active')[0].classList.add('inactive');
@@ -66,19 +66,19 @@ function NavBar() {
       <div className="navBar">
         <div className="backdrop"></div>
         <div className="overlay"></div>
-        <div className="active" id="map" onClick={() => handleClick('map')}>
+        <div className="active" id="nav_map" onClick={() => handleClick('map')}>
           <MapIcon fill="#F0E9FF" width="25" height="25" aria-label="Map" />
           <p>Map</p>
         </div>
-        <div className="inactive" id="routes" onClick={() => handleClick('routes')}>
+        <div className="inactive" id="nav_routes" onClick={() => handleClick('routes')}>
           <RouteIcon width="25" height="25" aria-label="Routes" />
           <p>Routes</p>
         </div>
-        <div className="inactive" id="alerts" onClick={() => handleClick('alerts')}>
+        <div className="inactive" id="nav_alerts" onClick={() => handleClick('alerts')}>
           <AlertIcon width="25" height="25" aria-label="Alerts" />
           <p className="flex">Alerts</p>
         </div>
-        <div className="inactive" id="settings" onClick={() => handleClick('settings')}>
+        <div className="inactive" id="nav_settings" onClick={() => handleClick('settings')}>
           <SettingIcon width="25" height="25" aria-label="Settings" />
           <p>Settings</p>
         </div>
