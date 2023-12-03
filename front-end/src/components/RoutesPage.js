@@ -108,8 +108,8 @@ function RoutesPage() {
       }
       else{
         setRoutes(data.onSameRoute);
-        window.nyushuttle.startStopLocation = data.originStop.coordinates;
-        window.nyushuttle.endStopLocation = data.destinationStop.coordinates;
+        window.nyushuttle.startStopLocation = data.originStop.stopId;
+        window.nyushuttle.endStopLocation = data.destinationStop.stopId;
       }
         setShowSubpage(true);
         return data;

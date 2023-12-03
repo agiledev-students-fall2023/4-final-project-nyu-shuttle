@@ -1,28 +1,28 @@
 //this function creates a directed circular graph representation of of bus stops and the routes.
 /*in the output graph, the key represents a bus stop, and the value represents all the bus stops that 
 are directly reachavble from the key bus stop.*/
-async function createGraph(routes, busstops) {
+async function createGraph(routes, busStops) {
     let graph = {};
+
     // Initialize the graph with all stops and an empty list of routes
-    for (let stop in busstops) {
-        let stopKey = busstops[stop].toString();
-        graph[stopKey] = { routes: [], connections: [] };
+    for (let stopKey in busStops) {
+        graph[stopKey] = { routes: [], connections: [], stopId: busStops[stopKey].stopId, geoLoc: busStops[stopKey].geoLoc };
     }
 
     for (let routeId in routes) {
         let stops = routes[routeId];
         for (let i = 0; i < stops.length; i++) {
-            let currentStop = stops[i];
-            let nextStop = stops[(i + 1) % stops.length];
-            let currentKey = currentStop.toString();
+            let currentStopId = stops[i].stopId;
+            let nextStopId = stops[(i + 1) % stops.length].stopId;
 
             // Add the current route to the list of routes for this stop
-            if (!graph[currentKey].routes.includes(routeId)) {
-                graph[currentKey].routes.push(routeId);
+            if (!graph[currentStopId].routes.includes(routeId)) {
+                graph[currentStopId].routes.push(routeId);
             }
 
             // Add the connection information
-            graph[currentKey].connections.push({ coordinates: nextStop, route: graph[currentKey].routes });
+            // Assuming that you only need the next stop's ID
+            graph[currentStopId].connections.push({ stopId: nextStopId, coordinates: stops[i].geoLoc });
         }
     }
     return graph;
@@ -41,6 +41,7 @@ function getEuclideanDistance (a, b) {
         x2 = b[0];
         y2 = b[1];
     }
+    console.log('x1: '+x1+', y1: '+y1+', x2: '+x2+', y2: '+y2)
 
     return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
 }
@@ -49,14 +50,17 @@ function getEuclideanDistance (a, b) {
 async function findAllReachableStops(graph, origin, threshold=0.009, maxThreshold=0.1) {
 
     let resolvedGraph = await graph; // Waits for the graph Promise to resolve
-
+    console.log('resolvedGraph:',Object.keys(resolvedGraph))
     let reachableStops = [];
     for (let busstop in resolvedGraph) {
-        busstop = busstop.toString();
-        let distance = getEuclideanDistance(origin, busstop);
+        console.log('geoloc:', resolvedGraph[busstop].geoLoc)
+        let geoLoc = resolvedGraph[busstop].geoLoc;
+        let busstopId = resolvedGraph[busstop].stopId;
+        let distance = getEuclideanDistance(origin, geoLoc);
+        console.log('distance: '+distance)
         if (distance < threshold) {
             console.log('reachable stop found for: '+ origin + ', ' + resolvedGraph[busstop].routes);
-            reachableStops.push({ coordinates: busstop, route: resolvedGraph[busstop].route });
+            reachableStops.push({ coordinates: geoLoc, route: resolvedGraph[busstop].routes, stopId: busstopId });
         }
     }
     //when no stops are found, keep calling itself with larger and larger threshold
@@ -89,7 +93,8 @@ async function getWalkingDistance(origin, destination) {
 
 async function isOnSameRoute(graph, stop1, stop2, routes, busstops) {
     let resolvedGraph = await graph;
-    let sharedRoutes = await resolvedGraph[stop1.coordinates].routes.filter(element => resolvedGraph[stop2.coordinates].routes.includes(element));
+    console.log(Object.keys(resolvedGraph))
+    let sharedRoutes = await resolvedGraph[stop1.stopId].routes.filter(element => resolvedGraph[stop2.stopId].routes.includes(element));
     if(sharedRoutes.length == 0){
         return false;
     }
