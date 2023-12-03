@@ -45,8 +45,6 @@ if (typeof window.nyushuttle == 'undefined') {
   window.nyushuttle = {};
 }
 window.nyushuttle.location = {};
-
-let lastPosition;
 initLocationButton();
 
 export function loadGoogleMapsAPI(callback) {
@@ -107,7 +105,7 @@ export function addLocationButton(map) {
   // If location is already enabled
   if (window.nyushuttle.location.watchId) {
     LOCATION_ICON.style.backgroundPosition = '-224px 0px';
-    onLocationGet(lastPosition, null);
+    onLocationGet(window.nyushuttle.location.lastPos, null);
   }
 }
 
@@ -159,8 +157,9 @@ function onLocationButtonClick() {
     watchCurrentPosition(onSuccess, onError, onNotSupport);
   }
 
-  if (lastPosition) {
-    const center = new window.google.maps.LatLng(lastPosition.coords.latitude, lastPosition.coords.longitude);
+  const lastPos = window.nyushuttle.location.lastPos;
+  if (lastPos) {
+    const center = new window.google.maps.LatLng(lastPos.coords.latitude, lastPos.coords.longitude);
     window.nyushuttle.currentMap.setCenter(center);
     window.nyushuttle.currentMap.setZoom(LOCATION_ZOOM_LEVEL);
   }
@@ -172,11 +171,11 @@ function onLocationGet(pos, animationInterval) {
   const latlng = new maps.LatLng(pos.coords.latitude, pos.coords.longitude);
   const accuracy = Math.min(pos.coords.accuracy, MAX_ACCURACY_DESCRIPTION); // TODO: if accuracy > MAX_ACCURACY_DESCRIPTION, mark currentpos marker gray
 
-  if (!lastPosition) {
-    window.nyushuttle.currentMap.setCenter(latlng);
-    window.nyushuttle.currentMap.setZoom(LOCATION_ZOOM_LEVEL);
+  if (!window.nyushuttle.location.lastPos) {
+    map.setCenter(latlng);
+    map.setZoom(LOCATION_ZOOM_LEVEL);
   }
-  lastPosition = pos;
+  window.nyushuttle.location.lastPos = pos;
 
   // initCurrentPositionAccuracyIndicator(map, latlng, accuracy);
   // const indicator = currentPositionAccuracyIndicator;
@@ -200,8 +199,8 @@ function onLocationGet(pos, animationInterval) {
 //   currentPositionAccuracyIndicator = createCurrentPositionAccuracyIndicator(map, position, accuracy);
 
 //   map.addListener('zoom_changed', () => {
-//     const latlng = new maps.LatLng(lastPosition.coords.latitude, lastPosition.coords.longitude);
-//     const accuracy = lastPosition.coords.accuracy;
+//     const latlng = new maps.LatLng(window.nyushuttle.location.lastPos.coords.latitude, window.nyushuttle.location.lastPos.coords.longitude);
+//     const accuracy = window.nyushuttle.location.lastPos.coords.accuracy;
 //     currentPositionAccuracyIndicator.setMap(null);
 //     currentPositionAccuracyIndicator = createCurrentPositionAccuracyIndicator(lastMap, latlng, accuracy);
 //   });
