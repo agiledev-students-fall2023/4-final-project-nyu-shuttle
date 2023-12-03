@@ -105,7 +105,7 @@ export function addLocationButton(map) {
   // If location is already enabled
   if (window.nyushuttle.location.watchId) {
     LOCATION_ICON.style.backgroundPosition = '-224px 0px';
-    onLocationGet(window.nyushuttle.location.lastPos, null);
+    drawPositionOnMap(window.nyushuttle.location.lastPos, null);
   }
 }
 
@@ -136,8 +136,11 @@ function onLocationButtonClick() {
     }, 500);
 
     const onSuccess = (pos) => {
-      onLocationGet(pos, animationInterval);
+      window.nyushuttle.location.lastPos = pos;
+      drawPositionOnMap(pos);
       // console.log('Position:', pos);
+      clearInterval(animationInterval);
+      LOCATION_ICON.style.backgroundPosition = '-224px 0px';
     };
 
     const onError = (err) => {
@@ -165,7 +168,7 @@ function onLocationButtonClick() {
   }
 }
 
-function onLocationGet(pos, animationInterval) {
+function drawPositionOnMap(pos) {
   const map = window.nyushuttle.currentMap;
   const maps = window.google.maps;
   const latlng = new maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -175,19 +178,14 @@ function onLocationGet(pos, animationInterval) {
     map.setCenter(latlng);
     map.setZoom(LOCATION_ZOOM_LEVEL);
   }
-  window.nyushuttle.location.lastPos = pos;
 
   // initCurrentPositionAccuracyIndicator(map, latlng, accuracy);
   // const indicator = currentPositionAccuracyIndicator;
   // indicator.setPosition(latlng);
   // indicator.setIcon(createCurrentPositionAccuracyIndicator(map, latlng, accuracy));
 
-  clearInterval(animationInterval);
-
   recreateAccuracyIndicator(map, latlng, accuracy);
   recreateCurrentPositionMarker(map, latlng);
-
-  LOCATION_ICON.style.backgroundPosition = '-224px 0px';
 }
 
 // https://stackoverflow.com/a/24554579
