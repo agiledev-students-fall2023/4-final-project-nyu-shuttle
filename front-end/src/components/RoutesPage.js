@@ -73,7 +73,7 @@ function RoutesPage() {
     }
     if (fromLocation.name && toLocation.name && fromLocation.name !== toLocation.name) {
       awaitingData.current = true;
-      let reachableRoutes = fetch(`http://localhost:4000/getRoute`, {
+      let reachableRoutes = fetch(`/getRoute`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
