@@ -71,7 +71,7 @@ function RoutesPage() {
     catch(typeError){
       console.log('same input, no need to fetch new route');
     }
-    if (fromLocation.name && toLocation.name) {
+    if (fromLocation.name && toLocation.name && fromLocation.name !== toLocation.name) {
       awaitingData.current = true;
       let reachableRoutes = fetch(`http://localhost:4000/getRoute`, {
         method: "POST",
@@ -103,7 +103,6 @@ function RoutesPage() {
         }
         setRoutes(data);
         setShowSubpage(true);
-        alert('Starting' + JSON.stringify(data[0]));
         return data;
       })
       .catch((error) => {

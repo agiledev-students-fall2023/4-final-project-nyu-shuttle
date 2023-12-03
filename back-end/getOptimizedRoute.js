@@ -31,8 +31,17 @@ async function createGraph(routes, busstops) {
 function getEuclideanDistance (a, b) {
     let x1 = a[0];
     let y1 = a[1];
-    let x2 = b.split(',')[0];
-    let y2 = b.split(',')[1];
+    let x2;
+    let y2;
+    try{
+        x2 = b.split(',')[0];
+        y2 = b.split(',')[1];
+    }
+    catch(err){
+        x2 = b[0];
+        y2 = b[1];
+    }
+
     return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
 }
 
@@ -91,16 +100,34 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
     let reachableFromOrigin = await findAllReachableStops(graph, origin);
 
     let reachableFromDestination = await findAllReachableStops(graph, destination);
+    console.log('TOTAL REACHABLE STOPS: '+Number(reachableFromOrigin.length + reachableFromDestination.length))
     // Calculate route distances
     for (let originStop of reachableFromOrigin) {
         for (let destinationStop of reachableFromDestination) {
             let onSameRoute = await isOnSameRoute(graph, originStop, destinationStop, routes, busstops);
             console.log('on same route result: '+onSameRoute)
             if (onSameRoute.length > 0) {
-                let distanceToOriginStop = await getWalkingDistance(origin, originStop.coordinates);
-                let distanceFromDestinationStop = await getWalkingDistance(destinationStop.coordinates, destination);
-                let totalDistance = distanceToOriginStop + distanceFromDestinationStop;
-                console.log('fetched from Google Maps API, total distance: '+totalDistance);
+                let distanceToOriginStop
+                let distanceFromDestinationStop
+                let totalDistance
+                console.log('TOTAL REACHABLE STOPS2: '+reachableFromOrigin.length + reachableFromDestination.length)
+                if (Number(reachableFromOrigin.length + reachableFromDestination.length) < 15){
+
+                    distanceToOriginStop = await getWalkingDistance(origin, originStop.coordinates);
+                    distanceFromDestinationStop = await getWalkingDistance(destinationStop.coordinates, destination);
+                    totalDistance = distanceToOriginStop + distanceFromDestinationStop;
+                    console.log('fetched from Google Maps API, total distance: '+totalDistance);
+
+                }
+                else{
+                    distanceToOriginStop = await getEuclideanDistance(origin, originStop.coordinates);
+                    distanceFromDestinationStop = await getEuclideanDistance(destinationStop.coordinates, destination);
+                    totalDistance = distanceToOriginStop + distanceFromDestinationStop;
+                    console.log('getting euclidean distance, total distance: '+totalDistance);
+
+                }
+                    
+                 
                 // Check if this route is better than the current best
                 if (totalDistance < minTotalDistance) {
                     console.log('new optimal route found')
@@ -108,6 +135,7 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
                     optimalRoute = { originStop, destinationStop, onSameRoute };
                 }
             }
+
         }
     }
    
