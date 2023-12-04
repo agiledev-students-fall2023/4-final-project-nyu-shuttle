@@ -65,6 +65,7 @@ function RoutesPage() {
         console.log('awaiting data'); 
         return }
       if (fromLocation.name === lastLocation1.current.name && toLocation.name === lastLocation2.current.name) {
+        awaitingData.current = false;
         return;
       }
     }
