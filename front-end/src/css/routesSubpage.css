@@ -1,7 +1,7 @@
 /* routesSubpage.css */
 
 .routes-subpage-container{
-  @apply  h-screen bg-lightTone w-full overflow-y-auto flex flex-col items-center pb-20;
+  @apply  h-screen bg-lightTone px-8 w-full pt-3 overflow-y-auto flex flex-col items-center pb-20 my-0;
 }
 
 .dark .routes-subpage-container{
@@ -32,6 +32,10 @@ img {
   @apply w-full text-right;
 }
 
+.route-info-container{
+  @apply flex flex-col items-center w-full pt-3;
+}
+
 .red{
   filter: invert(72%) sepia(45%) saturate(5044%) hue-rotate(319deg) brightness(105%) contrast(82%);
 }
@@ -42,12 +46,12 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem;
-  width: 90%;
-  margin-top: 10px;
-  background-color: #fff;
-  border: 0.5px solid #4e4a4a;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border-radius: 10px;
+  border-style: solid;
+  margin-bottom: 10px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(103, 58, 163, 0.5);
 }
 
 .dark .route-info {
@@ -70,10 +74,5 @@ img {
 }
 
 .nav-button {
-  background-color: #165516;
-
-  padding: 1rem;
-  border-radius: 12px;
-  color: #fff;
-  margin: 10px;
+  @apply bg-darkTone text-lightTone text-base my-3 mx-3 h-14 py-2 rounded-xl px-6 w-20; 
 }

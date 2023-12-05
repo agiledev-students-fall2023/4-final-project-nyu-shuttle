@@ -7,11 +7,11 @@
 }
 
 .input-wrapper{
-  @apply flex flex-col items-center;
+  @apply flex flex-col items-center px-9;
 }
 
 .location-input {
-  @apply my-0.5 w-80;
+  @apply my-0.5 w-full;
 }
 
 .location-input label {

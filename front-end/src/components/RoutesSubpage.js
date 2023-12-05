@@ -6,7 +6,7 @@ import HeartIcon from "../images/heart-svg.svg";
 import HeartIconLoaded from "../images/heart-svg-loaded.svg";
 import SaveRouteDialog from "./SaveRouteDialog";
 import RouteMap from "./RouteMap";
-import getShuttleTimes from "../utils/getShuttleTimes";
+
 import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
 
 function RoutesSubpage({ location1, location2, routes }) {
@@ -67,13 +67,25 @@ function RoutesSubpage({ location1, location2, routes }) {
   };
 
   useEffect(() => {
-    if(routes[Object.keys(routes)[0]].time){
-      console.log('time calculated')
+    if (window.nyushuttle.routes){
+      for ( let route in routes) {
+        for (let routename in window.nyushuttle.routes) {
+          console.log(routename)
+          if (window.nyushuttle.routes[routename][0] === route) {
+            routes[route].color = window.nyushuttle.routes[routename][1];
+            console.log(window.nyushuttle.routes[routename])
+          }
+        }
+      }
+      if(routes[Object.keys(routes)[0]].time){
+        console.log('time calculated')
+      }
+      else{
+        console.log('time not calculated')
+      }
     }
-    else{
-      console.log('time not calculated')
-    }
-  }, []);
+
+  }, [window.nyushuttle.routes]);
     
   const startNavigation = value => () => {
     for (let [key, name] of Object.entries(window.nyushuttle.routes)) {
@@ -96,21 +108,11 @@ function RoutesSubpage({ location1, location2, routes }) {
   return (
     <div className="routes-subpage-container">
       <div className="title-container">
-          <Link className={'save '+(!isRouteSaved ? 'halfw' : 'fullw')} to="/saved-routes">
-            {displayText}
-          </Link>
-          {!isRouteSaved &&             
-            <img
-              src={isRouteSaved ? HeartIconLoaded : HeartIcon}
-              alt="Saved Icon"
-              className="saved-icon red"
-              onClick={openSaveDialog}
-            />
-          }
       </div>
       <RouteMap location1={location1} location2={location2} />
+      <div className="route-info-container">
       {Object.keys(routes).map((route, index) => (
-        <div className="route-info">
+        <div className="route-info" >
         <div className="route-text">
           <p className="text-lg">
             <strong>{route}</strong>
@@ -127,12 +129,13 @@ function RoutesSubpage({ location1, location2, routes }) {
         <button
           key={index} 
           className="nav-button" 
-          onClick={startNavigation(routes[index])}
+          onClick={startNavigation(route)}
         >
           Start
         </button>
       </div>
       ))}
+      </div>
 
       {isSaveDialogOpen && (
         <SaveRouteDialog onClose={closeSaveDialog} onSave={toggleRouteSaved}/>

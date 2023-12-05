@@ -264,6 +264,7 @@ function getIndexofStop(r, stopPos) {
   // Logic to get clipped route
   let minDist = 9999
   let index = -1
+  console.log('r: ',r)
   for (let i=0;i<r[0].length;i++){
     const dist = window.google.maps.geometry.spherical.computeDistanceBetween(
       new window.google.maps.LatLng(Number(r[0][i].lat), Number(r[0][i].lng)),
