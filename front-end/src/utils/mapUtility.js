@@ -100,6 +100,7 @@ export async function getMapCenter() {
 
 export function addLocationButton(map) {
   const maps = window.google.maps;
+  LOCATION_CONTROL.appendChild(LOCATION_BUTTON);
   map.controls[maps.ControlPosition.RIGHT_BOTTOM].push(LOCATION_CONTROL);
 
   // If location is already enabled
@@ -107,6 +108,10 @@ export function addLocationButton(map) {
     LOCATION_ICON.style.backgroundPosition = '-224px 0px';
     drawPositionOnMap(window.nyushuttle.location.lastPos, null);
   }
+}
+
+export function getLocationButton() {
+  return LOCATION_BUTTON;
 }
 
 function initLocationButton() {
@@ -137,7 +142,17 @@ function onLocationButtonClick() {
 
     const onSuccess = (pos) => {
       window.nyushuttle.location.lastPos = pos;
-      drawPositionOnMap(pos);
+      const path = window.location.pathname.split('/')[1];
+      switch (path) {
+        case 'map':
+          drawPositionOnMap(pos);
+          break;
+        case 'routes':
+          // don't really need callback in current implementation
+          // window.nyushuttle.location.lastPos holds most recent position
+          break;
+      }
+
       // console.log('Position:', pos);
       clearInterval(animationInterval);
       LOCATION_ICON.style.backgroundPosition = '-224px 0px';
