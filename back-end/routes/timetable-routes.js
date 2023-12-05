@@ -59,11 +59,11 @@ const timetableRouter = () => {
               { upsert: true, new: true }
             );
             if (!existingEntry) {
-            const newRoute = new Schema({
-              stop_name,
-              timestamp,
-              times,
-            }).save();
+              const newRoute = new Schema({
+                stop_name,
+                timestamp,
+                times,
+              }).save();
             }
           }
           times = [];
