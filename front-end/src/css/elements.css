@@ -1,0 +1,65 @@
+.iconContainer {
+  pointer-events: none;
+  display: inline;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  right: 0;
+}
+
+.iconContainer button {
+  pointer-events: all;
+  width: 40px;
+  height: 40px;
+}
+
+.iconContainer .hidden {
+  display: none;
+  opacity: 0;
+  color: transparent;
+}
+
+.searchIndicator {
+  position: absolute;
+  pointer-events: all;
+  top: 0;
+  right: 5px;
+  width: 40px;
+  height: 40px;
+}
+
+.searchIndicator .icon {
+  top: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 8px;
+  position: absolute;
+}
+
+.geolocationIcon {
+  position: absolute;
+  height: 100%;
+  top: 1px;
+  right: 5px;
+}
+
+#locationIcon {
+  pointer-events: none;
+  margin: 6px;
+  width: 28px;
+  height: 28px;
+  /* Background image will be Google Maps location icon spritesheet */
+  background-image: none;
+  background-size: 280px 28px;
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+
+.flipIcon {
+  @apply p-0 translate-y-3 transform transition duration-300;
+}
+
+.flip {
+  @apply rotate-180;
+}
