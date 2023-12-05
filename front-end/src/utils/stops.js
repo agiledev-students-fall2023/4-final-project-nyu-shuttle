@@ -274,22 +274,28 @@ function getIndexofStop(r, stopPos) {
       index = i
     }
   }
+  console.log('index: ',index)
   return index
 }
 
 function getClippedRoute() {
-  let routeId = window.nyushuttle.routesSelected //id of route
-  let route = window.nyushuttle.routePoints[routeId] //list of all routes
-  let originStopId = window.nyushuttle.startStopLocation //id of origin stop
-  let destinationStopId = window.nyushuttle.endStopLocation //id of destination stop
-  let originStop = window.nyushuttle.stops[`ID${originStopId}`] //origin stop object
-  let destinationStop = window.nyushuttle.stops[`ID${destinationStopId}`] //destination stop object
-  let originStopPos = {lat: originStop.latitude, lng: originStop.longitude} //position of origin stop
-  let destinationStopPos = {lat: destinationStop.latitiude, lng: originStop.longitude} //position of destination stop
-  // get the index of origin and destination stops 
+  let routeId = window.nyushuttle.routesSelected; // get the selected route id
+  let route = window.nyushuttle.routePoints[routeId] // get list of route points
+  let originStopId = window.nyushuttle.startStopLocation // get the origin stop id
+  let destinationStopId = window.nyushuttle.endStopLocation // get the destination stop id
+  let originStop = window.nyushuttle.stops[`ID${originStopId}`] // get the origin stop
+  let destinationStop = window.nyushuttle.stops[`ID${destinationStopId}`] // get the destination stop
+  let originStopPos = {} // get the origin stop position
+  let destinationStopPos = {} // get the destination stop position
+  //set the origin and destination stop positions
+  originStopPos.lat = originStop.latitude
+  originStopPos.lng = originStop.longitude
+  destinationStopPos.lat = destinationStop.latitude
+  destinationStopPos.lng = destinationStop.longitude
+  // get the index of the origin and destination stops
   let originStopIndex = getIndexofStop(route, originStopPos)
   let destinationStopIndex = getIndexofStop(route, destinationStopPos)
-  // switch the order if origin stop is after destination stop
+  // switch places if origin stop is after destination stop
   if (originStopIndex > destinationStopIndex){
     return [destinationStopIndex, originStopIndex]
   }
@@ -356,13 +362,13 @@ function sliceRouteStops(routeStops, stop1, stop2) {
 
   let startIndex = routeStops.findIndex(subarray => subarray[1] === stop1);
   let endIndex = routeStops.findIndex(subarray => subarray[1] === stop2);
-
-  if ( startIndex > endIndex){
-    let temp = startIndex
-    startIndex = endIndex
-    endIndex = temp
+  if (startIndex > endIndex) {
+    let temp = startIndex;
+    startIndex = endIndex;
+    endIndex = temp;
   }
-  let slicedPart = routeStops.slice(startIndex, endIndex + 1);
+  const slicedPart = routeStops.slice(startIndex, endIndex + 1);
+
   return [...initialPart, ...slicedPart];
 }
 
