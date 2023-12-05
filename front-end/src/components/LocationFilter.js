@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { loadGoogleMapsAPI } from '../utils/mapUtility';
+import { IconPlaceHolder } from './RoutePageElement';
 import '../css/locationFilter.css';
 
-const LocationDropdown = ({initialLocation, onLocationChange }) => {
+const LocationDropdown = ({ initialLocation, onLocationChange }) => {
   const [isApiLoaded, setIsApiLoaded] = useState(false);
-  const [inputValue, setInputValue] = useState(initialLocation.name || ''); 
-  const [selectedLocation, setSelectedLocation] = useState(initialLocation || ''); 
+  const [inputValue, setInputValue] = useState(initialLocation.name || '');
+  const [selectedLocation, setSelectedLocation] = useState(initialLocation || '');
   const [options, setOptions] = useState([]);
 
   // Load Google Maps API
@@ -24,25 +25,23 @@ const LocationDropdown = ({initialLocation, onLocationChange }) => {
         placesService.textSearch(request, (results, status) => {
           if (status === google.maps.places.PlacesServiceStatus.OK) {
             const nycPlaces = results.filter((result) => result.formatted_address);
-            const limitedPlaces = nycPlaces.slice(0, 5); 
+            const limitedPlaces = nycPlaces.slice(0, 5);
             const places = limitedPlaces.map((result) => ({
               name: result.name,
               address: result.formatted_address,
               place_id: result.place_id,
               lat: result.geometry.location.lat(),
               lng: result.geometry.location.lng(),
-            }
-            
-            ));
+            }));
             setOptions(places);
-          } 
+          }
         });
       }
     }
   }, [inputValue, selectedLocation]);
 
   const handleInputChange = (input) => {
-    setInputValue(input); 
+    setInputValue(input);
   };
 
   const handleLocationSelect = (location) => {
@@ -52,9 +51,9 @@ const LocationDropdown = ({initialLocation, onLocationChange }) => {
     setOptions([]);
   };
 
-
   return (
     <div className="text-box">
+      <IconPlaceHolder />
       <input
         type="text"
         placeholder="Enter location"
@@ -65,8 +64,7 @@ const LocationDropdown = ({initialLocation, onLocationChange }) => {
         {options.length > 0 && (
           <ul className="options-list">
             {options.map((location, index) => (
-              <li className="options-expanded" 
-               key={index} onClick={() => handleLocationSelect(location)}>
+              <li className="options-expanded" key={index} onClick={() => handleLocationSelect(location)}>
                 {location.name} - {location.address}
               </li>
             ))}
