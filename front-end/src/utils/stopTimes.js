@@ -54,24 +54,6 @@ export async function getNextTimes(stopName, route) {
   }
 }
 
-export async function getMatchingName(stopName, route){
-  if(route === "A"){
-    if(stopName==="Cadman Plaza & Clark Street"){
-      return "Cadman Plaza & Clark St."
-    } else if(stopName==="6 Metro Tech Center" || stopName==="Metro Tech Way"){
-      return "Drop Off Only"
-    } else if(stopName==="80 Lafayette Street"){
-      return "80 Lafayette"
-    } else if(stopName==="Broadway & Broome St"){
-      return "Broadway & Broome St."
-    } else if(stopName==="715 Broadway"){
-      return "715 Broadway Departure"
-    } else if(stopName==="Cleveland Pl & Spring St"){
-      return "Cleveland & Spring St."
-    } 
-  }
-}
-
 export async function timeRemaining(stopName, route) {
   try {
     const currentTime = new Date();
@@ -88,11 +70,6 @@ export async function timeRemaining(stopName, route) {
     throw error;
   }
 }
-
-export async function getRoute(route_id){
- 
-}
-
 
 
 export default getShuttleTimes;

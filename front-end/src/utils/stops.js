@@ -12,6 +12,8 @@ if (typeof window.nyushuttle == 'undefined') {
 }
 window.nyushuttle.routePoints = {};
 window.nyushuttle.stops = {};
+
+
 window.nyushuttle.routes = [];
 let center = {};
 let stopMarkers = [];
