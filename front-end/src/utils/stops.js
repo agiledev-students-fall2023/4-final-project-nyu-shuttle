@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { timeRemaining, getMatchingName } from './stopTimes';
 // import {} from './routes';
 
 const MIN_QUERY_DELAY = 300000; // 5 min
@@ -11,6 +12,8 @@ if (typeof window.nyushuttle == 'undefined') {
 }
 window.nyushuttle.routePoints = {};
 window.nyushuttle.stops = {};
+
+
 window.nyushuttle.routes = [];
 let center = {};
 let stopMarkers = [];
@@ -418,11 +421,26 @@ function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
     if (isStopValid(theStop)) {
       updateStopData(theStop, stop, routeId, routeGroupId, routeName, routeColor);
       const marker = createMarkerForStop(theStop, zoomLevel, routeColor, showStopName, idx);
-      // marker.addListener('click', onMarkerClick);
-      // marker.addListener('mouseover', onMarkerHover);
+      marker.addListener('click', () => onMarkerClick(theStop, marker)); 
       stopMarkers.push(marker);
     }
   });
+}
+
+function onMarkerClick(theStop, marker) {
+  const stopName = marker.title; 
+  const route_id = theStop.routeName.slice(-1);
+  if(route_id && stopName){
+    console.log(route_id + " " + stopName);
+    //console.log(timeRemaining(getMatchingName(stopName, route_id), route_id));
+  }
+}
+
+function checkIfInfoisAvailable(route_id) {
+  if(route_id === "e" || route_id === "d"){
+    return "Real time info on this route not supported. Please check nyupassiogo."
+  }
+
 }
 
 function isStopValid(stop) {
@@ -504,8 +522,17 @@ function recreateStopMarkerCluster() {
   });
 
   // Add event listeners to the marker cluster
-  //   window.google.maps.event.addListener(stopMarkerCluster, 'click', onClusterMarkerClick);
-  //   window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
+  window.google.maps.event.addListener(stopMarkerCluster, 'click', onClusterMarkerClick);
+  //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
+}
+
+function onClusterMarkerClick(cluster) {
+  const markers = cluster.getMarkers();
+  for (let i = 0; i < markers.length; i++) {
+    const marker = markers[i];
+    const stopName = marker.title; 
+    console.log(stopName);
+  }
 }
 
 function panToBoundsIfNeeded(center) {

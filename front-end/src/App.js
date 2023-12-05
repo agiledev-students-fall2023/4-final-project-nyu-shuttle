@@ -18,6 +18,7 @@ import TutorialComponent from './components/TutorialComponent';
 import { registerService } from './utils/serviceRegister';
 import { getMapCenter, loadGoogleMapsAPI } from './utils/mapUtility';
 import { queryRoutes } from './utils/routes';
+import {  getNextTimes } from './utils/stopTimes';
 
 // Import CSS
 import './index.css';
