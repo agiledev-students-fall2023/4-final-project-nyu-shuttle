@@ -47,7 +47,7 @@ function getEuclideanDistance (a, b) {
 }
 
 //find bus stops that are relatively close in term of walking distance
-async function findAllReachableStops(graph, origin, threshold=0.009, maxThreshold=0.1) {
+async function findAllReachableStops(graph, origin, threshold=0.008, maxThreshold=0.1) {
 
     let resolvedGraph = await graph; // Waits for the graph Promise to resolve
     console.log('resolvedGraph:',Object.keys(resolvedGraph))
@@ -85,9 +85,12 @@ async function getWalkingDistance(origin, destination) {
         destination = destination.join('%2C');
     }
 
-    let res = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin}&destinations=${destination}&key=${process.env.EXPRESS_APP_MAP_API_KEY}`)
+    let res = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${origin}&destinations=${destination}&mode=walking&key=${process.env.EXPRESS_APP_MAP_API_KEY}`)
     let data = await res.json();
-    res = data.rows[0].elements[0].duration.value;
+    res = {
+        distance: data.rows[0].elements[0].distance.value,
+        time: data.rows[0].elements[0].duration.text
+    };
     return res;
 }
 
@@ -120,32 +123,39 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
                 let distanceToOriginStop
                 let distanceFromDestinationStop
                 let totalDistance
+                let totalTime
                 console.log('TOTAL REACHABLE STOPS2: '+reachableFromOrigin.length + reachableFromDestination.length)
-                if (Number(reachableFromOrigin.length + reachableFromDestination.length) < 15){
-
+                if (Number(reachableFromOrigin.length + reachableFromDestination.length) < 20){
+    
                     distanceToOriginStop = await getWalkingDistance(origin, originStop.coordinates);
                     distanceFromDestinationStop = await getWalkingDistance(destinationStop.coordinates, destination);
-                    totalDistance = distanceToOriginStop + distanceFromDestinationStop;
+                    totalDistance = distanceToOriginStop.distance + distanceFromDestinationStop.distance;
                     console.log('fetched from Google Maps API, total distance: '+totalDistance);
-
+                    totalTime = Number(distanceToOriginStop.time.split(' ')[0]) + Number(distanceFromDestinationStop.time.split(' ')[0]);
+                    console.log('fetched from Google Maps API, total time: '+totalTime);
                 }
                 else{
                     distanceToOriginStop = await getEuclideanDistance(origin, originStop.coordinates);
                     distanceFromDestinationStop = await getEuclideanDistance(destinationStop.coordinates, destination);
                     totalDistance = distanceToOriginStop + distanceFromDestinationStop;
                     console.log('getting euclidean distance, total distance: '+totalDistance);
-
+    
                 }
                     
-                 
+                // Create an object with route names as keys and {distance, time} as values
+                let routeDetails = {};
+                for (let route of onSameRoute) {
+                    routeDetails[route] = {distance: totalDistance, time: totalTime};
+                }
+    
                 // Check if this route is better than the current best
                 if (totalDistance < minTotalDistance) {
                     console.log('new optimal route found')
                     minTotalDistance = totalDistance;
-                    optimalRoute = { origin, originStop, destination, destinationStop, onSameRoute };
+                    optimalRoute = { origin, originStop, destination, destinationStop, onSameRoute: routeDetails };
                 }
             }
-
+    
         }
     }
    
@@ -155,6 +165,12 @@ async function findOptimalRoute(graph, routes, busstops, origin_lat, origin_lng,
     }
     console.log('-------------------------------------')
     console.log('optimal route: '+optimalRoute.onSameRoute);
+    for (let route in optimalRoute.onSameRoute) {
+
+        console.log('<-----------Route Name: '+route+'--------------->');
+        console.log('Total Distance: '+optimalRoute.onSameRoute[route].distance);
+        console.log('Total Time: '+optimalRoute.onSameRoute[route].time);
+    }
     console.log('origin stop location: '+optimalRoute.originStop.coordinates);
     console.log('destination stop location: '+optimalRoute.destinationStop.coordinates);
     

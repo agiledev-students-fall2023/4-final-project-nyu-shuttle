@@ -6,6 +6,7 @@ import HeartIcon from "../images/heart-svg.svg";
 import HeartIconLoaded from "../images/heart-svg-loaded.svg";
 import SaveRouteDialog from "./SaveRouteDialog";
 import RouteMap from "./RouteMap";
+import getShuttleTimes from "../utils/getShuttleTimes";
 import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
 
 function RoutesSubpage({ location1, location2, routes }) {
@@ -13,6 +14,8 @@ function RoutesSubpage({ location1, location2, routes }) {
   const [isRouteSaved, setIsRouteSaved] = useState(false);
   const [displayText, setDisplayText] = useState("Click to save route ->");
   const navigate = useNavigate();
+
+
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
     if (loadedRoutes && loadedRoutes.some((route) => route.from.name === location1.name && route.to === location2.name)) {
@@ -62,6 +65,15 @@ function RoutesSubpage({ location1, location2, routes }) {
         setDisplayText("View saved routes here");
       }, 3000);
   };
+
+  useEffect(() => {
+    if(routes[Object.keys(routes)[0]].time){
+      console.log('time calculated')
+    }
+    else{
+      console.log('time not calculated')
+    }
+  }, []);
     
   const startNavigation = value => () => {
     for (let [key, name] of Object.entries(window.nyushuttle.routes)) {
@@ -97,23 +109,20 @@ function RoutesSubpage({ location1, location2, routes }) {
           }
       </div>
       <RouteMap location1={location1} location2={location2} />
-      {routes.map((route, index) => (
+      {Object.keys(routes).map((route, index) => (
         <div className="route-info">
         <div className="route-text">
           <p className="text-lg">
             <strong>{route}</strong>
           </p>
+          <p className="text-base	">
+            Total Walking Time:{" "}
+            <strong>{routes[route].time} min</strong>
+          </p>
           <p className="text-sm">
             Shuttle {route} scheduled at <strong>{shuttleSchedule}</strong>
           </p>
-          <p className="text-sm">
-            {location1.name} to shuttle:{" "}
-            <strong>{timeToShuttle} min</strong>
-          </p>
-          <p className="text-sm">
-            Shuttle to {location2.name}:{" "}
-            <strong>{timeToDestination2} min</strong>
-          </p>
+
         </div>
         <button
           key={index} 
