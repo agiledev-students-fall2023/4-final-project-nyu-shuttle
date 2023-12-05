@@ -67,6 +67,7 @@ function RoutesSubpage({ location1, location2, routes }) {
     for (let [key, name] of Object.entries(window.nyushuttle.routes)) {
       if (name[0] === value) {
         window.nyushuttle.routesSelected = key;
+        window.nyushuttle.navigating = true;
         break;
       }
     }

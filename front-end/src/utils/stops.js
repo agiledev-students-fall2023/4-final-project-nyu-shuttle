@@ -146,18 +146,89 @@ function drawRoutes(showStopName) {
     });
 }
 
+function drawWalkingRoute(direction) {
+  let startLocation, endLocation;
+  let request;
+  let stops = window.nyushuttle.stops;
+
+  if (direction === 'from') { //plot "from" route
+    //becuase for some reason fromLocation.lat and fronLocation.lng are corrupted, use
+    //fromLocation.place_id instead
+    startLocation = {'placeId':window.nyushuttle.fromLocation.place_id};
+    endLocation = {
+      lat: stops['ID' + window.nyushuttle.startStopLocation].latitude,
+      lng: stops['ID' + window.nyushuttle.startStopLocation].longitude
+    };
+    request = {
+      origin: startLocation,
+      destination: endLocation,
+      travelMode: 'WALKING',
+    };
+  } else if (direction === 'to') { //plot "to" route
+    endLocation = {'placeId':window.nyushuttle.toLocation.place_id};
+    startLocation = {
+      lat: stops['ID' + window.nyushuttle.endStopLocation].latitude,
+      lng: stops['ID' + window.nyushuttle.endStopLocation].longitude
+    };
+    request = {
+      origin: startLocation,
+      destination: endLocation,
+      travelMode: 'WALKING',
+    };
+  }
+  let directionsService = new window.google.maps.DirectionsService();
+  directionsService.route(request, function (result, status) {
+    if (status == 'OK') {
+      let directionsRenderer = new window.google.maps.DirectionsRenderer({
+        suppressMarkers: true // Hides the default markers
+      });
+      directionsRenderer.setMap(window.nyushuttle.currentMap);
+      directionsRenderer.setDirections(result);
+  
+      // Add custom markers
+      if(direction === 'from') {
+      const startMarker = new window.google.maps.Marker({
+        position: result.routes[0].legs[0].start_location,
+        map: window.nyushuttle.currentMap,
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 7,
+          fillColor: '#8400a8',
+          fillOpacity: 1.0,
+          strokeColor: '#FF0000',
+          strokeOpacity: 0
+        }
+      });
+    }
+    else{
+      const endMarker = new window.google.maps.Marker({
+        position: result.routes[0].legs[0].end_location,
+        map: window.nyushuttle.currentMap,
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 7,
+          fillColor: '#8400a8',
+          fillOpacity: 1,
+          strokeColor: '#',
+          strokeOpacity: 0
+        }
+      });
+    }
+    }
+  });
+}
+
 function drawRoute(routeId, route, showStopName, clip=null) {
   const routeGroupId = route[2];
   const routeColor = correctColorFromARGB(route[1]);
   let routePaths = getRoutePaths(routeId);
   if (clip) {
+    drawWalkingRoute('from')
+    drawWalkingRoute('to')
     routePaths = routePaths.slice(clip[0], clip[1])
-    console.log('path: ', routePaths)
     if (routePaths.length == 0){
       if (clip[0] < 100 && clip[1] > 100){
-        let routePath_1 = routePaths.slice(clip[0], 100)
-        let routePath_2 = routePaths.slice(100, clip[1])
-        routePaths = routePath_1.concat(routePath_2)
+        routePaths = routePaths.concat(routePaths.slice(100, clip[1]))
       }
       else if (clip[0] < 100 && clip[1] < 100){
         routePaths = routePaths[0].slice(clip[0], clip[1])
@@ -171,6 +242,8 @@ function drawRoute(routeId, route, showStopName, clip=null) {
   }
   else{
     console.log('noclip')
+    drawRoutePath(routePaths, routeColor, routeId, routeGroupId);
+
   }
   
   //   routePaths.forEach((path) => {
@@ -201,30 +274,22 @@ function getIndexofStop(r, stopPos) {
       index = i
     }
   }
-  console.log('index: ',index)
   return index
 }
 
 function getClippedRoute() {
-  let routeId = window.nyushuttle.routesSelected
-  console.log('routeid: ',routeId)
-  let route = window.nyushuttle.routePoints[routeId]
-  console.log('route: ',route)
-  let originStopId = window.nyushuttle.startStopLocation
-  console.log('originStopId: ',originStopId)
-  let destinationStopId = window.nyushuttle.endStopLocation
-  let originStop = window.nyushuttle.stops[`ID${originStopId}`]
-  console.log('originStop: ',originStop)
-  let destinationStop = window.nyushuttle.stops[`ID${destinationStopId}`]
-  let originStopPos = {}
-  let destinationStopPos = {}
-  originStopPos.lat = originStop.latitude
-  originStopPos.lng = originStop.longitude
-  destinationStopPos.lat = destinationStop.latitude
-  destinationStopPos.lng = destinationStop.longitude
-  console.log('originStopPos: ',originStopPos)
+  let routeId = window.nyushuttle.routesSelected //id of route
+  let route = window.nyushuttle.routePoints[routeId] //list of all routes
+  let originStopId = window.nyushuttle.startStopLocation //id of origin stop
+  let destinationStopId = window.nyushuttle.endStopLocation //id of destination stop
+  let originStop = window.nyushuttle.stops[`ID${originStopId}`] //origin stop object
+  let destinationStop = window.nyushuttle.stops[`ID${destinationStopId}`] //destination stop object
+  let originStopPos = {lat: originStop.latitude, lng: originStop.longitude} //position of origin stop
+  let destinationStopPos = {lat: destinationStop.latitiude, lng: originStop.longitude} //position of destination stop
+  // get the index of origin and destination stops 
   let originStopIndex = getIndexofStop(route, originStopPos)
   let destinationStopIndex = getIndexofStop(route, destinationStopPos)
+  // switch the order if origin stop is after destination stop
   if (originStopIndex > destinationStopIndex){
     return [destinationStopIndex, originStopIndex]
   }
@@ -289,11 +354,15 @@ function sliceRouteStops(routeStops, stop1, stop2) {
   // Retain the first three elements
   const initialPart = routeStops.slice(0, 3);
 
-  const startIndex = routeStops.findIndex(subarray => subarray[1] === stop1);
-  const endIndex = routeStops.findIndex(subarray => subarray[1] === stop2);
+  let startIndex = routeStops.findIndex(subarray => subarray[1] === stop1);
+  let endIndex = routeStops.findIndex(subarray => subarray[1] === stop2);
 
-  const slicedPart = routeStops.slice(startIndex, endIndex + 1);
-
+  if ( startIndex > endIndex){
+    let temp = startIndex
+    startIndex = endIndex
+    endIndex = temp
+  }
+  let slicedPart = routeStops.slice(startIndex, endIndex + 1);
   return [...initialPart, ...slicedPart];
 }
 
@@ -310,12 +379,9 @@ function drawStops() {
     .forEach((routeId) => {
       let routestops = routes[routeId];
       let routeGroupId = routes[routeId][2];
-      let routestops1;
-      let routestops2;
       if (window.nyushuttle.startStopLocation && routestops){
         routestops = sliceRouteStops(routestops, window.nyushuttle.startStopLocation, window.nyushuttle.endStopLocation)
       }
-
       addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName);
     });
 
