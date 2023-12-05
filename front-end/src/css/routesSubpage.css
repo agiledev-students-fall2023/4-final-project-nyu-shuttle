@@ -1,7 +1,7 @@
 /* routesSubpage.css */
 
 .routes-subpage-container{
-  @apply  h-screen bg-lightTone px-8 w-full pt-3 overflow-y-auto flex flex-col items-center pb-20 my-0;
+  @apply  h-screen bg-lightTone px-4 w-full pt-3 overflow-y-auto flex flex-col items-center pb-20 my-0;
 }
 
 .dark .routes-subpage-container{
@@ -13,11 +13,19 @@ img {
 }
 
 .title-container {
-  @apply flex justify-items-start w-80;
+  @apply flex justify-items-start w-full;
+}
+
+.save-route-button{
+  @apply  text-darkTone text-center w-1/4 text-base mx-0 h-full p-0 rounded-xl; 
+}
+
+.view-route-button{
+  @apply bg-darkTone text-lightTone w-full text-base mx-0 h-11 py-2   text-center rounded-xl px-6; 
 }
 
 .saved-icon {
-  @apply w-16 h-16 mb-0 grayscale-0 ;
+  @apply absolute z-50 w-8 h-12 mb-0 top-8 right-5 pb-2 grayscale-0 p-0;
 }
 
 .save{
@@ -63,6 +71,7 @@ img {
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+  margin-left: 10px;
 }
 
 .route-info .text-lg {

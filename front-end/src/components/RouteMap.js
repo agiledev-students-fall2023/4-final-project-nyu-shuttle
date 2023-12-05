@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "../css/routeMap.css";
+import SaveRouteButton from "./SaveRouteButton";
 
 function RouteMap({ location1, location2 }) {
   const mapRef = useRef(null);
@@ -54,7 +55,13 @@ function RouteMap({ location1, location2 }) {
     });
   }, [location1, location2]);
 
-  return <div ref={mapRef} className="route_map"></div>;
+  return (
+    <div className="relative w-full">
+      <SaveRouteButton />
+      <div ref={mapRef} className="route_map"> </div>
+    </div>
+  )
+
 }
 
 export default RouteMap;

@@ -1,5 +1,5 @@
 .route-container {
-  @apply p-2 pl-4 pr-6 pt-4 pb-5 h-screen bg-lightTone flex flex-col overflow-y-scroll;
+  @apply p-2 pl-4 pr-4 pt-4 pb-5 h-screen bg-lightTone flex flex-col overflow-y-scroll;
 }
 
 .dark .route-container{
@@ -7,7 +7,7 @@
 }
 
 .input-wrapper{
-  @apply flex flex-col items-center px-9;
+  @apply flex flex-col items-center px-4;
 }
 
 .location-input {

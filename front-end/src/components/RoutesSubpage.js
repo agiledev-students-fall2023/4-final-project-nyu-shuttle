@@ -6,7 +6,8 @@ import HeartIcon from "../images/heart-svg.svg";
 import HeartIconLoaded from "../images/heart-svg-loaded.svg";
 import SaveRouteDialog from "./SaveRouteDialog";
 import RouteMap from "./RouteMap";
-
+import SaveRouteButton from "./SaveRouteButton";
+import ViewRouteButton from "./ViewRouteButton";
 import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
 
 function RoutesSubpage({ location1, location2, routes }) {
@@ -15,7 +16,16 @@ function RoutesSubpage({ location1, location2, routes }) {
   const [displayText, setDisplayText] = useState("Click to save route ->");
   const navigate = useNavigate();
 
-
+  const openSaveDialog = () => {
+    console.log('clicked')
+    if (!isRouteSaved) {
+      setSaveDialogOpen(true);
+    } else {
+      const loadedRoutes = localStorageLoad('routes') || [];
+      const updatedRoutes = loadedRoutes.filter((route) => route.from.name !== location1.name || route.to.name !== location2.name);
+      localStorageSave('routes', updatedRoutes);
+    }
+  };
   useEffect(() => {
     const loadedRoutes = localStorageLoad('routes');
     if (loadedRoutes && loadedRoutes.some((route) => route.from.name === location1.name && route.to === location2.name)) {
@@ -26,45 +36,6 @@ function RoutesSubpage({ location1, location2, routes }) {
     }
   }, [location1, location2]);
 
-  const openSaveDialog = () => {
-    if (!isRouteSaved) {
-      setSaveDialogOpen(true);
-    } else {
-      const loadedRoutes = localStorageLoad('routes') || [];
-      const updatedRoutes = loadedRoutes.filter((route) => route.from.name !== location1.name || route.to.name !== location2.name);
-      localStorageSave('routes', updatedRoutes);
-    }
-  };
-
-  const closeSaveDialog = () => {
-    setSaveDialogOpen(false);
-  };
-
-  const toggleRouteSaved = (name) => {
-      const loadedRoutes = localStorageLoad('routes') || [];
-      const maxId = loadedRoutes.reduce((max, route) => (route._id > max ? route._id : max), 0);
-      const newId = maxId + 1;
-      const newRoute = {
-        _id: newId,
-        name: name,
-        timestamp: Date.now(),
-        from: {
-          name: location1.name,
-          address: location1.address,
-        },
-        to: {
-          name: location2.name,
-          address: location2.address,
-        },
-      }; 
-      loadedRoutes.push(newRoute);
-      localStorageSave('routes', loadedRoutes);
-      setIsRouteSaved(true);
-      setDisplayText("Saved");
-      setTimeout (() => {
-        setDisplayText("View saved routes here");
-      }, 3000);
-  };
 
   useEffect(() => {
     if (window.nyushuttle.routes){
@@ -108,6 +79,7 @@ function RoutesSubpage({ location1, location2, routes }) {
   return (
     <div className="routes-subpage-container">
       <div className="title-container">
+          <ViewRouteButton className="w-full h-full" saved={isRouteSaved} />
       </div>
       <RouteMap location1={location1} location2={location2} />
       <div className="route-info-container">
@@ -137,9 +109,6 @@ function RoutesSubpage({ location1, location2, routes }) {
       ))}
       </div>
 
-      {isSaveDialogOpen && (
-        <SaveRouteDialog onClose={closeSaveDialog} onSave={toggleRouteSaved}/>
-      )}
     </div>
   );
 }

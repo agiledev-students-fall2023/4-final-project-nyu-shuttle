@@ -1,6 +1,6 @@
 
 .route_map{
-    @apply bg-lightTone h-full w-full border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
+    @apply bg-lightTone h-52 w-full border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
 }
 
 .dark .rooute_map{
