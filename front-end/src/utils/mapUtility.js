@@ -194,56 +194,9 @@ function drawPositionOnMap(pos) {
     map.setZoom(LOCATION_ZOOM_LEVEL);
   }
 
-  // initCurrentPositionAccuracyIndicator(map, latlng, accuracy);
-  // const indicator = currentPositionAccuracyIndicator;
-  // indicator.setPosition(latlng);
-  // indicator.setIcon(createCurrentPositionAccuracyIndicator(map, latlng, accuracy));
-
   recreateAccuracyIndicator(map, latlng, accuracy);
   recreateCurrentPositionMarker(map, latlng);
 }
-
-// https://stackoverflow.com/a/24554579
-// function initCurrentPositionAccuracyIndicator(map, position, accuracy) {
-//   if (currentPositionAccuracyIndicator) {
-//     return;
-//   }
-//   const maps = window.google.maps;
-//   currentPositionAccuracyIndicator = createCurrentPositionAccuracyIndicator(map, position, accuracy);
-
-//   map.addListener('zoom_changed', () => {
-//     const latlng = new maps.LatLng(window.nyushuttle.location.lastPos.coords.latitude, window.nyushuttle.location.lastPos.coords.longitude);
-//     const accuracy = window.nyushuttle.location.lastPos.coords.accuracy;
-//     currentPositionAccuracyIndicator.setMap(null);
-//     currentPositionAccuracyIndicator = createCurrentPositionAccuracyIndicator(lastMap, latlng, accuracy);
-//   });
-// }
-
-// function createCurrentPositionAccuracyIndicator(map, position, accuracy) {
-//   const maps = window.google.maps;
-//   const zoom = map.getZoom();
-//   const scale = getScale(position, zoom + 1); //meters per pixel
-//   const diameter = accuracy / scale;
-
-//   const icon = {
-//     path: maps.SymbolPath.CIRCLE,
-//     scale: diameter / 2,
-//     strokeColor: '#CC0000',
-//     strokeOpacity: 0.8,
-//     strokeWeight: 2,
-//     fillColor: '#CC0000',
-//     fillOpacity: 0.35,
-//   };
-
-//   const indicator = new maps.Marker({
-//     position,
-//     map,
-//     icon,
-//     zIndex: ACCURACY_INDICATOR_Z_INDEX,
-//   });
-
-//   return indicator;
-// }
 
 // function getScale(latLng, zoom) {
 //   return (156543.03392 * Math.cos((latLng.lat() * Math.PI) / 180)) / Math.pow(2, zoom);
