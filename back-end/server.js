@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+const expressStaticGzip = require("express-static-gzip");
+
 const server = require('./app'); 
-const port = 4000;
+const port = process.env.PORT || 4000;
 const axios = require('axios');
 const cheerio = require('cheerio');
 
