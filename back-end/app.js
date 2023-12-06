@@ -15,6 +15,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB.'))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
+app.use(express.json());
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
 app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
 app.use(express.static(STATIC_FOLDER));
@@ -32,7 +33,6 @@ app.use('/feedback', feedbackRoutes());
 app.use('/timetable', timetableRoutes());
 app.use('/stopfind', stopRoutes());
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 cron.schedule('0 0 * * *', () => {
