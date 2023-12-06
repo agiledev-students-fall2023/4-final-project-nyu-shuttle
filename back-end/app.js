@@ -33,6 +33,7 @@ app.use("/feedback", feedbackRoutes());
 app.get("/test", (req, res) => {
   console.log(window.nyushuttle)
 });
+
 app.use("/timetable", timetableRoutes());
 app.use("/stopfind", stopRoutes());
 

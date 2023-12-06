@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { timeRemaining, getMatchingName } from './stopTimes';
+import { getNextTimes, timeRemaining, getMatchingName } from './stopTimes';
 // import {} from './routes';
 
 const MIN_QUERY_DELAY = 300000; // 5 min
@@ -427,20 +427,98 @@ function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
   });
 }
 
-function onMarkerClick(theStop, marker) {
-  const stopName = marker.title; 
-  const route_id = theStop.routeName.slice(-1);
-  if(route_id && stopName){
-    console.log(route_id + " " + stopName);
-    //console.log(timeRemaining(getMatchingName(stopName, route_id), route_id));
+function getCorrespondingRoute(routeIDs) {
+  let routes = [];
+  if (typeof routeIDs === 'string') {
+    routeIDs = [routeIDs];
   }
+  for(let i = 0; i < routeIDs.length; i++) {
+    let route = routeIDs[i];
+    if (route === "44748") {
+      routes.push("C");
+    } else if(route === "44676") {
+      routes.push("A");
+    } else if(route === "44753") {
+      routes.push("W");
+    } else if(route === "44745") {
+      routes.push("B");
+    } else if(route === "41890") {
+      routes.push("CH");
+    } else if(route === "44749") {
+      routes.push("E");
+    } else if(route === "44750") {
+      routes.push("F");
+    } else if(route === "44752") {
+      routes.push("G");
+    } else if(route === "44754") {
+      routes.push("MP");
+    } else if(route === "44755") {
+      routes.push("ME");
+    } else if(route === "44756") {
+      routes.push("MW");
+    } else if(route === "44757") {
+      routes.push("BL");
+    } else if(route === "45769") {
+      routes.push("FR");
+    }
+  }
+  return routes;
+}
+
+async function onMarkerClick(theStop, marker) {
+  const stopName = marker.title; 
+  console.log(stopName)
+  console.log(theStop.routeIDs)
+  const routes = getCorrespondingRoute(theStop.routeIDs);
+  console.log(routes)
+  let next_times = {};
+  for(let i = 0; i < routes.length; i++) {
+    if(checkIfInfoisAvailable(routes[i])){
+      let route = routes[i];
+      const adjustedStopName = await getMatchingName(stopName, route);
+      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
+      next_times[route] = times;
+    } else{
+      next_times[0] = ["No info available"];
+    }
+  }
+  console.log(next_times);
+  displayStopInfo(marker, stopName, next_times);
+}
+
+async function displayStopInfo(marker, stopName, next_times){
+  const contentString = buildInfoContent(stopName, next_times);
+  const infowindow = new window.google.maps.InfoWindow({
+    content: contentString,
+    ariaLabel: "Uluru",
+  });
+  infowindow.open(window.google.maps, marker);
+}
+
+function buildInfoContent(stopName, next_times) {
+  let content = "<div>";
+  content += `<p>${stopName}</p>`;
+  for (const route in next_times) {
+    if (next_times.hasOwnProperty(route)) {
+      const times = next_times[route];
+      if (times != null && times[0] !== "No info available" && times.length !== 0) {
+        content += `<p>Route ${route}: ${times.join(', ')}</p>`;
+      } else if(times[0] === "No info available") {
+        content += `<p>No times available for this route. Please check passiogo for available times.</p>`;
+      }else {
+        content += `<p>Route ${route}: No incoming shuttles at this stop.</p>`;
+      }
+    }
+  }
+  content += "</div>";
+  return content;
 }
 
 function checkIfInfoisAvailable(route_id) {
-  if(route_id === "e" || route_id === "d"){
-    return "Real time info on this route not supported. Please check nyupassiogo."
-  }
-
+  if(route_id === "MP" || route_id === "ME" || route_id === "MW" || route_id === "BL" || route_id === "FR" || route_id === "CH"){
+    return false; 
+  } 
+  return true;
 }
 
 function isStopValid(stop) {
@@ -526,14 +604,38 @@ function recreateStopMarkerCluster() {
   //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
 }
 
-function onClusterMarkerClick(cluster) {
+async function onClusterMarkerClick(cluster) {
+  const markers = cluster.getMarkers();
+  console.log(markers)
+  if (markers){
+    //onMarkerClick(theStop, markers[0])
+  }
+  
+  //onClusterMarkerClick(markers[0]);
+  //console.log(markers);
+}
+
+/*
+async function onClusterMarkerClick(cluster) {
   const markers = cluster.getMarkers();
   for (let i = 0; i < markers.length; i++) {
+    console.log(markers.length)
     const marker = markers[i];
     const stopName = marker.title; 
-    console.log(stopName);
+    const routeId = marker.routeId;
+    let next_times = {};
+    const route = getCorrespondingRoute(routeId);
+    if(checkIfInfoisAvailable(route)){
+      const adjustedStopName = await getMatchingName(stopName, route);
+      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
+      next_times[route] = times;
+      console.log(times)
+    } else{
+      next_times[0] = ["No info available"];
+    }
   }
 }
+*/
 
 function panToBoundsIfNeeded(center) {
   if (bounds && !bounds.isEmpty()) {

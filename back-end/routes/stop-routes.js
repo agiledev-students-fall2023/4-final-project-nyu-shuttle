@@ -39,7 +39,7 @@ const stopRoutes = () => {
         const day_of_week = getDayOfWeek();
         console.log(day_of_week);
         const { stop_name, route_name } = req.params;
-        console.log(stop_name, route_name, "rpint");
+        console.log(stop_name, route_name);
         const runs = routeRuns(route_name, day_of_week);
 
         if (!stop_name || !route_name) {
@@ -56,7 +56,8 @@ const stopRoutes = () => {
         }
         try {
             const StopModel = mongoose.model('Route' + route_name + dayToString(day_of_week));
-            const stop = await StopModel.findOne({ stop_name: { $regex: new RegExp(stop_name, 'i') } });
+            const escaped_stop_name = stop_name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const stop = await StopModel.findOne({ stop_name: new RegExp(escaped_stop_name, 'i') });
             if (!stop) {
                 console.log("Invalid request. Cannot find stop.")
                 return res.status(404).json({
