@@ -71,7 +71,7 @@ export async function getMatchingName(stopName, route){
       return "715 Broadway Departure"
     } else if(stopName==="Cleveland Pl & Spring St"){
       return "Cleveland & Spring St."
-    } 
+    }
   } else if (route === "B") {
     if(stopName==="Lafayette & E. 4th St"){
       return "Layfayette & E 4th St."
@@ -98,7 +98,7 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="Third Avenue At 13th Street"){
       return "3rd Ave. & 13th St."
     } else if(stopName==="715 Broadway"){
-      return "715 Broadway Arrival."
+      return "715 Broadway Arrival"
     } else if(stopName==="14th Street At Avenue A"){
       return "14th St. & Ave. A"
     } else if(stopName==="14th Street At Avenue B"){
