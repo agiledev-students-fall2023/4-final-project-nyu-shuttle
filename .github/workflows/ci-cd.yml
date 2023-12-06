@@ -32,11 +32,6 @@ jobs:
     - name: Install Dependencies
       run: npm run install-dependencies
     
-    - name: Build Frontend
-      run: |
-        cd front-end
-        npm run build
-    
     - name: Build Backend
       run: |
         cd back-end
