@@ -24,9 +24,30 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Testing secrets
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - name: Install Dependencies
+      run: npm run install-dependencies
+
+    - name: Debug MongoDB URI
+      run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
+
+    - name: Build Frontend
       run: |
-        echo "MongoDB URI: $MONGODB_URI"
+        cd front-end
+        npm run build
+    
+    - name: Build Backend
+      run: |
+        cd back-end
+        npm run build
+
+    
+
+    
 
       
   
