@@ -72,7 +72,6 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="Cleveland Pl & Spring St"){
       return "Cleveland & Spring St."
     } 
-
   } else if (route === "B") {
     if(stopName==="Lafayette & E. 4th St"){
       return "Layfayette & E 4th St."
@@ -134,27 +133,27 @@ export async function getMatchingName(stopName, route){
       return "3rd Ave. at 30th St."
     } else if(stopName==="Lexington Avenue At 31st Street"){
       return "Lexington Ave. at 31st St."
-      } else if(stopName==="Gramercy Green"){
+    } else if(stopName==="Gramercy Green"){
         return "Gramercy Green"
-      } else if(stopName==="Opposite Gramercy Green"){
+    } else if(stopName==="Opposite Gramercy Green"){
         return "Opposite Gramercy Green"
-      } else if(stopName==="Third Avenue At 17th Street N"){
+    } else if(stopName==="Third Avenue At 17th Street N"){
         return "3rd Ave. at 17th St."
-      } else if(stopName==="Third Avenue At 17th Street S"){
+    } else if(stopName==="Third Avenue At 17th Street S"){
         return "3rd Ave. at 17th St."
-      } else if(stopName==="Third Avenue At 14th Street"){
+    } else if(stopName==="Third Avenue At 14th Street"){
         return "3rd Ave. at 14th St."
-      } else if(stopName==="14th St At Irving Place EB"){
+    } else if(stopName==="14th St At Irving Place EB"){
         return "14th St. at Irving Place (EB)"
-      } else if(stopName==="Third Avenue At 13th Street"){
+    } else if(stopName==="Third Avenue At 13th Street"){
         return "3rd Ave. at 13th St."
-      } else if(stopName==="Third Avenue At 11th Street (NB)"){
+    } else if(stopName==="Third Avenue At 11th Street (NB)"){
         return "3rd Ave. at 11th St. (NB)"
-      } else if(stopName==="Third Avenue At 11th Street (SB)"){
+    } else if(stopName==="Third Avenue At 11th Street (SB)"){
         return "3rd Ave. at 11th St. (SB)"
-      } else if(stopName==="715 Broadway"){
+    } else if(stopName==="715 Broadway"){
         return "715 Broadway Departure"
-      }
+    }
   } else if (route === "W") {
     if(stopName==="Lexington Avenue At 31st Street"){
       return "Lexington Ave. at 31 St."
@@ -188,8 +187,6 @@ export async function getMatchingName(stopName, route){
   }
     return stopName;
   }
-
-
 
   export async function timeRemaining(stopName, route) {
     try {
