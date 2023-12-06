@@ -2,7 +2,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Feedback = require("../models/Feedback.js"); 
 
-// a method that constains code to handle feedback-specific routes
 const feedbackRouter = () => {
     const router = express.Router();
   

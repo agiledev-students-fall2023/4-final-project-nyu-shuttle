@@ -17,7 +17,6 @@ jobs:
         EXPRESS_APP_MAP_API_KEY: ${{ secrets.EXPRESS_APP_MAP_API_KEY }}
         FRONT_END_DOMAIN: ${{ secrets.FRONT_END_DOMAIN }}
         GOOGLE_SHEETS_APIKEY: ${{ secrets.GOOGLE_SHEETS_APIKEY }}
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
         REACT_APP_BACKEND: ${{ secrets.REACT_APP_BACKEND }}
         REACT_APP_MAP_API_KEY: ${{ secrets.REACT_APP_MAP_API_KEY }}
       

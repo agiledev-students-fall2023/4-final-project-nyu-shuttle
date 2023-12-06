@@ -51,12 +51,10 @@ describe("Feedback Routes", () => {
               console.error("Error in DELETE /feedback/:id", deleteErr);
               return done(deleteErr);
             }
-  
             expect(deleteRes).to.have.status(200);
             expect(deleteRes.body).to.have.property("success").to.equal(true);
             expect(deleteRes.body).to.have.property("message").to.equal("Feedback deleted successfully.");
             expect(deleteRes.body).to.have.property("feedback");
-  
             done();
           });
       });
@@ -80,4 +78,3 @@ describe("Feedback Routes", () => {
         });
     });
   });
-
