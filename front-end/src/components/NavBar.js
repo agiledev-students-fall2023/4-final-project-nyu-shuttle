@@ -9,6 +9,34 @@ import { TutorialContext } from '../App';
 import '../css/tutorialComponent.css';
 import TutorialComponent from './TutorialComponent';
 
+export function updateNavBarDisplay(to) {
+  const overlay = document.getElementsByClassName('overlay')[0];
+  const cur = document.getElementById('nav_' + to);
+  if (cur.classList.contains('inactive')) {
+    // when a inactive icon is clicked
+    document.getElementsByClassName('active')[0].classList.add('inactive');
+    document.getElementsByClassName('active')[0].classList.remove('active');
+    cur.classList.remove('inactive');
+    cur.classList.add('active');
+
+    //change the functionalities of each button here
+    switch (to) {
+      case 'map':
+        overlay.style.left = '-36%'; //shifts the overlay
+        break;
+      case 'routes':
+        overlay.style.left = '-12%';
+        break;
+      case 'alerts':
+        overlay.style.left = '12%';
+        break;
+      case 'settings':
+        overlay.style.left = '36%';
+        break;
+    }
+  }
+}
+
 function NavBar() {
   const getPath = () => window.location.pathname.split('/')[1] || 'map';
   const [navigationState, setnavigationState] = useState(getPath());
@@ -17,34 +45,6 @@ function NavBar() {
   const navigate = useNavigate();
   const handleClick = (iconName) => {
     setnavigationState(iconName);
-  };
-
-  const updateNavBarDisplay = (to) => {
-    const overlay = document.getElementsByClassName('overlay')[0];
-    const cur = document.getElementById('nav_' + to);
-    if (cur.classList.contains('inactive')) {
-      // when a inactive icon is clicked
-      document.getElementsByClassName('active')[0].classList.add('inactive');
-      document.getElementsByClassName('active')[0].classList.remove('active');
-      cur.classList.remove('inactive');
-      cur.classList.add('active');
-
-      //change the functionalities of each button here
-      switch (to) {
-        case 'map':
-          overlay.style.left = '-36%'; //shifts the overlay
-          break;
-        case 'routes':
-          overlay.style.left = '-12%';
-          break;
-        case 'alerts':
-          overlay.style.left = '12%';
-          break;
-        case 'settings':
-          overlay.style.left = '36%';
-          break;
-      }
-    }
   };
 
   useEffect(() => {
