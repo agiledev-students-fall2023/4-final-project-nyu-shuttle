@@ -108,6 +108,9 @@ export function drawStopMarkers() {
 }
 
 export function drawNavigationRoute(from, to, routeId) {
+  if (!window.nyushuttle.navigating) {
+    return;
+  }
   clearAllMarkers();
   clearMarkers(navigationRouteObjects, true);
 
@@ -456,6 +459,7 @@ function clearAllMarkers() {
   }
   clearMarkers(stopMarkers, true);
   clearMarkers(routePathMarkers, true);
+  clearMarkers(navigationRouteObjects, true);
 }
 
 function initializeBounds(center) {
@@ -487,7 +491,7 @@ function clearMarkers(markers, isArray = false) {
 }
 
 function drawRoutes(showStopName) {
-  if (!Object.keys(window.nyushuttle.routes).length || navigationRouteObjects.length) {
+  if (!Object.keys(window.nyushuttle.routes).length) {
     return;
   }
   const routes = window.nyushuttle.routes;
@@ -689,21 +693,21 @@ function drawStopNamesForRoute(route) {
   // Logic to draw stop names for the given route
 }
 
-function sliceRouteStops(routeStops, stop1, stop2) {
-  // Retain the first three elements
-  const initialPart = routeStops.slice(0, 3);
+// function sliceRouteStops(routeStops, stop1, stop2) {
+//   // Retain the first three elements
+//   const initialPart = routeStops.slice(0, 3);
 
-  let startIndex = routeStops.findIndex((subarray) => subarray[1] === stop1);
-  let endIndex = routeStops.findIndex((subarray) => subarray[1] === stop2);
-  if (startIndex > endIndex) {
-    let temp = startIndex;
-    startIndex = endIndex;
-    endIndex = temp;
-  }
-  const slicedPart = routeStops.slice(startIndex, endIndex + 1);
+//   let startIndex = routeStops.findIndex((subarray) => subarray[1] === stop1);
+//   let endIndex = routeStops.findIndex((subarray) => subarray[1] === stop2);
+//   if (startIndex > endIndex) {
+//     let temp = startIndex;
+//     startIndex = endIndex;
+//     endIndex = temp;
+//   }
+//   const slicedPart = routeStops.slice(startIndex, endIndex + 1);
 
-  return [...initialPart, ...slicedPart];
-}
+//   return [...initialPart, ...slicedPart];
+// }
 
 function drawStops() {
   const stops = window.nyushuttle.stops;
@@ -716,15 +720,9 @@ function drawStops() {
   Object.keys(routes)
     .filter((routeId) => isSelectedRoute(routeId))
     .forEach((routeId) => {
-      let routestops = routes[routeId];
-      let routeGroupId = routes[routeId][2];
-      if (window.nyushuttle.startStopLocation && routestops) {
-        routestops = sliceRouteStops(
-          routestops,
-          window.nyushuttle.startStopLocation,
-          window.nyushuttle.endStopLocation
-        );
-      }
+      const routestops = routes[routeId];
+      const routeGroupId = routes[routeId][2];
+
       addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName);
     });
 
