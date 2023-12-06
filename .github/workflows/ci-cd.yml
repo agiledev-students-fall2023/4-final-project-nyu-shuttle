@@ -33,7 +33,9 @@ jobs:
       run: npm run install-dependencies
       
     - name: Run Tests
-      run: npm run test
+      run: |
+        cd back-end
+        npm test
       
     - name: Build Frontend
       run: |
