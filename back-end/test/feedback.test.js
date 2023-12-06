@@ -28,13 +28,11 @@ describe("Feedback Routes", () => {
               console.error("Error in POST /feedback/newfeedback:", err);
               return done(err);
             }
-  
+
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("success").to.equal(true);
             expect(res.body).to.have.property("message").to.equal("Feedback saved successfully.");
             expect(res.body).to.have.property("feedback");
-  
-            // Store the created feedback ID for cleanup
             createdFeedbackId = res.body.feedback._id;
   
             done();
