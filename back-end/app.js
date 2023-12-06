@@ -7,7 +7,7 @@ const process = require("process");
 require("dotenv").config({ silent: true });
 const cron = require("node-cron");
 const { fetchDataForRoutes } = require("./updateTimetable");
-
+const path = require('path');
 const mongoose = require("mongoose");
 
 try {
@@ -18,6 +18,11 @@ try {
     `Error connecting to MongoDB user account authentication will fail: ${err}`
   );
 }
+app.use(express.static(path.join(__dirname, '../front-end/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../front-end/build', 'index.html'));
+});
+
 
 app.use(morgan("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
 app.use(express.json());
