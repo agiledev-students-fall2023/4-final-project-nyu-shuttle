@@ -4,6 +4,9 @@
   "description": "NYU Shuttle Backend",
   "main": "server.js",
   "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
     "test": "mocha --timeout 5000",
     "coverage": "nyc --reporter=html --reporter=text --reporter=lcov --reporter=clover mocha --timeout 10000 --exit",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
