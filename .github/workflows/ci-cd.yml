@@ -30,11 +30,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     
     - name: Install Dependencies
-      run: npm run install-dependencies
-
-    - name: Debug MongoDB URI
-      run: echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
-
+      run: npm run install-deps
+    
     - name: Build Frontend
       run: |
         cd front-end
@@ -44,6 +41,11 @@ jobs:
       run: |
         cd back-end
         npm run build
+
+
+    
+    
+
 
     
 
