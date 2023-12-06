@@ -7,6 +7,7 @@ const feedbackRouter = () => {
     const router = express.Router();
   
     router.post("/newfeedback", async (req, res, next) => {
+      console.log(req.body);
     const { user, timestamp, category, feedback } = req.body;
     if (!user || !timestamp || !category || !feedback) {
         return res.status(401).json({

@@ -829,11 +829,13 @@ async function displayStopInfo(marker, stopName, next_times) {
 function buildInfoContent(stopName, next_times) {
   let content = '<div>';
   content += `<p>${stopName}</p>`;
+
   for (const route in next_times) {
     if (next_times.hasOwnProperty(route)) {
       const times = next_times[route];
       if (times != null && times[0] !== 'No info available' && times.length !== 0) {
-        content += `<p>Route ${route}: ${times.join(', ')}</p>`;
+        const top3Times = times.slice(0, 3);
+        content += `<p>Route ${route}: ${top3Times.join(', ')}</p>`;
       } else if (times[0] === 'No info available') {
         content += `<p>No times available for this route. Please check passiogo for available times.</p>`;
       } else {
@@ -841,6 +843,7 @@ function buildInfoContent(stopName, next_times) {
       }
     }
   }
+
   content += '</div>';
   return content;
 }
@@ -946,7 +949,27 @@ async function onClusterMarkerClick(cluster) {
   const markers = cluster.getMarkers();
   console.log(markers);
   if (markers) {
-    //onMarkerClick(theStop, markers[0])
+    const marker = markers[0];
+    const sID = marker.stopId;
+    const stopName = window.nyushuttle.stops["ID"+sID]
+    console.log(stopName);
+    const routes = getCorrespondingRoute(stopName.routeIDs);
+    console.log(routes)
+    let next_times = {};
+    for(let i = 0; i < routes.length; i++) {
+      if(checkIfInfoisAvailable(routes[i])){
+        let route = routes[i];
+        const adjustedStopName = await getMatchingName(stopName, route);
+        console.log(adjustedStopName)
+        //const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
+        //next_times[route] = times;
+      } else{
+        //next_times[0] = ["No info available"];
+      }
+    }
+    console.log(next_times);
+   // displayStopInfo(marker, stopName, next_times);
+  
   }
 
   //onClusterMarkerClick(markers[0]);
