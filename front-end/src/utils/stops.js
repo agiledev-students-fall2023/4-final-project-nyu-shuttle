@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { timeRemaining, getMatchingName } from './stopTimes';
+import { getNextTimes, timeRemaining, getMatchingName } from './stopTimes';
 // import {} from './routes';
 
 const MIN_QUERY_DELAY = 300000; // 5 min
@@ -73,7 +73,6 @@ export async function queryStops() {
     window.nyushuttle.stops = data.stops;
     groupRoutes = data.groupRoutes;
     center = data.center;
-    console.log(window.nyushuttle.stops)
     return true;
 
   } catch (error) {
@@ -268,20 +267,94 @@ function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
   });
 }
 
-function onMarkerClick(theStop, marker) {
-  const stopName = marker.title; 
-  const route_id = theStop.routeName.slice(-1);
-  if(route_id && stopName){
-    console.log(route_id + " " + stopName);
-    //console.log(timeRemaining(getMatchingName(stopName, route_id), route_id));
+function getCorrespondingRoute(routeIDs) {
+  let routes = [];
+  for(let i = 0; i < routeIDs.length; i++) {
+    let route = routeIDs[i];
+    if (route === "44748") {
+      routes.push("C");
+    } else if(route === "44676") {
+      routes.push("A");
+    } else if(route === "44753") {
+      routes.push("W");
+    } else if(route === "44745") {
+      routes.push("B");
+    } else if(route === "41890") {
+      routes.push("CH");
+    } else if(route === "44749") {
+      routes.push("E");
+    } else if(route === "44750") {
+      routes.push("F");
+    } else if(route === "44752") {
+      routes.push("G");
+    } else if(route === "44751") {
+      routes.push("MP");
+    } else if(route === "44755") {
+      routes.push("ME");
+    } else if(route === "44756") {
+      routes.push("MW");
+    } else if(route === "44757") {
+      routes.push("BL");
+    } else if(route === "45769") {
+      routes.push("FR");
+    }
   }
+  return routes;
+}
+
+async function onMarkerClick(theStop, marker) {
+  const stopName = marker.title; 
+  console.log(stopName)
+  console.log(theStop.routeIDs)
+  const routes = getCorrespondingRoute(theStop.routeIDs);
+  console.log(routes)
+  let next_times = {};
+  for(let i = 0; i < routes.length; i++) {
+    if(checkIfInfoisAvailable(routes[i])){
+      let route = routes[i];
+      const adjustedStopName = await getMatchingName(stopName, route);
+      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
+      next_times[route] = times;
+    } else{
+      console.log("No info available");
+      next_times[routes[i]] = [];
+    }
+  }
+  console.log(next_times);
+  displayStopInfo(marker, next_times);
+}
+
+async function displayStopInfo(marker, next_times){
+  const contentString = buildInfoContent(next_times);
+  const infowindow = new window.google.maps.InfoWindow({
+    content: contentString,
+    ariaLabel: "Uluru",
+  });
+  infowindow.open(window.google.maps, marker);
+}
+
+function buildInfoContent(next_times) {
+  let content = "<div>";
+  for (const route in next_times) {
+    if (next_times.hasOwnProperty(route)) {
+      const times = next_times[route];
+      content += `<p>Route: ${route}</p>`;
+      if (times != null) {
+        content += `<p>Times: ${times.join(', ')}</p>`;
+      } else {
+        content += `<p>No times available for this route</p>`;
+      }
+    }
+  }
+  content += "</div>";
+  return content;
 }
 
 function checkIfInfoisAvailable(route_id) {
-  if(route_id === "e" || route_id === "d"){
-    return "Real time info on this route not supported. Please check nyupassiogo."
-  }
-
+  if(route_id === "MP" || route_id === "ME" || route_id === "MW" || route_id === "BL" || route_id === "FR"){
+    return false; 
+  } 
+  return true;
 }
 
 function isStopValid(stop) {
