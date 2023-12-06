@@ -740,17 +740,17 @@ function drawStops() {
   }
 }
 
+/////////////////////
 function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
   const zoomLevel = window.nyushuttle.currentMap.getZoom();
   const routeName = routestops[0];
   const routeColor = correctColorFromARGB(routestops[1]);
 
-  routestops.slice(3).forEach((stop, idx) => {
-    const sID = `ID${stop[1]}`;
+  getRouteStopIds(routeId).forEach((sID, idx) => {
     const theStop = window.nyushuttle.stops[sID];
 
     if (isStopValid(theStop)) {
-      updateStopData(theStop, stop, routeId, routeGroupId, routeName, routeColor);
+      updateStopData(theStop, idx, routeId, routeGroupId, routeName, routeColor);
       const marker = createMarkerForStop(theStop, zoomLevel, routeColor, showStopName, idx);
       marker.addListener('click', () => onMarkerClick(theStop, marker));
       stopMarkers.push(marker);
@@ -863,7 +863,7 @@ function isStopValid(stop) {
   return stop && stop.latitude != null && !(stop.latitude === 0.0 && stop.longitude === 0.0);
 }
 
-function updateStopData(stop, stopInfo, routeId, routeGroupId, routeName, routeColor) {
+function updateStopData(stop, position, routeId, routeGroupId, routeName, routeColor) {
   if (!stop.routeIDs) stop.routeIDs = [];
   if (!stop.routeGroupIDs) stop.routeGroupIDs = [];
 
@@ -871,9 +871,9 @@ function updateStopData(stop, stopInfo, routeId, routeGroupId, routeName, routeC
     stop.routeIDs.push(routeId);
     stop.routeGroupIDs.push(routeGroupId);
     Object.assign(stop, {
-      position: stopInfo[0],
-      stopId: stopInfo[1],
-      back: stopInfo[2],
+      position,
+      stopId: stop.id,
+      back: stop.back,
       routeId,
       routeName,
       routeColor,
