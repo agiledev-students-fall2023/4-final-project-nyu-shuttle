@@ -6,9 +6,10 @@ const cors = require('cors');
 const morgan = require('morgan');
 const process = require('process');
 const cron = require('node-cron');
-const { fetchDataForRoutes } = require('./updateTimetable');
 const path = require('path');
 const mongoose = require('mongoose');
+const { fetchDataForRoutes } = require('./updateTimetable');
+
 const STATIC_FOLDER = path.join(__dirname, '../', 'front-end/', 'build/');
 mongoose
   .connect(process.env.MONGODB_URI)
