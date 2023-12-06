@@ -9,6 +9,8 @@ import { TutorialContext } from '../App';
 import '../css/tutorialComponent.css';
 import TutorialComponent from './TutorialComponent';
 
+let currentScreen = 'map';
+
 export function updateNavBarDisplay(to) {
   const overlay = document.getElementsByClassName('overlay')[0];
   const cur = document.getElementById('nav_' + to);
@@ -34,25 +36,28 @@ export function updateNavBarDisplay(to) {
         overlay.style.left = '36%';
         break;
     }
+    currentScreen = to;
   }
 }
 
 function NavBar() {
   const getPath = () => window.location.pathname.split('/')[1] || 'map';
   const [navigationState, setnavigationState] = useState(getPath());
+  const [update, setUpdate] = useState(false);
   const { tutorialIndex, setTutorialIndex, firstTime, setFirstTime, tutorialOn, setTutorialOn } =
     useContext(TutorialContext);
   const navigate = useNavigate();
   const handleClick = (iconName) => {
+    setUpdate((v) => !v);
     setnavigationState(iconName);
   };
 
   useEffect(() => {
     updateNavBarDisplay(navigationState);
-    if (navigationState !== getPath()) {
+    if (currentScreen !== getPath()) {
       navigate('/' + navigationState);
     }
-  }, [navigationState]);
+  }, [navigationState, update]);
 
   useEffect(() => {
     // Send first time users to the map page
