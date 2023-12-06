@@ -496,17 +496,19 @@ async function displayStopInfo(marker, stopName, next_times){
 }
 
 function buildInfoContent(stopName, next_times) {
-  let content = "<div>";
-  content += `<p>${stopName}</p>`;
+  let content = "<div class='info-container'>";
+  content += `<p class='stop-name'>${stopName}</p>`;
+  
   for (const route in next_times) {
     if (next_times.hasOwnProperty(route)) {
       const times = next_times[route];
       if (times != null && times[0] !== "No info available" && times.length !== 0) {
-        content += `<p>Route ${route}: ${times.join(', ')}</p>`;
+        const nextThreeTimes = times.slice(0, 3).join(', ');
+        content += `<p class='route-info'>Route ${route}: ${nextThreeTimes}</p>`;
       } else if(times[0] === "No info available") {
-        content += `<p>No times available for this route. Please check passiogo for available times.</p>`;
-      }else {
-        content += `<p>Route ${route}: No incoming shuttles at this stop.</p>`;
+        content += `<p class='no-times'>No times available for this route. Please check passiogo for available times.</p>`;
+      } else {
+        content += `<p class='no-shuttles'>Route ${route}: No incoming shuttles at this stop.</p>`;
       }
     }
   }
@@ -598,45 +600,51 @@ function recreateStopMarkerCluster() {
     zoomOnClick: false,
     showTitle: false,
   });
-
-  // Add event listeners to the marker cluster
   window.google.maps.event.addListener(stopMarkerCluster, 'click', onClusterMarkerClick);
-  //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
 }
 
 async function onClusterMarkerClick(cluster) {
   const markers = cluster.getMarkers();
-  console.log(markers)
-  if (markers){
-    //onMarkerClick(theStop, markers[0])
-  }
   
-  //onClusterMarkerClick(markers[0]);
-  //console.log(markers);
+  
 }
 
-/*
-async function onClusterMarkerClick(cluster) {
-  const markers = cluster.getMarkers();
-  for (let i = 0; i < markers.length; i++) {
-    console.log(markers.length)
-    const marker = markers[i];
-    const stopName = marker.title; 
-    const routeId = marker.routeId;
-    let next_times = {};
-    const route = getCorrespondingRoute(routeId);
-    if(checkIfInfoisAvailable(route)){
-      const adjustedStopName = await getMatchingName(stopName, route);
-      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
-      next_times[route] = times;
-      console.log(times)
-    } else{
-      next_times[0] = ["No info available"];
+async function displayClusterInfo(markers, stopInfos) {
+  let content = "<div class='cluster-info-container'>";
+
+  for (const stopInfo of stopInfos) {
+    content += buildClusterInfoContent(stopInfo.stopName, stopInfo.next_times);
+  }
+
+  content += "</div>";
+
+  const infowindow = new window.google.maps.InfoWindow({
+    content: content,
+    ariaLabel: "Cluster Info",
+  });
+
+  infowindow.open(window.google.maps, markers[0]); // You might need to adjust this depending on how you want to position the infowindow.
+}
+
+function buildClusterInfoContent(stopName, next_times) {
+  let content = "<div>";
+  content += `<p class='cluster-stop-name'>${stopName}</p>`;
+  for (const route in next_times) {
+    if (next_times.hasOwnProperty(route)) {
+      const times = next_times[route];
+      if (times != null && times[0] !== "No info available" && times.length !== 0) {
+        const nextThreeTimes = times.slice(0, 3).join(', ');
+        content += `<p class='cluster-route-info'>Route ${route}: ${nextThreeTimes}</p>`;
+      } else if (times[0] === "No info available") {
+        content += `<p class='cluster-no-times'>No times available for this route. Please check passiogo for available times.</p>`;
+      } else {
+        content += `<p class='cluster-no-shuttles'>Route ${route}: No incoming shuttles at this stop.</p>`;
+      }
     }
   }
+  content += "</div>";
+  return content;
 }
-*/
-
 function panToBoundsIfNeeded(center) {
   if (bounds && !bounds.isEmpty()) {
     adjustMapZoomAndCenter(center);

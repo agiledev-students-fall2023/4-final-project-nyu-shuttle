@@ -18,11 +18,6 @@ try {
     `Error connecting to MongoDB user account authentication will fail: ${err}`
   );
 }
-app.use(express.static(path.join(__dirname, '../front-end/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../front-end/build', 'index.html'));
-});
-
 
 app.use(morgan("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
 app.use(express.json());
