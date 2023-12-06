@@ -26,7 +26,7 @@ jobs:
     
     - name: Testing secrets
       run: |
-        echo $MONGODB_URI
+        echo "MongoDB URI: $MONGODB_URI"
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
