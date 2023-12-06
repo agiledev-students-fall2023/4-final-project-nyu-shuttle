@@ -32,6 +32,12 @@ function Filter({ onFilterChange }) {
   }, [nyushuttle.routes, nyushuttle.routesSelected]);
 
   useEffect(() => {
+    setSelectedRoute('Show All');
+    setRouteColor('white');
+    setTextColor('black');
+  }, []);
+
+  useEffect(() => {
     initializeRoutes();
     loadPreviousFilter();
   }, [initializeRoutes, loadPreviousFilter]);
@@ -55,6 +61,7 @@ function Filter({ onFilterChange }) {
       nyushuttle.routesSelected = routeName === 'Show All' || routeName === 'None' ? [] : [id]; // only allow one for now
 
       // Apply filter to map items
+      nyushuttle.navigating = false;
       drawStopMarkers();
       updateTransportMarkers();
       onFilterChange(id);

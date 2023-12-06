@@ -2,6 +2,8 @@ import axios from 'axios';
 import { getNextTimes, timeRemaining, getMatchingName } from './stopTimes';
 // import {} from './routes';
 
+const VISUALIZE_ANIMATION_DELAY = 1000;
+const MAX_REACHABLE_DISTANCE = 1500; // 1500m?
 const MIN_QUERY_DELAY = 300000; // 5 min
 
 let lastQuery = -MIN_QUERY_DELAY;
@@ -12,13 +14,16 @@ if (typeof window.nyushuttle == 'undefined') {
 }
 window.nyushuttle.routePoints = {};
 window.nyushuttle.stops = {};
-
+window.nyushuttle.navigation = {
+  walks: [],
+};
 
 window.nyushuttle.routes = [];
 let center = {};
 let stopMarkers = [];
 let routePathMarkers = [];
 let routePaths = [];
+let navigationRouteObjects = [];
 let stopMarkerCluster = null;
 let groupRoutes = false;
 let stopMarkerZoomVisibilityTreshold = 13;
@@ -74,7 +79,6 @@ export async function queryStops() {
     groupRoutes = data.groupRoutes;
     center = data.center;
     return true;
-
   } catch (error) {
     console.log('Transportations query error: ' + error.message);
     return false;
@@ -93,7 +97,360 @@ export function drawStopMarkers() {
     drawStops();
   }
 
+  const sharedVar = window.nyushuttle;
+  if (sharedVar.navigating) {
+    const from = { lat: sharedVar.fromLocation.lat, lng: sharedVar.fromLocation.lng };
+    const to = { lat: sharedVar.toLocation.lat, lng: sharedVar.toLocation.lng };
+    drawNavigationRoute(from, to, sharedVar.routesSelected[0]);
+  }
+
   panToBoundsIfNeeded(center);
+}
+
+export function drawNavigationRoute(from, to, routeId) {
+  if (!window.nyushuttle.navigating) {
+    return;
+  }
+  clearAllMarkers();
+  clearMarkers(navigationRouteObjects, true);
+
+  const fromStop = getNearestStopInRoute(from, routeId);
+  const toStop = getNearestStopInRoute(to, routeId);
+  const fromStopPos = getStopLatLng(fromStop);
+  const toStopPos = getStopLatLng(toStop);
+
+  if (!(fromStop || toStop)) {
+    console.error(`no stops available nearby (< ${MAX_REACHABLE_DISTANCE})`);
+    return;
+  }
+
+  // draw walking routes
+  getWalkingRoute(from, fromStopPos).then((result) => {
+    drawWalkingRoute(result, false);
+    drawWalkingRouteGaps(result); // fill the gap between walking routes and the transportation subroute
+    window.nyushuttle.navigation.walks.push(result); // share walking related data
+  });
+  getWalkingRoute(toStopPos, to).then((result) => {
+    drawWalkingRoute(result, true);
+    drawWalkingRouteGaps(result);
+    window.nyushuttle.navigation.walks.push(result);
+  });
+
+  // draw a transportation subroute
+  const subroute = getRoutePointsBetweenStops(`ID${fromStop.stopId}`, `ID${toStop.stopId}`, routeId);
+  // visualizeRoutePoints(subroute); // DEBUG ONLY
+  drawRoutePointsPath(routeId, subroute);
+
+  // fill the gap between routes and stops
+  drawBasicPolyline(fromStopPos, subroute[0]);
+  drawBasicPolyline(subroute[subroute.length - 1], toStopPos);
+
+  // draw from and to marker
+  drawFromAndToMarker(from, to);
+}
+
+function drawWalkingRouteGaps(directionsResult) {
+  const originLocationObj = directionsResult.request.origin.location;
+  const originPos = getObjectLatLng(originLocationObj);
+
+  const destinationLocationObj = directionsResult.request.destination.location;
+  const destinationPos = getObjectLatLng(destinationLocationObj);
+
+  const overviewPath = directionsResult.routes[0].overview_path;
+  const entryPos = getObjectLatLng(overviewPath[0]);
+  const exitPos = getObjectLatLng(overviewPath[overviewPath.length - 1]);
+
+  drawBasicPolyline(originPos, entryPos);
+  drawBasicPolyline(exitPos, destinationPos);
+}
+
+function getObjectLatLng(obj) {
+  if (!(obj || obj.lat || obj.lng || typeof obj.lat === 'function' || typeof obj.lng === 'function')) {
+    return;
+  }
+  return { lat: obj.lat(), lng: obj.lng() };
+}
+
+// TODO: customize visuals?
+function drawWalkingRoute(directionsResult, preserveViewport = false) {
+  const maps = window.google.maps;
+  const directionsRenderer = new maps.DirectionsRenderer({
+    suppressMarkers: true, // Hides the default markers
+    preserveViewport,
+  });
+
+  directionsRenderer.setMap(window.nyushuttle.currentMap);
+  directionsRenderer.setDirections(directionsResult);
+  navigationRouteObjects.push(directionsRenderer);
+}
+
+// Get walking route using the API
+// both from and to receives { lat: 0, lng: 0 }
+// TODO: use time data ?
+async function getWalkingRoute(from, to) {
+  const maps = window.google.maps;
+  const directionsService = new maps.DirectionsService();
+  const request = {
+    origin: from,
+    destination: to,
+    travelMode: 'WALKING',
+  };
+
+  return new Promise((resolve, reject) => {
+    directionsService.route(request, (result, status) => {
+      if (status === 'OK') {
+        resolve(result);
+      } else {
+        console.error('Directions request failed: ' + status);
+        reject();
+      }
+    });
+  });
+}
+
+// draws polyline based on route data
+// routePoints optional if drawing full route
+function drawRoutePointsPath(routeId, routePoints) {
+  let isSubRoute = true;
+  const sharedVar = window.nyushuttle;
+  if (!(sharedVar.routes && sharedVar.routePoints && sharedVar.currentMap)) {
+    console.error('map, routes or route points unavailable.');
+    return;
+  }
+  if (typeof routePoints === 'undefined') {
+    routePoints = sharedVar.routePoints[routeId][0];
+    isSubRoute = false;
+  }
+
+  const path = reformatLatLngArray(routePoints);
+  const routeColor = correctColorFromARGB(sharedVar.routes[routeId][1]);
+  const routeGroupId = sharedVar.routes[routeId][2];
+  const selected = window.nyushuttle.routesSelected && window.nyushuttle.routesSelected.includes(routeId);
+  const opacity = getOpacity(selected || isSubRoute);
+
+  const polylineOptions = createPolylineOptions(path, routeColor, opacity, routeId, routeGroupId);
+  const polyline = new window.google.maps.Polyline(polylineOptions);
+  polyline.setMap(sharedVar.currentMap);
+  navigationRouteObjects.push(polyline);
+}
+
+// both from and to receives { lat: 0, lng: 0 }
+function drawFromAndToMarker(from, to) {
+  const maps = window.google.maps;
+  const fromMarker = new maps.Marker({
+    position: from,
+    map: window.nyushuttle.currentMap,
+    icon: '/img/directions_measle-2-medium.png',
+    anchor: new maps.Point(8.5, 8.5),
+  });
+
+  const toMarker = new maps.Marker({
+    position: to,
+    map: window.nyushuttle.currentMap,
+    icon: '/img/directions_destination_measle-2-medium.png',
+    anchor: new maps.Point(10, 10),
+  });
+
+  navigationRouteObjects.push(fromMarker);
+  navigationRouteObjects.push(toMarker);
+}
+
+// https://stackoverflow.com/a/12499474
+// Get perpendicular intersection point
+// point1 and point2 creates a line
+// point3 is a point
+function findPerpendicularIntersection(point1, point2, point3) {
+  const x1 = point1.lat;
+  const y1 = point1.lng;
+  const x2 = point2.lat;
+  const y2 = point2.lng;
+  const x3 = point3.lat;
+  const y3 = point3.lng;
+
+  const px = x2 - x1;
+  const py = y2 - y1;
+  const dAB = px * px + py * py;
+
+  // Check for division by zero
+  if (dAB === 0) {
+    console.error('Error: dAB is zero, points A and B are the same.');
+    return null;
+  }
+
+  const u = ((x3 - x1) * px + (y3 - y1) * py) / dAB;
+  const x = x1 + u * px;
+  const y = y1 + u * py;
+
+  return { lat: x, lng: y };
+}
+
+// returns rough distance considering the direction of the transportation moving
+// both from and to receive stopIds (IDXXXXXX)
+function getRoughDistanceBetweenStops(from, to, routeId) {
+  const maps = window.google.maps;
+  const subRoutePath = getRoutePointsBetweenStops(from, to, routeId);
+  let totalDistance = 0;
+
+  for (let i = 0; i < subRoutePath.length - 1; i++) {
+    const distance = maps.geometry.spherical.computeDistanceBetween(
+      new maps.LatLng(subRoutePath[i]),
+      new maps.LatLng(subRoutePath[i + 1])
+    );
+    totalDistance += distance;
+  }
+  return totalDistance;
+}
+
+// both from and to receive stopIds (IDXXXXXX)
+function getRoutePointsBetweenStops(from, to, routeId) {
+  const stops = window.nyushuttle.stops;
+  const fullRoutePath = window.nyushuttle.routePoints[routeId][0];
+  let f = getNearestPositionInArray(getStopLatLng(stops[from]), fullRoutePath);
+  let t = getNearestPositionInArray(getStopLatLng(stops[to]), fullRoutePath);
+
+  let subRoutePath;
+  if (f.index < t.index) {
+    // regular
+    subRoutePath = fullRoutePath.slice(f.index, t.index + 1);
+  } else {
+    // wrap around
+    const fromToEnd = fullRoutePath.slice(f.index, -1);
+    const startToTo = fullRoutePath.slice(0, t.index + 1);
+
+    subRoutePath = [...fromToEnd, ...startToTo];
+  }
+
+  // experimental feature: alternative position data to smooth navigation path drawing
+  subRoutePath = f.altPos && f.distance > f.altDistance ? [f.altPos, ...subRoutePath.slice(1)] : subRoutePath;
+  subRoutePath = t.altPos && t.distance > t.altDistance ? [...subRoutePath.slice(0, -1), t.altPos] : subRoutePath;
+
+  return reformatLatLngArray(subRoutePath);
+}
+
+// receives { lat: 0, lng: 0 } and routeId
+// returns a child object of window.nyushuttle.stops that is nearest
+// however, if its distance is greater than MAX_REACHABLE_DISTANCE, returns null
+function getNearestStopInRoute(measureFrom, routeId) {
+  const stops = window.nyushuttle.stops;
+  const filteredStops = getRouteStopIds(routeId);
+
+  const positions = filteredStops.map((key) => getStopLatLng(stops[key]));
+
+  const nearest = getNearestPositionInArray(measureFrom, positions);
+  // console.log(nearest.distance); // DEBUG
+
+  return nearest.distance <= MAX_REACHABLE_DISTANCE ? stops[filteredStops[nearest.index]] : null;
+}
+
+// receives { lat: 0, lng: 0 } and [{ lat: 1, lng: 1 }, ...]
+// returns { index of the nearest position, distance }
+// also returns alternative position and its distance
+function getNearestPositionInArray(measureFrom, positionArray) {
+  const maps = window.google.maps;
+  measureFrom = reformatLatLng(measureFrom);
+  positionArray = reformatLatLngArray(positionArray);
+  let minDistance = Infinity;
+  let secondMinDistance = Infinity;
+  let minDistanceIndex = -1;
+  let secondMinDistanceIndex = -1;
+
+  for (let i = 0; i < positionArray.length; i++) {
+    const distance = maps.geometry.spherical.computeDistanceBetween(
+      new maps.LatLng(positionArray[i]),
+      new maps.LatLng(measureFrom)
+    );
+    if (distance < minDistance) {
+      secondMinDistance = minDistance;
+      minDistance = distance;
+      secondMinDistanceIndex = minDistanceIndex;
+      minDistanceIndex = i;
+    }
+  }
+
+  if (secondMinDistanceIndex < 0) {
+    return {
+      index: minDistanceIndex,
+      distance: minDistance,
+    };
+  }
+
+  // alternative position (for stop to route path drawing)
+  const alternativePos = findPerpendicularIntersection(
+    positionArray[minDistanceIndex],
+    positionArray[secondMinDistanceIndex],
+    measureFrom
+  );
+
+  const alternativeDistance = maps.geometry.spherical.computeDistanceBetween(
+    new maps.LatLng(alternativePos),
+    new maps.LatLng(measureFrom)
+  );
+
+  return {
+    index: minDistanceIndex,
+    distance: minDistance,
+    altPos: alternativePos,
+    altDistance: alternativeDistance,
+  };
+}
+
+// Visualize how route points are plotted on map
+// routePathArray = [{ lat: 0, lng: 0 }, ...]
+function visualizeRoutePoints(routePathArray) {
+  let delay = VISUALIZE_ANIMATION_DELAY;
+  routePathArray.forEach((pos) => {
+    setTimeout(() => {
+      drawBasicMarker(pos);
+    }, delay);
+    delay += VISUALIZE_ANIMATION_DELAY;
+  });
+}
+
+// pos = { lat: 0, lng: 0 }
+function drawBasicMarker(pos) {
+  new window.google.maps.Marker({
+    position: reformatLatLng(pos),
+    map: window.nyushuttle.currentMap,
+  });
+}
+
+// { lat: '0', lng: '0' } to { lat: 0, lng: 0 }
+function drawBasicPolyline(from, to) {
+  const basicPolyline = new window.google.maps.Polyline({
+    path: [reformatLatLng(from), reformatLatLng(to)],
+    map: window.nyushuttle.currentMap,
+    strokeWeight: 5,
+  });
+  navigationRouteObjects.push(basicPolyline);
+}
+
+// { lat: '0', lng: '0' } to { lat: 0, lng: 0 }
+function reformatLatLng(unformatted) {
+  return { lat: Number(unformatted.lat), lng: Number(unformatted.lng) };
+}
+
+// array version of reformatLatLng()
+function reformatLatLngArray(unformattedArray) {
+  return unformattedArray.map((unformatted) => reformatLatLng(unformatted));
+}
+
+// receives stop object and returns latlng in { lat: 0, lng: 0 } format
+function getStopLatLng(stop) {
+  return reformatLatLng({ lat: stop.latitude, lng: stop.longitude });
+}
+
+// get an array of stop(Id)s that are in a given route(Id)
+function getRouteStopIds(routeId) {
+  const routeData = window.nyushuttle.routes;
+  if (!routeData[routeId]) {
+    return [];
+  }
+
+  const stopIds = new Set(
+    routeData[routeId].filter((item) => Array.isArray(item) && item.length >= 2).map((item) => item[1])
+  );
+
+  return Array.from(stopIds).map((id) => 'ID' + id);
 }
 
 function clearAllMarkers() {
@@ -102,6 +459,7 @@ function clearAllMarkers() {
   }
   clearMarkers(stopMarkers, true);
   clearMarkers(routePathMarkers, true);
+  clearMarkers(navigationRouteObjects, true);
 }
 
 function initializeBounds(center) {
@@ -136,184 +494,158 @@ function drawRoutes(showStopName) {
   if (!Object.keys(window.nyushuttle.routes).length) {
     return;
   }
-  let clippedRouteIndex = null;
-  if (window.nyushuttle.startStopLocation){
-    clippedRouteIndex = getClippedRoute()
-  }
   const routes = window.nyushuttle.routes;
-
   Object.keys(routes)
     .filter((routeId) => isSelectedRoute(routeId))
     .forEach((routeId) => {
-      drawRoute(routeId, routes[routeId], showStopName, clippedRouteIndex);
+      drawRoutePointsPath(routeId);
     });
 }
 
-function drawWalkingRoute(direction) {
-  let startLocation, endLocation;
-  let request;
-  let stops = window.nyushuttle.stops;
+// function drawWalkingRoute(direction) {
+//   let startLocation, endLocation;
+//   let request;
+//   let stops = window.nyushuttle.stops;
 
-  if (direction === 'from') { //plot "from" route
-    //becuase for some reason fromLocation.lat and fronLocation.lng are corrupted, use
-    //fromLocation.place_id instead
-    startLocation = {'placeId':window.nyushuttle.fromLocation.place_id};
-    endLocation = {
-      lat: stops['ID' + window.nyushuttle.startStopLocation].latitude,
-      lng: stops['ID' + window.nyushuttle.startStopLocation].longitude
-    };
-    request = {
-      origin: startLocation,
-      destination: endLocation,
-      travelMode: 'WALKING',
-    };
-  } else if (direction === 'to') { //plot "to" route
-    endLocation = {'placeId':window.nyushuttle.toLocation.place_id};
-    startLocation = {
-      lat: stops['ID' + window.nyushuttle.endStopLocation].latitude,
-      lng: stops['ID' + window.nyushuttle.endStopLocation].longitude
-    };
-    request = {
-      origin: startLocation,
-      destination: endLocation,
-      travelMode: 'WALKING',
-    };
-  }
-  let directionsService = new window.google.maps.DirectionsService();
-  directionsService.route(request, function (result, status) {
-    if (status == 'OK') {
-      let directionsRenderer = new window.google.maps.DirectionsRenderer({
-        suppressMarkers: true // Hides the default markers
-      });
-      directionsRenderer.setMap(window.nyushuttle.currentMap);
-      directionsRenderer.setDirections(result);
-  
-      // Add custom markers
-      if(direction === 'from') {
-      const startMarker = new window.google.maps.Marker({
-        position: result.routes[0].legs[0].start_location,
-        map: window.nyushuttle.currentMap,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 7,
-          fillColor: '#8400a8',
-          fillOpacity: 1.0,
-          strokeColor: '#FF0000',
-          strokeOpacity: 0
-        }
-      });
-    }
-    else{
-      const endMarker = new window.google.maps.Marker({
-        position: result.routes[0].legs[0].end_location,
-        map: window.nyushuttle.currentMap,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 7,
-          fillColor: '#8400a8',
-          fillOpacity: 1,
-          strokeColor: '#',
-          strokeOpacity: 0
-        }
-      });
-    }
-    }
-  });
-}
+//   if (direction === 'from') {
+//     //plot "from" route
+//     //becuase for some reason fromLocation.lat and fronLocation.lng are corrupted, use
+//     //fromLocation.place_id instead
+//     startLocation = { placeId: window.nyushuttle.fromLocation.place_id };
+//     endLocation = {
+//       lat: stops['ID' + window.nyushuttle.startStopLocation].latitude,
+//       lng: stops['ID' + window.nyushuttle.startStopLocation].longitude,
+//     };
+//     request = {
+//       origin: startLocation,
+//       destination: endLocation,
+//       travelMode: 'WALKING',
+//     };
+//   } else if (direction === 'to') {
+//     //plot "to" route
+//     endLocation = { placeId: window.nyushuttle.toLocation.place_id };
+//     startLocation = {
+//       lat: stops['ID' + window.nyushuttle.endStopLocation].latitude,
+//       lng: stops['ID' + window.nyushuttle.endStopLocation].longitude,
+//     };
+//     request = {
+//       origin: startLocation,
+//       destination: endLocation,
+//       travelMode: 'WALKING',
+//     };
+//   }
+//   let directionsService = new window.google.maps.DirectionsService();
+//   directionsService.route(request, function (result, status) {
+//     if (status == 'OK') {
+//       let directionsRenderer = new window.google.maps.DirectionsRenderer({
+//         suppressMarkers: true, // Hides the default markers
+//       });
+//       directionsRenderer.setMap(window.nyushuttle.currentMap);
+//       directionsRenderer.setDirections(result);
 
-function drawRoute(routeId, route, showStopName, clip=null) {
-  const routeGroupId = route[2];
-  const routeColor = correctColorFromARGB(route[1]);
-  let routePaths = getRoutePaths(routeId);
-  if (clip) {
-    drawWalkingRoute('from')
-    drawWalkingRoute('to')
-    routePaths = routePaths.slice(clip[0], clip[1])
-    if (routePaths.length == 0){
-      if (clip[0] < 100 && clip[1] > 100){
-        routePaths = routePaths.concat(routePaths.slice(100, clip[1]))
-      }
-      else if (clip[0] < 100 && clip[1] < 100){
-        routePaths = routePaths[0].slice(clip[0], clip[1])
-      }
-      else if (clip[0] >= 100 && clip[1] >= 100){
-        routePaths = routePaths[1].slice(clip[0], clip[1])
-      }
+//       // Add custom markers
+//       if (direction === 'from') {
+//         const startMarker = new window.google.maps.Marker({
+//           position: result.routes[0].legs[0].start_location,
+//           map: window.nyushuttle.currentMap,
+//           icon: {
+//             path: window.google.maps.SymbolPath.CIRCLE,
+//             scale: 7,
+//             fillColor: '#8400a8',
+//             fillOpacity: 1.0,
+//             strokeColor: '#FF0000',
+//             strokeOpacity: 0,
+//           },
+//         });
+//       } else {
+//         const endMarker = new window.google.maps.Marker({
+//           position: result.routes[0].legs[0].end_location,
+//           map: window.nyushuttle.currentMap,
+//           icon: {
+//             path: window.google.maps.SymbolPath.CIRCLE,
+//             scale: 7,
+//             fillColor: '#8400a8',
+//             fillOpacity: 1,
+//             strokeColor: '#',
+//             strokeOpacity: 0,
+//           },
+//         });
+//       }
+//     }
+//   });
+// }
 
-    }
-    drawRoutePath(routePaths, routeColor, routeId, routeGroupId);
-  }
-  else{
-    console.log('noclip')
-    drawRoutePath(routePaths, routeColor, routeId, routeGroupId);
+// function drawRoute(routeId, route, showStopName) {
+//   const routeGroupId = route[2];
+//   const routeColor = correctColorFromARGB(route[1]);
+//   const routePaths = getRoutePaths(routeId);
 
-  }
-  
-  //   routePaths.forEach((path) => {
-  //     updateBoundsWithPoint(path);
-  //   });
+//   drawRoutePath(routePaths, routeColor, routeId, routeGroupId);
+//   //   routePaths.forEach((path) => {
+//   //     updateBoundsWithPoint(path);
+//   //   });
 
-  if (showStopName) {
-    drawStopNamesForRoute(route);
-  }
-}
+//   if (showStopName) {
+//     drawStopNamesForRoute(route);
+//   }
+// }
 
-function getRoutePaths(routeId) {
-  const points = window.nyushuttle.routePoints;
-  return points[routeId][0].map((point) => new window.google.maps.LatLng(point.lat, point.lng));
-}
+// function getRoutePaths(routeId) {
+//   const points = window.nyushuttle.routePoints;
+//   return points[routeId][0].map((point) => new window.google.maps.LatLng(point.lat, point.lng));
+// }
 
-function getIndexofStop(r, stopPos) {
-  // Logic to get clipped route
-  let minDist = 9999
-  let index = -1
-  console.log('r: ',r)
-  for (let i=0;i<r[0].length;i++){
-    const dist = window.google.maps.geometry.spherical.computeDistanceBetween(
-      new window.google.maps.LatLng(Number(r[0][i].lat), Number(r[0][i].lng)),
-      new window.google.maps.LatLng(stopPos.lat, stopPos.lng)
-    )
-    if (dist < minDist){
-      minDist = dist
-      index = i
-    }
-  }
-  console.log('index: ',index)
-  return index
-}
+// function getIndexofStop(r, stopPos) {
+//   // Logic to get clipped route
+//   let minDist = 9999;
+//   let index = -1;
+//   console.log('r: ', r);
+//   for (let i = 0; i < r[0].length; i++) {
+//     const dist = window.google.maps.geometry.spherical.computeDistanceBetween(
+//       new window.google.maps.LatLng(Number(r[0][i].lat), Number(r[0][i].lng)),
+//       new window.google.maps.LatLng(stopPos.lat, stopPos.lng)
+//     );
+//     if (dist < minDist) {
+//       minDist = dist;
+//       index = i;
+//     }
+//   }
+//   console.log('index: ', index);
+//   return index;
+// }
 
-function getClippedRoute() {
-  let routeId = window.nyushuttle.routesSelected; // get the selected route id
-  let route = window.nyushuttle.routePoints[routeId] // get list of route points
-  let originStopId = window.nyushuttle.startStopLocation // get the origin stop id
-  let destinationStopId = window.nyushuttle.endStopLocation // get the destination stop id
-  let originStop = window.nyushuttle.stops[`ID${originStopId}`] // get the origin stop
-  let destinationStop = window.nyushuttle.stops[`ID${destinationStopId}`] // get the destination stop
-  let originStopPos = {} // get the origin stop position
-  let destinationStopPos = {} // get the destination stop position
-  //set the origin and destination stop positions
-  originStopPos.lat = originStop.latitude
-  originStopPos.lng = originStop.longitude
-  destinationStopPos.lat = destinationStop.latitude
-  destinationStopPos.lng = destinationStop.longitude
-  // get the index of the origin and destination stops
-  let originStopIndex = getIndexofStop(route, originStopPos)
-  let destinationStopIndex = getIndexofStop(route, destinationStopPos)
-  // switch places if origin stop is after destination stop
-  if (originStopIndex > destinationStopIndex){
-    return [destinationStopIndex, originStopIndex]
-  }
-  return [originStopIndex, destinationStopIndex]
-}
+// function getClippedRoute() {
+//   let routeId = window.nyushuttle.routesSelected; // get the selected route id
+//   let route = window.nyushuttle.routePoints[routeId]; // get list of route points
+//   let originStopId = window.nyushuttle.startStopLocation; // get the origin stop id
+//   let destinationStopId = window.nyushuttle.endStopLocation; // get the destination stop id
+//   let originStop = window.nyushuttle.stops[`ID${originStopId}`]; // get the origin stop
+//   let destinationStop = window.nyushuttle.stops[`ID${destinationStopId}`]; // get the destination stop
+//   let originStopPos = {}; // get the origin stop position
+//   let destinationStopPos = {}; // get the destination stop position
+//   //set the origin and destination stop positions
+//   originStopPos.lat = originStop.latitude;
+//   originStopPos.lng = originStop.longitude;
+//   destinationStopPos.lat = destinationStop.latitude;
+//   destinationStopPos.lng = destinationStop.longitude;
+//   // get the index of the origin and destination stops
+//   let originStopIndex = getIndexofStop(route, originStopPos);
+//   let destinationStopIndex = getIndexofStop(route, destinationStopPos);
+//   // switch places if origin stop is after destination stop
+//   if (originStopIndex > destinationStopIndex) {
+//     return [destinationStopIndex, originStopIndex];
+//   }
+//   return [originStopIndex, destinationStopIndex];
+// }
 
-function drawRoutePath(path, routeColor, routeId, routeGroupId) {
-  const selected = window.nyushuttle.routesSelected && window.nyushuttle.routesSelected.includes(routeId);
-  const opacity = getOpacity(selected);
-  const polylineOptions = createPolylineOptions(path, routeColor, opacity, routeId, routeGroupId);
-  const polyline = new window.google.maps.Polyline(polylineOptions);
-  routePathMarkers.push(polyline);
-  polyline.setMap(window.nyushuttle.currentMap);
-}
+// function drawRoutePath(path, routeColor, routeId, routeGroupId, container=routePathMarkers) {
+//   const selected = window.nyushuttle.routesSelected && window.nyushuttle.routesSelected.includes(routeId);
+//   const opacity = getOpacity(selected);
+//   const polylineOptions = createPolylineOptions(path, routeColor, opacity, routeId, routeGroupId);
+//   const polyline = new window.google.maps.Polyline(polylineOptions);
+//   container.push(polyline);
+//   polyline.setMap(window.nyushuttle.currentMap);
+// }
 
 function getOpacity(selected) {
   return selected ? 1.0 : 0.5;
@@ -321,6 +653,7 @@ function getOpacity(selected) {
 
 function createPolylineOptions(path, routeColor, opacity, routeId, routeGroupId) {
   return {
+    map: window.nyushuttle.currentMap,
     path: path,
     visible: true,
     geodesic: false,
@@ -360,21 +693,21 @@ function drawStopNamesForRoute(route) {
   // Logic to draw stop names for the given route
 }
 
-function sliceRouteStops(routeStops, stop1, stop2) {
-  // Retain the first three elements
-  const initialPart = routeStops.slice(0, 3);
+// function sliceRouteStops(routeStops, stop1, stop2) {
+//   // Retain the first three elements
+//   const initialPart = routeStops.slice(0, 3);
 
-  let startIndex = routeStops.findIndex(subarray => subarray[1] === stop1);
-  let endIndex = routeStops.findIndex(subarray => subarray[1] === stop2);
-  if (startIndex > endIndex) {
-    let temp = startIndex;
-    startIndex = endIndex;
-    endIndex = temp;
-  }
-  const slicedPart = routeStops.slice(startIndex, endIndex + 1);
+//   let startIndex = routeStops.findIndex((subarray) => subarray[1] === stop1);
+//   let endIndex = routeStops.findIndex((subarray) => subarray[1] === stop2);
+//   if (startIndex > endIndex) {
+//     let temp = startIndex;
+//     startIndex = endIndex;
+//     endIndex = temp;
+//   }
+//   const slicedPart = routeStops.slice(startIndex, endIndex + 1);
 
-  return [...initialPart, ...slicedPart];
-}
+//   return [...initialPart, ...slicedPart];
+// }
 
 function drawStops() {
   const stops = window.nyushuttle.stops;
@@ -387,11 +720,9 @@ function drawStops() {
   Object.keys(routes)
     .filter((routeId) => isSelectedRoute(routeId))
     .forEach((routeId) => {
-      let routestops = routes[routeId];
-      let routeGroupId = routes[routeId][2];
-      if (window.nyushuttle.startStopLocation && routestops){
-        routestops = sliceRouteStops(routestops, window.nyushuttle.startStopLocation, window.nyushuttle.endStopLocation)
-      }
+      const routestops = routes[routeId];
+      const routeGroupId = routes[routeId][2];
+
       addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName);
     });
 
@@ -409,19 +740,19 @@ function drawStops() {
   }
 }
 
+/////////////////////
 function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
   const zoomLevel = window.nyushuttle.currentMap.getZoom();
   const routeName = routestops[0];
   const routeColor = correctColorFromARGB(routestops[1]);
 
-  routestops.slice(3).forEach((stop, idx) => {
-    const sID = `ID${stop[1]}`;
+  getRouteStopIds(routeId).forEach((sID, idx) => {
     const theStop = window.nyushuttle.stops[sID];
 
     if (isStopValid(theStop)) {
-      updateStopData(theStop, stop, routeId, routeGroupId, routeName, routeColor);
+      updateStopData(theStop, idx, routeId, routeGroupId, routeName, routeColor);
       const marker = createMarkerForStop(theStop, zoomLevel, routeColor, showStopName, idx);
-      marker.addListener('click', () => onMarkerClick(theStop, marker)); 
+      marker.addListener('click', () => onMarkerClick(theStop, marker));
       stopMarkers.push(marker);
     }
   });
@@ -432,92 +763,99 @@ function getCorrespondingRoute(routeIDs) {
   if (typeof routeIDs === 'string') {
     routeIDs = [routeIDs];
   }
-  for(let i = 0; i < routeIDs.length; i++) {
+  for (let i = 0; i < routeIDs.length; i++) {
     let route = routeIDs[i];
-    if (route === "44748") {
-      routes.push("C");
-    } else if(route === "44676") {
-      routes.push("A");
-    } else if(route === "44753") {
-      routes.push("W");
-    } else if(route === "44745") {
-      routes.push("B");
-    } else if(route === "41890") {
-      routes.push("CH");
-    } else if(route === "44749") {
-      routes.push("E");
-    } else if(route === "44750") {
-      routes.push("F");
-    } else if(route === "44752") {
-      routes.push("G");
-    } else if(route === "44754") {
-      routes.push("MP");
-    } else if(route === "44755") {
-      routes.push("ME");
-    } else if(route === "44756") {
-      routes.push("MW");
-    } else if(route === "44757") {
-      routes.push("BL");
-    } else if(route === "45769") {
-      routes.push("FR");
+    if (route === '44748') {
+      routes.push('C');
+    } else if (route === '44676') {
+      routes.push('A');
+    } else if (route === '44753') {
+      routes.push('W');
+    } else if (route === '44745') {
+      routes.push('B');
+    } else if (route === '41890') {
+      routes.push('CH');
+    } else if (route === '44749') {
+      routes.push('E');
+    } else if (route === '44750') {
+      routes.push('F');
+    } else if (route === '44752') {
+      routes.push('G');
+    } else if (route === '44754') {
+      routes.push('MP');
+    } else if (route === '44755') {
+      routes.push('ME');
+    } else if (route === '44756') {
+      routes.push('MW');
+    } else if (route === '44757') {
+      routes.push('BL');
+    } else if (route === '45769') {
+      routes.push('FR');
     }
   }
   return routes;
 }
 
 async function onMarkerClick(theStop, marker) {
-  const stopName = marker.title; 
-  console.log(stopName)
-  console.log(theStop.routeIDs)
+  const stopName = marker.title;
+  console.log(stopName);
+  console.log(theStop.routeIDs);
   const routes = getCorrespondingRoute(theStop.routeIDs);
-  console.log(routes)
+  console.log(routes);
   let next_times = {};
-  for(let i = 0; i < routes.length; i++) {
-    if(checkIfInfoisAvailable(routes[i])){
+  for (let i = 0; i < routes.length; i++) {
+    if (checkIfInfoisAvailable(routes[i])) {
       let route = routes[i];
       const adjustedStopName = await getMatchingName(stopName, route);
       const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
       next_times[route] = times;
-    } else{
-      next_times[0] = ["No info available"];
+    } else {
+      next_times[0] = ['No info available'];
     }
   }
   console.log(next_times);
   displayStopInfo(marker, stopName, next_times);
 }
 
-async function displayStopInfo(marker, stopName, next_times){
+async function displayStopInfo(marker, stopName, next_times) {
   const contentString = buildInfoContent(stopName, next_times);
   const infowindow = new window.google.maps.InfoWindow({
     content: contentString,
-    ariaLabel: "Uluru",
+    ariaLabel: 'Uluru',
   });
   infowindow.open(window.google.maps, marker);
 }
 
 function buildInfoContent(stopName, next_times) {
-  let content = "<div>";
+  let content = '<div>';
   content += `<p>${stopName}</p>`;
   for (const route in next_times) {
     if (next_times.hasOwnProperty(route)) {
       const times = next_times[route];
-      if (times != null && times[0] !== "No info available" && times.length !== 0) {
+      if (times != null && times[0] !== 'No info available' && times.length !== 0) {
         content += `<p>Route ${route}: ${times.join(', ')}</p>`;
-      } else if(times[0] === "No info available") {
+      } else if (times[0] === 'No info available') {
         content += `<p>No times available for this route. Please check passiogo for available times.</p>`;
-      }else {
+      } else {
         content += `<p>Route ${route}: No incoming shuttles at this stop.</p>`;
       }
     }
   }
-  content += "</div>";
+  content += '</div>';
   return content;
 }
 
 function checkIfInfoisAvailable(route_id) {
-  if(route_id === "MP" || route_id === "ME" || route_id === "MW" || route_id === "BL" || route_id === "FR" || route_id === "CH"){
-    return false; 
-  } 
+  if (
+    route_id === 'MP' ||
+    route_id === 'ME' ||
+    route_id === 'MW' ||
+    route_id === 'BL' ||
+    route_id === 'FR' ||
+    route_id === 'CH'
+  ) {
+    return false;
+  }
   return true;
 }
 
@@ -525,7 +863,7 @@ function isStopValid(stop) {
   return stop && stop.latitude != null && !(stop.latitude === 0.0 && stop.longitude === 0.0);
 }
 
-function updateStopData(stop, stopInfo, routeId, routeGroupId, routeName, routeColor) {
+function updateStopData(stop, position, routeId, routeGroupId, routeName, routeColor) {
   if (!stop.routeIDs) stop.routeIDs = [];
   if (!stop.routeGroupIDs) stop.routeGroupIDs = [];
 
@@ -533,9 +871,9 @@ function updateStopData(stop, stopInfo, routeId, routeGroupId, routeName, routeC
     stop.routeIDs.push(routeId);
     stop.routeGroupIDs.push(routeGroupId);
     Object.assign(stop, {
-      position: stopInfo[0],
-      stopId: stopInfo[1],
-      back: stopInfo[2],
+      position,
+      stopId: stop.id,
+      back: stop.back,
       routeId,
       routeName,
       routeColor,
@@ -606,11 +944,11 @@ function recreateStopMarkerCluster() {
 
 async function onClusterMarkerClick(cluster) {
   const markers = cluster.getMarkers();
-  console.log(markers)
-  if (markers){
+  console.log(markers);
+  if (markers) {
     //onMarkerClick(theStop, markers[0])
   }
-  
+
   //onClusterMarkerClick(markers[0]);
   //console.log(markers);
 }
