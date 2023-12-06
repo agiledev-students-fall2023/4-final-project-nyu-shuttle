@@ -46,15 +46,19 @@ app.post("/getRoute", async (req, res) => {
     const routeFinding = require("./getOptimizedRoute.js"); 
     const busStops = {};
     //parse stops into a dictionary of coordinates
-    for (let stopkey in req.body.stops) {
-      let latitude = req.body.stops[stopkey].latitude
-      let longitude = req.body.stops[stopkey].longitude
-      let stopID = req.body.stops[stopkey].stopId
-      busStops[stopID] = [latitude, longitude]
+    for (let stopKey in req.body.stops) {
+      let latitude = req.body.stops[stopKey].latitude;
+      let longitude = req.body.stops[stopKey].longitude;
+      let stopID = req.body.stops[stopKey].stopId;
+    
+      // Initialize the object if it doesn't exist
+      if (!busStops[stopID]) {
+        busStops[stopID] = {};
+      }
+    
+      busStops[stopID].geoLoc = [latitude, longitude];
+      busStops[stopID].stopId = stopID;
     }
-    console.log('<----------Stops---------->')
-    console.log(busStops)
-
     //parse routes into a dictionary of routes, each holding an 
     //array of stops
     let routes = {};
@@ -87,8 +91,8 @@ app.post("/getRoute", async (req, res) => {
         req.body.destination_lat,
         req.body.destination_lng,
       );
-      console.log(optimalRoute.onSameRoute);
-      res.send(optimalRoute.onSameRoute);
+      console.log(optimalRoute.originStop.stopId);
+      res.send(optimalRoute);
     }
     catch(err){
       console.log(err);

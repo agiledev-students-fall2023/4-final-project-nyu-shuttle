@@ -65,15 +65,16 @@ function RoutesPage() {
         console.log('awaiting data'); 
         return }
       if (fromLocation.name === lastLocation1.current.name && toLocation.name === lastLocation2.current.name) {
+        awaitingData.current = false;
         return;
       }
     }
     catch(typeError){
       console.log('same input, no need to fetch new route');
     }
-    if (fromLocation.name && toLocation.name) {
+    if (fromLocation.name && toLocation.name && fromLocation.name !== toLocation.name) {
       awaitingData.current = true;
-      let reachableRoutes = fetch(`http://localhost:4000/getRoute`, {
+      let reachableRoutes = fetch(`/getRoute`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -97,13 +98,21 @@ function RoutesPage() {
       .then((data) => {
         lastLocation1.current = fromLocation;
         lastLocation2.current = toLocation;
-        if (Object.keys(data).length === 0){
+        if (Object.keys(data.onSameRoute).length === 0){
             alert('No route found');
             return;
         }
-        setRoutes(data);
+
+      console.log(Object.keys(data.onSameRoute).length)
+      if (Object.keys(data.onSameRoute).length === 7){
+        setRoutes(['You should walk instead!']);
+      }
+      else{
+        setRoutes(data.onSameRoute);
+        window.nyushuttle.startStopLocation = data.originStop.stopId;
+        window.nyushuttle.endStopLocation = data.destinationStop.stopId;
+      }
         setShowSubpage(true);
-        alert('Starting' + JSON.stringify(data[0]));
         return data;
       })
       .catch((error) => {
