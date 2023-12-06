@@ -1,28 +1,24 @@
 // import and instantiate express
+require("dotenv").config({ silent: true });
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const process = require("process");
-require("dotenv").config({ silent: true });
 const cron = require("node-cron");
 const { fetchDataForRoutes } = require("./updateTimetable");
 const path = require('path');
 const mongoose = require("mongoose");
+const STATIC_FOLDER = path.join(__dirname, "../", "front-end/", "build/");
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB.'))
+  .catch(err => console.log(`Error connecting to MongoDB: ${err}`));
 
-try {
-  mongoose.connect(process.env.MONGODB_URI);
-  console.log(`Connected to MongoDB.`);
-} catch (err) {
-  console.log(
-    `Error connecting to MongoDB user account authentication will fail: ${err}`
-  );
-}
+
+
 
 app.use(morgan("dev", { skip: (req, res) => process.env.NODE_ENV === "test" }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
+
 
 const feedbackRoutes = require("./routes/feedback-routes.js");
 const timetableRoutes = require("./routes/timetable-routes.js");
@@ -36,6 +32,12 @@ app.get("/test", (req, res) => {
 
 app.use("/timetable", timetableRoutes());
 app.use("/stopfind", stopRoutes());
+
+app.use(express.static(STATIC_FOLDER));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
+
 
 cron.schedule('0 0 * * *', () => {
   fetchDataForRoutes(['routesA_W', 'routesA_F', 'routesA_Wknd', 'routesB_W', 
