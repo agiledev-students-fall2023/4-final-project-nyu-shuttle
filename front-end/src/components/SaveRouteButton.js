@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import HeartIcon from '../images/heart-svg.svg';
 import HeartIconLoaded from '../images/heart-svg-loaded.svg';
 import { localStorageSave, localStorageLoad } from '../utils/localStorageSaveLoad';
-import SaveRouteDialog from "./SaveRouteDialog";
+import SaveRouteDialog from "../css/saveRouteDialog.css";
 
 
 function SaveRouteButton (prop) {
