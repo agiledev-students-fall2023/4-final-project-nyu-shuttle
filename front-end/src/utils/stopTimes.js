@@ -141,7 +141,7 @@ export async function getMatchingName(stopName, route){
       } else if(stopName==="Third Avenue At 17th Street N"){
         return "3rd Ave. at 17th St."
       } else if(stopName==="Third Avenue At 17th Street S"){
-        return "14th St at 3rd Ave."
+        return "3rd Ave. at 17th St."
       } else if(stopName==="Third Avenue At 14th Street"){
         return "3rd Ave. at 14th St."
       } else if(stopName==="14th St At Irving Place EB"){

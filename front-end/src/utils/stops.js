@@ -429,6 +429,9 @@ function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
 
 function getCorrespondingRoute(routeIDs) {
   let routes = [];
+  if (typeof routeIDs === 'string') {
+    routeIDs = [routeIDs];
+  }
   for(let i = 0; i < routeIDs.length; i++) {
     let route = routeIDs[i];
     if (route === "44748") {
@@ -447,7 +450,7 @@ function getCorrespondingRoute(routeIDs) {
       routes.push("F");
     } else if(route === "44752") {
       routes.push("G");
-    } else if(route === "44751") {
+    } else if(route === "44754") {
       routes.push("MP");
     } else if(route === "44755") {
       routes.push("ME");
@@ -476,16 +479,15 @@ async function onMarkerClick(theStop, marker) {
       const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
       next_times[route] = times;
     } else{
-      console.log("No info available");
-      next_times[routes[i]] = [];
+      next_times[0] = ["No info available"];
     }
   }
   console.log(next_times);
-  displayStopInfo(marker, next_times);
+  displayStopInfo(marker, stopName, next_times);
 }
 
-async function displayStopInfo(marker, next_times){
-  const contentString = buildInfoContent(next_times);
+async function displayStopInfo(marker, stopName, next_times){
+  const contentString = buildInfoContent(stopName, next_times);
   const infowindow = new window.google.maps.InfoWindow({
     content: contentString,
     ariaLabel: "Uluru",
@@ -493,16 +495,18 @@ async function displayStopInfo(marker, next_times){
   infowindow.open(window.google.maps, marker);
 }
 
-function buildInfoContent(next_times) {
+function buildInfoContent(stopName, next_times) {
   let content = "<div>";
+  content += `<p>${stopName}</p>`;
   for (const route in next_times) {
     if (next_times.hasOwnProperty(route)) {
       const times = next_times[route];
-      content += `<p>Route: ${route}</p>`;
-      if (times != null) {
-        content += `<p>Times: ${times.join(', ')}</p>`;
-      } else {
-        content += `<p>No times available for this route</p>`;
+      if (times != null && times[0] !== "No info available" && times.length !== 0) {
+        content += `<p>Route ${route}: ${times.join(', ')}</p>`;
+      } else if(times[0] === "No info available") {
+        content += `<p>No times available for this route. Please check passiogo for available times.</p>`;
+      }else {
+        content += `<p>Route ${route}: No incoming shuttles at this stop.</p>`;
       }
     }
   }
@@ -511,7 +515,7 @@ function buildInfoContent(next_times) {
 }
 
 function checkIfInfoisAvailable(route_id) {
-  if(route_id === "MP" || route_id === "ME" || route_id === "MW" || route_id === "BL" || route_id === "FR"){
+  if(route_id === "MP" || route_id === "ME" || route_id === "MW" || route_id === "BL" || route_id === "FR" || route_id === "CH"){
     return false; 
   } 
   return true;
@@ -600,14 +604,38 @@ function recreateStopMarkerCluster() {
   //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
 }
 
-function onClusterMarkerClick(cluster) {
+async function onClusterMarkerClick(cluster) {
+  const markers = cluster.getMarkers();
+  console.log(markers)
+  if (markers){
+    //onMarkerClick(theStop, markers[0])
+  }
+  
+  //onClusterMarkerClick(markers[0]);
+  //console.log(markers);
+}
+
+/*
+async function onClusterMarkerClick(cluster) {
   const markers = cluster.getMarkers();
   for (let i = 0; i < markers.length; i++) {
+    console.log(markers.length)
     const marker = markers[i];
     const stopName = marker.title; 
-    console.log(stopName);
+    const routeId = marker.routeId;
+    let next_times = {};
+    const route = getCorrespondingRoute(routeId);
+    if(checkIfInfoisAvailable(route)){
+      const adjustedStopName = await getMatchingName(stopName, route);
+      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
+      next_times[route] = times;
+      console.log(times)
+    } else{
+      next_times[0] = ["No info available"];
+    }
   }
 }
+*/
 
 function panToBoundsIfNeeded(center) {
   if (bounds && !bounds.isEmpty()) {
