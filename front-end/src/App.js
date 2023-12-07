@@ -92,7 +92,7 @@ function App() {
               <Route path="/settings/view-schedule" element={<TimeSpreadsheetPage />} />
               <Route path="/settings/feedback-support" element={<FeedbackSupportPage />} />
               <Route path="/settings/privacypolicy" element={<PrivacyPolicyPage />} />
-              <Route path="/routes/:location1/:location2/" element={<RoutesPage />} />
+              <Route path="/routes/:encodedLocation1/:encodedLocation2/" element={<RoutesPage />} />
             </Routes>
           )}
         </BrowserRouter>
