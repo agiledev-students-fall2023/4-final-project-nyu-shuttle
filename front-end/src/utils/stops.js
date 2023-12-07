@@ -798,10 +798,10 @@ function getCorrespondingRoute(routeIDs) {
 
 async function onMarkerClick(theStop, marker) {
   const stopName = marker.title;
-  console.log(stopName);
-  console.log(theStop.routeIDs);
+  //console.log(stopName);
+  //console.log(theStop.routeIDs);
   const routes = getCorrespondingRoute(theStop.routeIDs);
-  console.log(routes);
+  //console.log(routes);
   let next_times = {};
   for (let i = 0; i < routes.length; i++) {
     if (checkIfInfoisAvailable(routes[i])) {
@@ -939,8 +939,8 @@ function recreateStopMarkerCluster() {
     zoomOnClick: false,
     showTitle: false,
   });
-
   // Add event listeners to the marker cluster
+
   window.google.maps.event.addListener(stopMarkerCluster, 'click', onClusterMarkerClick);
   //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
 }
@@ -953,27 +953,35 @@ async function onClusterMarkerClick(cluster) {
     const sID = marker.stopId;
     const stopName = window.nyushuttle.stops["ID"+sID]
     console.log(stopName);
-    const routes = getCorrespondingRoute(stopName.routeIDs);
-    console.log(routes)
-    let next_times = {};
-    for(let i = 0; i < routes.length; i++) {
-      if(checkIfInfoisAvailable(routes[i])){
-        let route = routes[i];
-        const adjustedStopName = await getMatchingName(stopName, route);
-        console.log(adjustedStopName)
-        //const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
-        //next_times[route] = times;
-      } else{
-        //next_times[0] = ["No info available"];
-      }
-    }
-    console.log(next_times);
-   // displayStopInfo(marker, stopName, next_times);
-  
+    clusterProcess(stopName, marker);
   }
+}
 
-  //onClusterMarkerClick(markers[0]);
-  //console.log(markers);
+async function clusterProcess(the_Stop, marker_a) {
+  const stop_Name = marker_a.title;
+  const routes_a = getCorrespondingRoute(the_Stop.routeIDs);
+  let next_times_a = {};
+  for (let i = 0; i < routes_a.length; i++) {
+    if (checkIfInfoisAvailable(routes_a[i])) {
+      let route_a = routes_a[i];
+      const adjustedStopName = await getMatchingName(stop_Name, route_a);
+      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route_a);
+      next_times_a[route_a] = times;
+    } else {
+      next_times_a[0] = ['No info available'];
+    }
+  }
+  console.log(next_times_a);
+  displayStopInfo_a(marker_a, stop_Name, next_times_a);
+}
+
+async function displayStopInfo_a(marker_a, stop_Name, next_times) {
+  const contentString = buildInfoContent(stop_Name, next_times);
+  const infowindow = new window.google.maps.InfoWindow({
+    content: contentString,
+    ariaLabel: 'Uluru',
+  });
+  infowindow.open(window.nyushuttle.maps, marker_a);
 }
 
 /*

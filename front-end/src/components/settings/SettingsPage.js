@@ -7,9 +7,7 @@ const SettingsPage = () => {
   const [colorTheme, setTheme] = useDarkMode();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    setIsDarkMode(colorTheme === 'dark');
-  }, [colorTheme]);
+  
 
   const toggleDarkTheme = () => {
     const nextTheme = colorTheme === 'dark' ? 'light' : 'dark';

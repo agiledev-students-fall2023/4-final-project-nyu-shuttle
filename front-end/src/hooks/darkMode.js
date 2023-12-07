@@ -5,10 +5,8 @@ const useDarkMode = () => {
     const storedTheme = localStorage.getItem('theme-color');
     if (storedTheme) {
       return storedTheme;
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
     } else {
-      return 'light';
+      return 'dark';
     }
   };
 
