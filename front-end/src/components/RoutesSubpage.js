@@ -16,6 +16,10 @@ function RoutesSubpage({ location1, location2, routes }) {
   const [navigateTo, setNavigateTo] = useState(null);
   const navigate = useNavigate();
 
+  const exist = !!routes;
+  const isErrorMessage = exist ? typeof routes === 'string' : false;
+  console.log(exist, isErrorMessage, routes);
+
   const openSaveDialog = () => {
     console.log('clicked');
     if (!isRouteSaved) {
@@ -89,24 +93,36 @@ function RoutesSubpage({ location1, location2, routes }) {
       </div>
       <RouteMap location1={location1} location2={location2} />
       <div className="route-info-container">
-        {Object.keys(routes).map((key, index) => (
-          <div key={index} className="route-info">
-            <div className="route-text">
-              <p className="text-lg">
-                <strong>{key}</strong>
-              </p>
-              <p className="text-base	">
-                Total Walking Time: <strong>{routes[key].time} min</strong>
-              </p>
-              {/* <p className="text-sm">
+        {!exist && (
+          <div>
+            <h1>Unexpected error occurred</h1>
+          </div>
+        )}
+        {exist && isErrorMessage && (
+          <div>
+            <h1>{routes}</h1>
+          </div>
+        )}
+        {exist &&
+          !isErrorMessage &&
+          Object.keys(routes).map((key, index) => (
+            <div key={index} className="route-info">
+              <div className="route-text">
+                <p className="text-lg">
+                  <strong>{key}</strong>
+                </p>
+                <p className="text-base	">
+                  Total Walking Time: <strong>{routes[key].time} min</strong>
+                </p>
+                {/* <p className="text-sm">
                 Shuttle {key} scheduled at <strong>{shuttleSchedule}</strong>
               </p> */}
+              </div>
+              <button id={key} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
+                Start
+              </button>
             </div>
-            <button id={key} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
-              Start
-            </button>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
