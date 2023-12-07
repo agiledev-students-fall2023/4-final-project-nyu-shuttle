@@ -1,0 +1,9 @@
+.savedroutes-container .routes {
+    @apply flex flex-col items-start p-4;
+  }
+
+
+  .title-container {
+    @apply flex justify-items-start w-full;
+  }
+  

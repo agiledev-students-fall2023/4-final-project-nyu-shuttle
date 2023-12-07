@@ -1,0 +1,94 @@
+/* routesSubpage.css */
+
+.routes-subpage-container {
+  @apply h-screen bg-lightTone px-4 w-full pt-3 overflow-y-auto flex flex-col items-center pb-20 my-0;
+}
+
+.dark .routes-subpage-container {
+  @apply bg-darkMode-darkTone;
+}
+
+img {
+  @apply rounded-3xl p-4 m-0;
+}
+
+.route_map img {
+  @apply rounded-none;
+}
+
+.title-container {
+  @apply flex justify-items-start w-full;
+}
+
+.save-route-button {
+  @apply text-darkTone text-center w-1/4 text-base mx-0 h-full p-0 rounded-xl;
+}
+
+.view-route-button {
+  @apply bg-darkTone text-lightTone w-full ml-0 mt-5 mr-8 text-base h-11 py-2   text-center rounded-xl px-6;
+}
+
+.saved-icon {
+  @apply absolute z-50 w-8 h-12 mb-0 top-8 right-5 pb-2 grayscale-0 p-0;
+}
+
+.save {
+  @apply transition-all duration-700 ease-out bg-lightMidTone text-darkTone text-sm px-5 my-3 pt-2 rounded-xl p-2 mx-0;
+}
+
+.halfw {
+  @apply w-72;
+}
+
+.fullw {
+  @apply w-full text-right;
+}
+
+.route-info-container {
+  @apply flex flex-col items-center w-full pt-3;
+}
+
+.red {
+  filter: invert(72%) sepia(45%) saturate(5044%) hue-rotate(319deg) brightness(105%) contrast(82%);
+}
+
+.route-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  width: 100%;
+  border-radius: 10px;
+  border-style: solid;
+  margin-bottom: 10px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(103, 58, 163, 0.5);
+}
+
+.dark .route-info {
+  @apply bg-darkMode-lightTone text-white;
+}
+
+.route-info .route-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-left: 10px;
+}
+
+.route-info .text-lg {
+  font-size: 17px;
+}
+
+.route-info .text-sm {
+  font-size: 10px;
+}
+
+.nav-button {
+  @apply bg-darkTone text-lightTone text-base my-3 mx-3 h-14 py-2 rounded-xl px-6 w-20;
+}
+.saved-routes-button{
+  @apply flex items-center justify-between bg-lightTone
+}

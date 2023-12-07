@@ -1,0 +1,39 @@
+.savedroutes-container {
+    @apply bg-lightTone h-screen p-5 text-xl ;
+  }
+
+  .dark .savedroutes-container {
+    @apply bg-darkMode-darkTone text-white;
+  }
+
+  .savedroutes-header {
+    @apply text-2xl font-semibold mt-4 text-center mb-2;
+  }
+
+  .savedroutes-item {
+    @apply py-4 mb-1 flex justify-between items-center rounded-full p-3;
+  }
+
+  .savedroutes-item-wrapper {
+    @apply divide-y divide-darkTone overflow-scroll h-3/4 flex flex-col rounded-lg;
+  }
+  
+  .dark .savedroutes-item-wrapper {
+    @apply divide-darkMode-lightTone text-white;
+  }
+
+  .savedroutes-buttons{
+    @apply flex flex-col pr-5;
+  }
+  
+  .saved-button {
+    @apply mb-10 p-2 ml-auto text-lg bg-darkMode-darkMidTone text-white rounded-md;
+  }
+
+  .delete-button{
+    @apply p-1 mt-2 h-10 mr-0 text-lg bg-darkMode-darkMidTone text-white rounded-md text-sm;
+  }
+
+  .change-button{
+    @apply pb-0 pt-1
+  }

@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400&display=swap');
+
+.route-color-bar {
+  @apply flex top-0 left-0 h-10 w-3;
+}
+
+.filter-container {
+  @apply relative font-mainUI;
+}
+
+.filter {
+  @apply absolute flex flex-row items-center overflow-auto opacity-90 m-2 mt-6 top-1 z-10 min-w-max bg-lightTone rounded-2xl shadow-lg transition-all duration-300 ease-in-out;
+}
+
+.dark .filter {
+  @apply bg-darkMode-lightTone;
+}
+
+/* .filter.closed {
+  @apply min-w-max;
+}
+
+.filter.open {
+  @apply w-32;
+} */
+
+.filter-container {
+  @apply relative;
+}
+
+.list-item-wrapper {
+  @apply w-full py-2 pt-3 pl-2 pr-5 text-sm text-black hover:bg-lightMidTone;
+}
+
+.list-item-wrapper > li {
+  @apply whitespace-nowrap; /* Prevent line breaks */
+}
+
+.filter-container ul {
+  @apply flex flex-col;
+}
+
+.filterIcon {
+  @apply opacity-60 transform transition duration-300;
+}
+
+.filterIcon.open {
+  @apply rotate-180 top-3 right-3 absolute;
+  fill: black;
+}
+
+.filterIcon.closed {
+  @apply mr-3;
+}
+
+/* #dropdown {
+  @apply flex flex-col;
+} */

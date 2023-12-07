@@ -1,19 +1,67 @@
-# Project Repository
+# NYU Shuttle App
 
-This repository will be used for team projects.
+## Project Description
 
-Several sets of instructions are included in this repository. They should each be treated as separate assignments with their own due dates and sets of requirements.
+The NYU Shuttle App is a mobile application designed to provide real-time information about the NYU shuttle bus service. It is a convenient tool for NYU students, faculty, and staff to track shuttle bus locations, plan routes, and receive updates on shuttle schedules. The primary goal of this project is to enhance the overall commuting experience for the NYU community by making transportation more efficient and accessible.
 
-1. See the [App Map & Wireframes](instructions-0a-app-map-wireframes.md) and [Prototyping](./instructions-0b-prototyping.md) instructions for the requirements of the initial user experience design of the app.
+## Product Vision Statement
+Recognizing the limitations in NYU's existing shuttle app, primarily concerning its user interface, we want to create a better mobile-friendly application with shuttle information that is easy to access and understand. 
 
-1. Delete the contents of this file and replace with the contents of a proper README.md, as described in the [project setup instructions](./instructions-0c-project-setup.md)
+## Team Members
+- [r8btx](https://www.github.com/r8btx) 
+- [Jaden Wang](https://github.com/unfiltered-syrup)
+- [Ana Pacheco](https://github.com/anaspacheco)
 
-1. See the [Sprint Planning instructions](instructions-0d-sprint-planning.md) for the requirements of Sprint Planning for each Sprint.
+## History and Contribution Guidelines
 
-1. See the [Front-End Development instructions](./instructions-1-front-end.md) for the requirements of the initial Front-End Development.
+The NYU Shuttle App project originated from a group of NYU students who recognized the need for an improved shuttle service experience, as many students and faculty had expressed frustrations with the existing web application. If you'd like to contribute to this project, please read our [CONTRIBUTING.md](CONTRIBUTING.md) document for guidelines on how to get involved.
 
-1. See the [Back-End Development instructions](./instructions-2-back-end.md) for the requirements of the initial Back-End Development.
+## Access deployed aplication: 
 
-1. See the [Database Integration instructions](./instructions-3-database.md) for the requirements of integrating a database into the back-end.
+- Navigate to 138.197.74.172:4000 in your browser to check out our deployed app!
 
-1. See the [Deployment instructions](./instructions-4-deployment.md) for the requirements of deploying an app.
+## Building and Testing
+
+Fork the repo and clone it locally. Then:
+
+1. cd to front-end and back-end
+
+2. Install Dependencies:
+   ```bash
+   npm install
+
+3. Put Google Maps API key at utils/MapUtility.js (const API_KEY)
+
+4. In the front end folder, put the following keys in a .env file:
+   - REACT_APP_MAP_API_KEY (please, reach out to us for the exact key)
+   - REACT_APP_BACKEND==http://localhost:4000
+  
+5. In the back end folder, put the following keys in a .env file:
+   - MONGODB_URI=  (please, reach out to us for the exact key)
+   - FRONT_END_DOMAIN=http://localhost:3000
+   - EXPRESS_APP_MAP_API_KEY (please, reach out to us for the exact key)
+  
+6. To run backend tests cd to the backend folder and run:
+   ```bash 
+   npm test
+
+8. Run frontend and backend 
+   ```bash 
+   npm start
+
+## Additional Resources
+
+- [Initial Prototype](UX-DESIGN.md)
+- [NYU Transportations Routes and Schedules Page](https://www.nyu.edu/life/travel-and-transportation/university-transportation/routes-and-schedules.html)
+- [Current NYU Shuttle Website (PassioGo)](https://nyu.passiogo.com/)
+
+## Contact Us
+
+If you have any questions, feedback, or suggestions, please feel free to open an issue or reach out to any of the core team members mentioned above. We appreciate your support and look forward to improving the NYU shuttle experience together!
+
+
+
+
+
+
+
