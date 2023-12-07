@@ -58,7 +58,7 @@ export async function getNextTimes(stopName, route) {
 }
 
 export async function getMatchingName(stopName, route){
-  if (route === "A") {
+  if (route == "A") {
     if(stopName==="Cadman Plaza & Clark Street"){
       return "Cadman Plaza & Clark St."
     } else if(stopName==="6 Metro Tech Center" || stopName==="Metro Tech Way"){
@@ -72,7 +72,7 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="Cleveland Pl & Spring St"){
       return "Cleveland & Spring St."
     }
-  } else if (route === "B") {
+  } else if (route == "B") {
     if(stopName==="Lafayette & E. 4th St"){
       return "Layfayette & E 4th St."
     } else if(stopName==="Cleveland Pl & Spring St"){
@@ -84,7 +84,7 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="Broadway & Broome St."){
       return "Broadway & Broome St."
     }
-  } else if (route === "C") {
+  } else if (route == "C") {
     if(stopName==="Avenue C At 14th Street"){
       return "Ave. C & 14th St."
     } else if(stopName==="Avenue C At 16th Street"){
@@ -104,7 +104,7 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="14th Street At Avenue B"){
       return "14th St. & Ave. B"
     }
-  } else if (route === "E") {
+  } else if (route == "E") {
     if(stopName==="First Avenue At 17th Street"){
       return "1st Ave. at 17th St."
     } else if(stopName==="First Avenue At 24th Street"){
@@ -128,7 +128,7 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="715 Broadway"){
       return "715 Broadway Departure"
     }
-  } else if (route === "F") {
+  } else if (route == "F") {
     if(stopName==="Third Avenue At 30th Street"){
       return "3rd Ave. at 30th St."
     } else if(stopName==="Lexington Avenue At 31st Street"){
@@ -154,7 +154,7 @@ export async function getMatchingName(stopName, route){
     } else if(stopName==="715 Broadway"){
         return "715 Broadway Departure"
     }
-  } else if (route === "W") {
+  } else if (route == "W") {
     if(stopName==="Lexington Avenue At 31st Street"){
       return "Lexington Ave. at 31 St."
     } else if(stopName==="First Avenue At 26th Street"){

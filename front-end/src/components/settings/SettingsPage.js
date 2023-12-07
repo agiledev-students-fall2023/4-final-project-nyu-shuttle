@@ -7,12 +7,13 @@ const SettingsPage = () => {
   const [colorTheme, setTheme] = useDarkMode();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  useEffect(() => {
+    setIsDarkMode(colorTheme === 'dark');
+  }, [colorTheme]);
+
   const toggleDarkTheme = () => {
-    
-    const nextTheme = isDarkMode ? 'light' : 'dark';
-    
-    setIsDarkMode(!isDarkMode);
-    // Set the new theme in localStorage
+    const nextTheme = colorTheme === 'dark' ? 'light' : 'dark';
+    setIsDarkMode(nextTheme === 'dark');
     setTheme(nextTheme);
   };
 

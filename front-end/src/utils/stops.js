@@ -760,48 +760,70 @@ function addRouteMarkersOnMap(routeId, routestops, routeGroupId, showStopName) {
 
 function getCorrespondingRoute(routeIDs) {
   let routes = [];
+
   if (typeof routeIDs === 'string') {
     routeIDs = [routeIDs];
   }
+
+  let anyRouteSelected = false;
+
   for (let i = 0; i < routeIDs.length; i++) {
-    let route = routeIDs[i];
-    if (route === '44748') {
-      routes.push('C');
-    } else if (route === '44676') {
-      routes.push('A');
-    } else if (route === '44753') {
-      routes.push('W');
-    } else if (route === '44745') {
-      routes.push('B');
-    } else if (route === '41890') {
-      routes.push('CH');
-    } else if (route === '44749') {
-      routes.push('E');
-    } else if (route === '44750') {
-      routes.push('F');
-    } else if (route === '44752') {
-      routes.push('G');
-    } else if (route === '44754') {
-      routes.push('MP');
-    } else if (route === '44755') {
-      routes.push('ME');
-    } else if (route === '44756') {
-      routes.push('MW');
-    } else if (route === '44757') {
-      routes.push('BL');
-    } else if (route === '45769') {
-      routes.push('FR');
+    const route = routeIDs[i];
+    if (isSelectedRoute(route)) {
+      const translatedRoute = translateRoute(route);
+      routes.push(translatedRoute);
+      anyRouteSelected = true;
     }
   }
+
+  if (!anyRouteSelected) {
+    for (let i = 0; i < routeIDs.length; i++) {
+      const route = routeIDs[i];
+      const translatedRoute = translateRoute(route);
+      routes.push(translatedRoute);
+    }
+  }
+
   return routes;
+}
+
+
+function translateRoute(routeID) {
+  switch (routeID) {
+    case '44748':
+      return 'C';
+    case '44676':
+      return 'A';
+    case '44753':
+      return 'W'; 
+    case '44745':
+      return 'B';
+    case '41890':
+      return 'CH';
+    case '44749':
+      return 'E';
+    case '44750':
+      return 'F';
+    case '44752':
+      return 'G';
+    case '44754':
+      return 'MP';
+    case '44755':
+      return 'ME';
+    case '44756':
+      return 'MW';
+    case '44757':
+      return 'BL';
+    case '45769':
+      return 'FR';
+    default:
+      return routeID;
+  }
 }
 
 async function onMarkerClick(theStop, marker) {
   const stopName = marker.title;
-  //console.log(stopName);
-  //console.log(theStop.routeIDs);
   const routes = getCorrespondingRoute(theStop.routeIDs);
-  //console.log(routes);
   let next_times = {};
   for (let i = 0; i < routes.length; i++) {
     if (checkIfInfoisAvailable(routes[i])) {
@@ -818,7 +840,7 @@ async function onMarkerClick(theStop, marker) {
 }
 
 async function displayStopInfo(marker, stopName, next_times) {
-  const contentString = buildInfoContent(stopName, next_times);
+  const contentString = buildInfoContent(stopName, next_times, marker.color);
   const infowindow = new window.google.maps.InfoWindow({
     content: contentString,
     ariaLabel: 'Uluru',
@@ -826,20 +848,20 @@ async function displayStopInfo(marker, stopName, next_times) {
   infowindow.open(window.google.maps, marker);
 }
 
-function buildInfoContent(stopName, next_times) {
-  let content = '<div>';
-  content += `<p>${stopName}</p>`;
+function buildInfoContent(stopName, next_times, textColor) {
 
+  let content = '<div class="bg-gray-100 p-4 rounded-lg shadow-md">';
+  content += `<p class="text-md font-bold mb-4" style="color: ${textColor}">${stopName}</p>`;
   for (const route in next_times) {
     if (next_times.hasOwnProperty(route)) {
       const times = next_times[route];
       if (times != null && times[0] !== 'No info available' && times.length !== 0) {
         const top3Times = times.slice(0, 3);
-        content += `<p>Route ${route}: ${top3Times.join(', ')}</p>`;
+        content += `<p class="mb-2 font-bold"><span class="font-bold" style="color: ${textColor}" >Route ${route}:</span> ${top3Times.join(', ')}</p>`;
       } else if (times[0] === 'No info available') {
-        content += `<p>No times available for this route. Please check passiogo for available times.</p>`;
+        content += `<p class="mb-2 text-red-500">No times available for this route. Please check Passiogo for available times.</p>`;
       } else {
-        content += `<p>Route ${route}: No incoming shuttles at this stop.</p>`;
+        content += `<p class="mb-2"><span class="font-bold">Route ${route}:</span> No incoming shuttles at this stop.</p>`;
       }
     }
   }
@@ -847,6 +869,7 @@ function buildInfoContent(stopName, next_times) {
   content += '</div>';
   return content;
 }
+
 
 function checkIfInfoisAvailable(route_id) {
   if (
@@ -901,6 +924,7 @@ function createMarkerForStop(stop, zoomLevel, routeColor, showStopName, idx) {
     routeId: stop.routeId,
     title: stop.name,
     label: createMarkerLabel(stop.name, showStopName),
+    color: routeColor,
   };
   return new window.google.maps.Marker(markerOptions);
 }
@@ -940,14 +964,13 @@ function recreateStopMarkerCluster() {
     showTitle: false,
   });
   // Add event listeners to the marker cluster
-
   window.google.maps.event.addListener(stopMarkerCluster, 'click', onClusterMarkerClick);
   //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
 }
 
 async function onClusterMarkerClick(cluster) {
   const markers = cluster.getMarkers();
-  console.log(markers);
+  //console.log(markers);
   if (markers) {
     const marker = markers[0];
     const sID = marker.stopId;
