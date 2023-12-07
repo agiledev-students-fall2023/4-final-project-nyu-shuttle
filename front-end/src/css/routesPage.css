@@ -34,4 +34,8 @@
   @apply  mr-0 mb-1 p-1 flex ml-auto text-lg bg-darkMode-darkMidTone text-white rounded-md;
 }
 
+.view-route-button{
+  @apply mr-0 mb-1 p-1 flex ml-auto text-lg bg-darkMode-darkMidTone text-white rounded-md;
+}
+
 

@@ -20,10 +20,6 @@ img {
   @apply  text-darkTone text-center w-1/4 text-base mx-0 h-full p-0 rounded-xl; 
 }
 
-.view-route-button{
-  @apply bg-darkTone text-lightTone w-full text-base mx-0 h-11 py-2   text-center rounded-xl px-6; 
-}
-
 .saved-icon {
   @apply absolute z-50 w-8 h-12 mb-0 top-8 right-5 pb-2 grayscale-0 p-0;
 }

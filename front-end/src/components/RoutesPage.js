@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import LocationFilter from "./LocationFilter";
 import "../css/routesPage.css";
 import RoutesSubpage from "./RoutesSubpage";
+import ViewRouteButton from "./ViewRouteButton";
 
 function RoutesPage() {
   const { location1, address1, location2, address2 } = useParams();
@@ -10,8 +11,6 @@ function RoutesPage() {
   const lastLocation2 = useRef();
   const awaitingData = useRef(false); //set loading state
   const [ routes, setRoutes ] = useState([]); //set routes state
-  
-
   if (typeof window.nyushuttle == "undefined") {
     window.nyushuttle = {};
   }
@@ -39,7 +38,6 @@ function RoutesPage() {
     }
     return { name: "", address: "" };
   });
-
   
   useEffect(() => {
     if (typeof window.nyushuttle == "undefined") {
@@ -129,9 +127,9 @@ function RoutesPage() {
   }, [checkAndShowSubpage]);
 
 
-
   return (
     <div className="route-container">
+      <ViewRouteButton/>
       <div className="input-wrapper">
         <div className="location-input">
           <label>From:</label>
