@@ -3,25 +3,22 @@ import { useState, useEffect } from 'react';
 const useDarkMode = () => {
   const getInitialTheme = () => {
     const storedTheme = localStorage.getItem('theme-color');
-    if (storedTheme) {
-      return storedTheme;
-    } else {
-      return 'dark';
-    }
+    // Treat 'dark' as true, and any other value as false
+    return storedTheme === 'dark';
   };
 
-  const [colorTheme, setColorTheme] = useState(getInitialTheme);
+  const [isDarkMode, setIsDarkMode] = useState(getInitialTheme);
 
   useEffect(() => {
-    localStorage.setItem('theme-color', colorTheme);
-    if (colorTheme === 'dark') {
+    localStorage.setItem('theme-color', isDarkMode ? 'dark' : 'light');
+    if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, [colorTheme]);
+  }, [isDarkMode]);
 
-  return [colorTheme, setColorTheme];
+  return [isDarkMode, setIsDarkMode];
 };
 
 export default useDarkMode;
