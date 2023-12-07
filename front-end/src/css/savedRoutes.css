@@ -3,4 +3,7 @@
   }
 
 
+  .title-container {
+    @apply flex justify-items-start w-full;
+  }
   

@@ -5,7 +5,7 @@ function ViewRouteButton () {
         <>        
         <div className="view-route-button">
             <Link to="/saved-routes">
-                <button>View Route</button>
+                <button>View Saved Routes</button>
             </Link>
         </div>
         </>

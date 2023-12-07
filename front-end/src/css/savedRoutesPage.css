@@ -7,7 +7,7 @@
   }
 
   .savedroutes-header {
-    @apply text-2xl font-semibold mb-5 mt-4;
+    @apply text-2xl font-semibold mt-4 text-center mb-2;
   }
 
   .savedroutes-item {
@@ -23,7 +23,7 @@
   }
 
   .savedroutes-buttons{
-    @apply flex  p-7;
+    @apply flex flex-col pr-5;
   }
   
   .saved-button {
@@ -32,4 +32,8 @@
 
   .delete-button{
     @apply p-1 mt-2 h-10 mr-0 text-lg bg-darkMode-darkMidTone text-white rounded-md text-sm;
+  }
+
+  .change-button{
+    @apply pb-0 pt-1
   }

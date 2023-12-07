@@ -54,7 +54,7 @@ const SavedRoutesPage = () => {
       </div>
       <div className="savedroutes-item-wrapper" >
         {routes.map((savedRoute) => (
-          <div key={savedRoute._id} className="flex items-center justify-between bg-lightMidTone">
+          <div key={savedRoute._id} className="saved-routes-button">
             <SavedRoute savedRoute={savedRoute} />
             <div className="savedroutes-buttons">
               <img

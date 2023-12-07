@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import LocationFilter from './LocationFilter';
 import '../css/routesPage.css';
 import RoutesSubpage from './RoutesSubpage';
-
+import ViewRouteButton from './ViewRouteButton';
 function RoutesPage() {
   const { encodedLocation1, encodedLocation2 } = useParams();
 
@@ -160,6 +160,8 @@ function RoutesPage() {
           />
         </div>
       </div>
+      <div className = 'title-container'><ViewRouteButton className="w-full h-full"/></div>
+      
 
       {showSubpage && <RoutesSubpage location1={fromLocation} location2={toLocation} routes={routes} />}
     </div>

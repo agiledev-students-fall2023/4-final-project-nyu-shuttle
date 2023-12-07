@@ -35,3 +35,6 @@
 }
 
 
+.title-container {
+  @apply flex justify-items-start mx-4;
+}

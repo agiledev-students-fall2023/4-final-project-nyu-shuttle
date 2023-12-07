@@ -25,7 +25,7 @@ img {
 }
 
 .view-route-button {
-  @apply bg-darkTone text-lightTone w-full text-base mx-0 h-11 py-2   text-center rounded-xl px-6;
+  @apply bg-darkTone text-lightTone w-full ml-0 mt-5 mr-8 text-base h-11 py-2   text-center rounded-xl px-6;
 }
 
 .saved-icon {
@@ -88,4 +88,7 @@ img {
 
 .nav-button {
   @apply bg-darkTone text-lightTone text-base my-3 mx-3 h-14 py-2 rounded-xl px-6 w-20;
+}
+.saved-routes-button{
+  @apply flex items-center justify-between bg-lightTone
 }
