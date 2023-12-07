@@ -1,0 +1,61 @@
+name: Staging deployment
+
+on:
+  push:
+    tags:
+      - stage-*
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v3
+
+      - name: Build and push Back-End Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./
+          push: true
+          tags: agiledev-students-fall2023/4-final-project-nyu-shuttle-backend:${{ github.ref_name }}
+          file: ./back-end/Dockerfile
+          secrets: |
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Front-End Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./
+          push: true
+          tags: agiledev-students-fall2023/4-final-project-nyu-shuttle-frontend:${{ github.ref_name }}
+          file: ./front-end/Dockerfile
+          secrets: |
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Set up DigitalOcean tooling (doctl)
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Provision Droplet and deploy Back-End container
+        run: |
+          GIT_TAG_NAME=${GITHUB_REF#refs/tags/}
+          doctl compute droplet create "$GIT_TAG_NAME-backend" \
+            --image docker-20-04 \
+            --size s-2vcpu-4gb-120gb-intel \
+            --region nyc1 \
+            --user-data-file deploy.sh \
+            --wait
+
+      - name: Provision Droplet and deploy Front-End container
+        run: |
+          GIT_TAG_NAME=${GITHUB_REF#refs/tags/}
+          doctl compute droplet create "$GIT_TAG_NAME-frontend" \
+            --image docker-20-04 \
+            --size s-2vcpu-4gb-120gb-intel \
+            --region nyc1 \
+            --user-data-file deploy.sh \
+            --wait
