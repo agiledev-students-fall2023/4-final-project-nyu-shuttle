@@ -11,6 +11,8 @@ function RoutesPage() {
   const lastLocation2 = useRef();
   const awaitingData = useRef(false); //set loading state
   const [ routes, setRoutes ] = useState([]); //set routes state
+  
+
   if (typeof window.nyushuttle == "undefined") {
     window.nyushuttle = {};
   }
@@ -38,6 +40,7 @@ function RoutesPage() {
     }
     return { name: "", address: "" };
   });
+
   
   useEffect(() => {
     if (typeof window.nyushuttle == "undefined") {
