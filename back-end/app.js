@@ -25,6 +25,8 @@ const feedbackRoutes = require('./routes/feedback-routes.js');
 const timetableRoutes = require('./routes/timetable-routes.js');
 const stopRoutes = require('./routes/stop-routes.js');
 
+
+
 app.use('/feedback', feedbackRoutes());
 
 // app.get('/test', (req, res) => {
@@ -52,6 +54,10 @@ cron.schedule('0 0 * * *', () => {
     'routesG_Wknd',
     'routesW_Wknd',
   ]);
+});
+
+app.get('/', async (req, res) => {
+  console.log('hello')
 });
 
 app.post('/getRoute', async (req, res) => {

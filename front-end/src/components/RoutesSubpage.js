@@ -93,16 +93,16 @@ function RoutesSubpage({ location1, location2, routes }) {
           <div key={index} className="route-info">
             <div className="route-text">
               <p className="text-lg">
-                <strong>{routes[route]}</strong>
+                <strong>{route}</strong>
               </p>
               <p className="text-base	">
                 Total Walking Time: <strong>{routes[route].time} min</strong>
               </p>
               <p className="text-sm">
-                Shuttle {routes[route]} scheduled at <strong>{shuttleSchedule}</strong>
+                Shuttle {route} scheduled at <strong>{shuttleSchedule}</strong>
               </p>
             </div>
-            <button id={routes[route]} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
+            <button id={route} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
               Start
             </button>
           </div>
