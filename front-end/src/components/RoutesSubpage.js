@@ -98,9 +98,9 @@ function RoutesSubpage({ location1, location2, routes }) {
               <p className="text-base	">
                 Total Walking Time: <strong>{routes[key].time} min</strong>
               </p>
-              <p className="text-sm">
+              {/* <p className="text-sm">
                 Shuttle {key} scheduled at <strong>{shuttleSchedule}</strong>
-              </p>
+              </p> */}
             </div>
             <button id={key} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
               Start
