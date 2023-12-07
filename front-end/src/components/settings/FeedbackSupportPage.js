@@ -41,7 +41,6 @@ const FeedbackSupportPage = () => {
     } finally {
       setCategory("");
       setFeedback("");
-
     }
   };
 
