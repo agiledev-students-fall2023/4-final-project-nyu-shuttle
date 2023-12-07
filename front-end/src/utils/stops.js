@@ -68,7 +68,17 @@ export async function queryStops() {
   const url = `${localStorage.serviceEndpointHome}/mapGetData.php?${urlParams.toString()}`;
 
   try {
-    const response = await axios.post(url, formData);
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
     const data = response.data;
     if (!data) {
       throw new Error('empty response');

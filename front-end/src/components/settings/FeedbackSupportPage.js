@@ -28,10 +28,20 @@ const FeedbackSupportPage = () => {
         category: category,
         feedback: feedback,
       };
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND}/feedback/newfeedback`,
-        requestData
-      );
+      const response = await fetch(`${process.env.REACT_APP_BACKEND}/feedback/newfeedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
       console.log(`Server response: ${JSON.stringify(response.data, null, 0)}`);   
       setErrorMessage("");
       setResponse(response.data);
