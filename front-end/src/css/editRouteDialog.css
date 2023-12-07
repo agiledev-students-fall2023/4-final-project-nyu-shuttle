@@ -9,8 +9,16 @@
     @apply w-full p-2 border border-gray-300 rounded
 }
 
+.dark .edit-route-name-input{
+    @apply text-black;
+}
+
 .edit-route-pop-up h2{
     @apply text-xl font-bold mb-4 text-center;
+}
+
+.dark .edit-route-pop-up h2{
+    @apply text-black;
 }
 
 .edit-route-dialog-buttons{

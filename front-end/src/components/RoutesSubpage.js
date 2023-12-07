@@ -85,7 +85,7 @@ function RoutesSubpage({ location1, location2, routes }) {
   return (
     <div className="routes-subpage-container">
       <div className="title-container">
-        <ViewRouteButton className="w-full h-full" saved={isRouteSaved} />
+       
       </div>
       <RouteMap location1={location1} location2={location2} />
       <div className="route-info-container">
