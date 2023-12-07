@@ -79,7 +79,7 @@ function App() {
     <TutorialContext.Provider value={{ tutorialIndex, setTutorialIndex, tutorialOn, setTutorialOn }}>
       <div onKeyDown={devTools}>
         <BrowserRouter>
-          {!isLoading && tutorialOn && <TutorialComponent />}
+          {/* {!isLoading && tutorialOn && <TutorialComponent />} */}
           {isLoading && <LoadingScreen />} {!isLoading && <NavBar />} {/* Hides navbar when loading */}
           {!isLoading && (
             <Routes>
