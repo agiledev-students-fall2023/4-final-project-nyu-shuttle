@@ -18,7 +18,7 @@ mongoose
 
 app.use(express.json());
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
-app.use(cors({ origin: process.env.FRONT_END_DOMAIN, credentials: true }));
+app.use(cors({ credentials: true }));
 app.use(express.static(STATIC_FOLDER));
 
 const feedbackRoutes = require('./routes/feedback-routes.js');
