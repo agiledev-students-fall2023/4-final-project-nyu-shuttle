@@ -18,7 +18,7 @@ function RoutesSubpage({ location1, location2, routes }) {
 
   const exist = !!routes;
   const isErrorMessage = exist ? typeof routes === 'string' : false;
-  console.log(exist, isErrorMessage, routes);
+  // console.log(exist, isErrorMessage, routes);
 
   const openSaveDialog = () => {
     console.log('clicked');
