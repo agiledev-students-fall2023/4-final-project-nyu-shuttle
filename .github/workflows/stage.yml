@@ -40,7 +40,7 @@ jobs:
         run: |
           GIT_TAG_NAME=${GITHUB_REF#refs/tags/} # Extract tag name from GITHUB_REF
           doctl compute droplet create "$GIT_TAG_NAME" \
-            --image docker-18-04 \
+            --image docker-20-04 \
             --size s-2vcpu-4gb-120gb-intel \
             --region nyc1 \
             --user-data-file deploy.sh \
