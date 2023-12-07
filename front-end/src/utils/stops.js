@@ -849,7 +849,6 @@ async function displayStopInfo(marker, stopName, next_times) {
 }
 
 function buildInfoContent(stopName, next_times, textColor) {
-
   let content = '<div class="bg-gray-100 p-4 rounded-lg shadow-md">';
   content += `<p class="text-md font-bold mb-4" style="color: ${textColor}">${stopName}</p>`;
   for (const route in next_times) {
@@ -865,7 +864,6 @@ function buildInfoContent(stopName, next_times, textColor) {
       }
     }
   }
-
   content += '</div>';
   return content;
 }
@@ -962,25 +960,33 @@ function recreateStopMarkerCluster() {
     averageCenter: true,
     zoomOnClick: false,
     showTitle: false,
+    map: window.nyushuttle.currentMap,
   });
   // Add event listeners to the marker cluster
+  //stopMarkerCluster.addListener('click', () => onClusterMarkerClick(stopMarkerCluster));
   window.google.maps.event.addListener(stopMarkerCluster, 'click', onClusterMarkerClick);
   //window.google.maps.event.addListener(stopMarkerCluster, 'mouseover', onClusterMarkerHover);
 }
 
+/*
+async function onClusterMarkerClick(cluster){
+  const marker = cluster.getMarkers();
+  console.log(marker);
+}
+*/
+
+
 async function onClusterMarkerClick(cluster) {
-  const markers = cluster.getMarkers();
-  //console.log(markers);
+  const markers = cluster.getMarkers()
   if (markers) {
     const marker = markers[0];
     const sID = marker.stopId;
     const stopName = window.nyushuttle.stops["ID"+sID]
-    console.log(stopName);
-    clusterProcess(stopName, marker);
+    clusterProcess(stopName, marker, cluster);
   }
 }
 
-async function clusterProcess(the_Stop, marker_a) {
+async function clusterProcess(the_Stop, marker_a, cluster) {
   const stop_Name = marker_a.title;
   const routes_a = getCorrespondingRoute(the_Stop.routeIDs);
   let next_times_a = {};
@@ -995,39 +1001,28 @@ async function clusterProcess(the_Stop, marker_a) {
     }
   }
   console.log(next_times_a);
-  displayStopInfo_a(marker_a, stop_Name, next_times_a);
+  displayStopInfo_a(marker_a, stop_Name, next_times_a, cluster);
 }
 
-async function displayStopInfo_a(marker_a, stop_Name, next_times) {
+async function displayStopInfo_a(marker_a, stop_Name, next_times, cluster) {
   const contentString = buildInfoContent(stop_Name, next_times);
   const infowindow = new window.google.maps.InfoWindow({
     content: contentString,
     ariaLabel: 'Uluru',
   });
-  infowindow.open(window.nyushuttle.maps, marker_a);
-}
-
-/*
-async function onClusterMarkerClick(cluster) {
-  const markers = cluster.getMarkers();
-  for (let i = 0; i < markers.length; i++) {
-    console.log(markers.length)
-    const marker = markers[i];
-    const stopName = marker.title; 
-    const routeId = marker.routeId;
-    let next_times = {};
-    const route = getCorrespondingRoute(routeId);
-    if(checkIfInfoisAvailable(route)){
-      const adjustedStopName = await getMatchingName(stopName, route);
-      const times = await getNextTimes(encodeURIComponent(adjustedStopName), route);
-      next_times[route] = times;
-      console.log(times)
-    } else{
-      next_times[0] = ["No info available"];
+  const mapInstance = marker_a.getMap();
+  if (mapInstance) {
+    infowindow.setPosition(marker_a.getPosition());
+    infowindow.open(mapInstance, marker_a);
+  } else {
+    if (cluster && cluster.getMap()) {
+      infowindow.setPosition(marker_a.getPosition());
+      infowindow.open(cluster.getMap(), marker_a);
+    } else {
+      console.error("Marker does not have a valid map instance.");
     }
   }
 }
-*/
 
 function panToBoundsIfNeeded(center) {
   if (bounds && !bounds.isEmpty()) {
