@@ -2,9 +2,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ anasofia ]
+    branches: [ anasofia2 ]
   pull_request:
-    branches: [ anasofia ]
+    branches: [ anasofia2 ]
 
 jobs:
   build-and-test:
@@ -37,12 +37,3 @@ jobs:
         cd back-end
         npm test
       
-    - name: Build Frontend
-      run: |
-        cd front-end
-        npm run build
-
-    - name: Build Backend
-      run: |
-        cd back-end
-        npm run build

@@ -13,12 +13,12 @@ import FeedbackSupportPage from './components/settings/FeedbackSupportPage';
 import PrivacyPolicyPage from './components/settings/PrivacyPolicyPage';
 import LoadingScreen from './components/LoadingScreen';
 import TutorialComponent from './components/TutorialComponent';
+import useDarkMode from './hooks/darkMode';
 
 // Import hooks and utilities
 import { registerService } from './utils/serviceRegister';
 import { getMapCenter, loadGoogleMapsAPI } from './utils/mapUtility';
 import { queryRoutes } from './utils/routes';
-import {  getNextTimes } from './utils/stopTimes';
 
 // Import CSS
 import './index.css';
@@ -32,6 +32,7 @@ function App() {
   const isFirstTimeUser = localStorage.getItem('isFirst') !== 'false';
   const [tutorialIndex, setTutorialIndex] = useState(0);
   const [tutorialOn, setTutorialOn] = useState(isFirstTimeUser);
+  const [colorTheme, setColorTheme] = useDarkMode();
   const localStorageItems = {};
 
   for (let i = 0; i < localStorage.length; i++) {

@@ -36,24 +36,6 @@ app.use('/stopfind', stopRoutes());
 
 app.use(express.urlencoded({ extended: true }));
 
-cron.schedule('0 0 * * *', () => {
-  fetchDataForRoutes([
-    'routesA_W',
-    'routesA_F',
-    'routesA_Wknd',
-    'routesB_W',
-    'routesB_F',
-    'routesC_W',
-    'routesE_W',
-    'routesE_F',
-    'routesF_W',
-    'routesG_W',
-    'routesG_F',
-    'routesG_Wknd',
-    'routesW_Wknd',
-  ]);
-});
-
 app.post('/getRoute', async (req, res) => {
   const routeFinding = require('./getOptimizedRoute.js');
   const busStops = {};

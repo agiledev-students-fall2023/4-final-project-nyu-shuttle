@@ -109,6 +109,10 @@ export function addLocationButton(map) {
   }
 }
 
+export function getLocationButton() {
+  return LOCATION_BUTTON;
+}
+
 function initLocationButton() {
   const control = LOCATION_CONTROL;
   const locationButton = LOCATION_BUTTON;
@@ -156,7 +160,6 @@ function onLocationButtonClick() {
 
     watchCurrentPosition(onSuccess, onError, onNotSupport);
   }
-
   const lastPos = window.nyushuttle.location.lastPos;
   if (lastPos) {
     const center = new window.google.maps.LatLng(lastPos.coords.latitude, lastPos.coords.longitude);
