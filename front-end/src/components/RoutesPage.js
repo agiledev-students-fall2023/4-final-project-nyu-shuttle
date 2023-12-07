@@ -5,7 +5,11 @@ import '../css/routesPage.css';
 import RoutesSubpage from './RoutesSubpage';
 
 function RoutesPage() {
-  const { location1, address1, location2, address2 } = useParams();
+  const { encodedLocation1, encodedLocation2 } = useParams();
+
+  const decodedLocation1 = encodedLocation1 ? JSON.parse(encodedLocation1) : null;
+  const decodedLocation2 = encodedLocation2 ? JSON.parse(encodedLocation2) : null;
+
   const lastLocation1 = useRef();
   const lastLocation2 = useRef();
   const awaitingData = useRef(false); //set loading state
@@ -16,8 +20,8 @@ function RoutesPage() {
   }
 
   const [fromLocation, setFromLocation] = useState(() => {
-    if (location1 || address1) {
-      return { name: location1 || '', address: address1 || '' };
+    if (decodedLocation1) {
+      return decodedLocation1;
     } else if (typeof window.nyushuttle !== 'undefined' && window.nyushuttle.fromLocation) {
       return window.nyushuttle.fromLocation;
     }
@@ -25,8 +29,8 @@ function RoutesPage() {
   });
 
   const [toLocation, setToLocation] = useState(() => {
-    if (location2 || address2) {
-      return { name: location2 || '', address: address2 || '' };
+    if (decodedLocation2) {
+      return decodedLocation2;
     } else if (typeof window.nyushuttle !== 'undefined' && window.nyushuttle.toLocation) {
       return window.nyushuttle.toLocation;
     }
