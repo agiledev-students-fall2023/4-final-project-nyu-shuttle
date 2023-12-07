@@ -1,9 +1,9 @@
 .map {
-  @apply flex h-full w-full bg-lightTone border-solid drop-shadow-2xl border-2 border-darkTone rounded-3xl;
+  @apply flex h-full w-full bg-lightTone border-solid drop-shadow-2xl border-2 border-darkTone;
 }
 
 .map-container {
-  @apply flex p-5 pb-28 h-screen w-full bg-lightTone rounded shadow-lg;
+  @apply flex p-0 pb-20 h-screen w-full bg-lightTone;
 }
 
 .dark .map-container {
