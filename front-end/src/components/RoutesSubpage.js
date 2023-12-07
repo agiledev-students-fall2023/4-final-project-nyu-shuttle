@@ -89,20 +89,20 @@ function RoutesSubpage({ location1, location2, routes }) {
       </div>
       <RouteMap location1={location1} location2={location2} />
       <div className="route-info-container">
-        {Object.keys(routes).map((route, index) => (
+        {Object.keys(routes).map((key, index) => (
           <div key={index} className="route-info">
             <div className="route-text">
               <p className="text-lg">
-                <strong>{routes[route]}</strong>
+                <strong>{key}</strong>
               </p>
               <p className="text-base	">
-                Total Walking Time: <strong>{routes[route].time} min</strong>
+                Total Walking Time: <strong>{routes[key].time} min</strong>
               </p>
               <p className="text-sm">
-                Shuttle {routes[route]} scheduled at <strong>{shuttleSchedule}</strong>
+                Shuttle {key} scheduled at <strong>{shuttleSchedule}</strong>
               </p>
             </div>
-            <button id={routes[route]} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
+            <button id={key} className="nav-button" onClick={(e) => setNavigateTo(e.target.id)}>
               Start
             </button>
           </div>
