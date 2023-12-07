@@ -16,6 +16,10 @@ Recognizing the limitations in NYU's existing shuttle app, primarily concerning 
 
 The NYU Shuttle App project originated from a group of NYU students who recognized the need for an improved shuttle service experience, as many students and faculty had expressed frustrations with the existing web application. If you'd like to contribute to this project, please read our [CONTRIBUTING.md](CONTRIBUTING.md) document for guidelines on how to get involved.
 
+## Access deployed aplication: 
+
+- Navigate to 138.197.74.172:4000 in your browser to check out our deployed app!
+
 ## Building and Testing
 
 Fork the repo and clone it locally. Then:
