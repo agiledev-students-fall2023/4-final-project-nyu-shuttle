@@ -3,16 +3,21 @@ import axios from "axios";
 async function getShuttleTimes(stopName, route) {
   const url = `http://localhost:4000/stopfind/${stopName}/${route}`;
   console.log(url);
-  return axios
-    .get(url)
-    .then((response) => {
-      //console.log(response.data);
-      return response.data;
-    })
-    .catch((error) => {
-      console.error("Axios error:", error);
-      throw error;
-    });
+  return fetch(url)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // console.log(data);
+    return data;
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+    throw error;
+  });
 }
 
 async function getTimes(stopName, route) {
